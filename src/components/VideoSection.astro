@@ -1,8 +1,27 @@
 ---
 // src/components/VideoSection.astro
+import { Image } from 'astro:assets';
+import videoThumbnail from '../assets/video-thumbnail.webp';
+
+const youtubeVideoId = "Yb47YXNETCE";
+const youtubeEmbedUrl = `https://www.youtube.com/embed/${youtubeVideoId}?autoplay=1`;
 ---
 
-<div>
-  <!-- Sesi untuk menampilkan video YouTube. -->
-  <p>Video Section</p>
-</div>
+<section class="container mx-auto px-4 py-16">
+  <div class="relative aspect-video rounded-lg overflow-hidden shadow-lg">
+    <Image src={videoThumbnail} alt="Video Thumbnail" class="absolute inset-0 w-full h-full object-cover" />
+    <div class="absolute inset-0 flex items-center justify-center">
+      <a
+        href={youtubeEmbedUrl}
+        target="_blank"
+        rel="noopener noreferrer"
+        class="bg-red-600 text-white p-4 rounded-full hover:bg-red-700 transition-colors"
+        aria-label="Play Video"
+      >
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-12 w-12" fill="currentColor" viewBox="0 0 24 24">
+          <path d="M8 5v14l11-7z" />
+        </svg>
+      </a>
+    </div>
+  </div>
+</section>

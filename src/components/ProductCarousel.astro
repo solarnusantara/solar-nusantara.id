@@ -1,8 +1,80 @@
 ---
 // src/components/ProductCarousel.astro
+const productItems = [
+  {
+    title: "Impor Panel",
+    description: "Sistem Panel Surya adalah solusi inovatif dan efektif untuk menghasilkan listrik dengan memanfaatkan energi matahari. Panel Surya merupakan komponen utama dalam sistem ini, yang berfungsi untuk menangkap cahaya matahari.",
+    link: "https://solar-nusantara.id/our-product/import-panels/",
+  },
+  {
+    title: "Panel TKDN",
+    description: "Panel surya semakin populer sebagai sumber energi alternatif, dan panel TKDN dari SONUS menawarkan solusi yang terjangkau dan berkualitas tinggi bagi siapa saja yang ingin beralih ke energi terbarukan.",
+    link: "https://solar-nusantara.id/our-product/tkdn-panels/",
+  },
+  {
+    title: "SPKL",
+    description: "SPKL adalah salah satu inovasi dari Sonus di bidang kendaraan listrik. Dengan semakin populernya mobil listrik, kebutuhan akan infrastruktur pengisian daya yang efisien dan handal menjadi sangat penting.",
+    link: "https://solar-nusantara.id/our-product/spkl-ev-charging/",
+  },
+  {
+    title: "Wood Pellet",
+    description: "Energi biomassa adalah sumber energi terbarukan yang dihasilkan dari bahan organik, seperti serbuk kayu, limbah kayu, dan limbah pertanian.",
+    link: "https://solar-nusantara.id/our-product/wood-pellet/",
+  },
+  {
+    title: "50100 FG Series",
+    description: "Jika Anda termasuk orang yang sering beraktivitas di daerah terpencil, baik itu berkemah, mendaki, atau bahkan hidup tanpa bergantung pada jaringan listrik, Anda pasti tahu betapa pentingnya memiliki sumber daya listrik yang handal.",
+    link: "https://solar-nusantara.id/our-product/50100-fg-series/",
+  },
+];
 ---
 
-<div>
-  <!-- Carousel untuk "Produk Kami". -->
-  <p>Product Carousel</p>
-</div>
+<section class="container mx-auto px-4 py-16">
+  <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">Produk Kami</h2>
+  <div class="relative">
+    <div class="flex overflow-x-auto snap-x snap-mandatory space-x-4 pb-4" id="product-carousel">
+      {productItems.map(item => (
+        <div class="flex-shrink-0 w-80 snap-center bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">{item.title}</h3>
+          <p class="text-gray-700 text-base mb-6">{item.description}</p>
+          <a href={item.link} class="text-blue-600 hover:text-blue-800 font-semibold flex items-center">
+            Read More
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      ))}
+    </div>
+    <button id="prev-product" class="absolute top-1/2 left-0 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-opacity">
+      &#10094;
+    </button>
+    <button id="next-product" class="absolute top-1/2 right-0 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-opacity">
+      &#10095;
+    </button>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('product-carousel');
+    const prevButton = document.getElementById('prev-product');
+    const nextButton = document.getElementById('next-product');
+
+    if (carousel && prevButton && nextButton) {
+      prevButton.addEventListener('click', () => {
+        carousel.scrollBy({
+          left: -carousel.offsetWidth,
+          behavior: 'smooth'
+        });
+      });
+
+      nextButton.addEventListener('click', () => {
+        carousel.scrollBy({
+          left: carousel.offsetWidth,
+          behavior: 'smooth'
+        });
+      });
+    }
+  });
+</script>

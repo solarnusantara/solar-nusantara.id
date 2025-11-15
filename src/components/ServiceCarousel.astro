@@ -1,8 +1,70 @@
 ---
 // src/components/ServiceCarousel.astro
+const serviceItems = [
+  {
+    title: "Solar PV EPC",
+    description: "Dengan memanfaatkan keahlian dan pengalaman kami di bidang EPC Solar PV, Solar Nusantara membantu perusahaan meningkatkan efisiensi energi dan mengurangi biaya operasional.",
+    link: "https://solar-nusantara.id/our-service/c-i-segment/",
+  },
+  {
+    title: "Manajemen Energi",
+    description: "Manajemen energi menjadi lebih mudah dengan GOLD, solusi terbaik untuk industri dan komersial. Sistem kontrol ini terintegrasi dengan pengumpulan data, analisis, dan pemantauan, yang mendukung tindakan ramah lingkungan.",
+    link: "https://solar-nusantara.id/our-service/energy-monitoring-system-for-ci/",
+  },
+  {
+    title: "Sistem PJUTS",
+    description: "Sistem PJUTS adalah solusi penerangan jalan umum tenaga surya yang efisien dan ramah lingkungan. Dirancang untuk memberikan penerangan optimal di berbagai area tanpa bergantung pada jaringan listrik konvensional.",
+    link: "https://solar-nusantara.id/our-service/pjuts-system/",
+  },
+];
 ---
 
-<div>
-  <!-- Carousel untuk "Layanan Kami". -->
-  <p>Service Carousel</p>
-</div>
+<section class="container mx-auto px-4 py-16">
+  <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">Layanan Kami</h2>
+  <div class="relative">
+    <div class="flex overflow-x-auto snap-x snap-mandatory space-x-4 pb-4" id="service-carousel">
+      {serviceItems.map(item => (
+        <div class="flex-shrink-0 w-80 snap-center bg-white rounded-lg shadow-md p-6">
+          <h3 class="text-xl font-semibold text-gray-800 mb-4">{item.title}</h3>
+          <p class="text-gray-700 text-base mb-6">{item.description}</p>
+          <a href={item.link} class="text-blue-600 hover:text-blue-800 font-semibold flex items-center">
+            selengkapnya
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-4 w-4 ml-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+              <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" />
+            </svg>
+          </a>
+        </div>
+      ))}
+    </div>
+    <button id="prev-service" class="absolute top-1/2 left-0 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-opacity">
+      &#10094;
+    </button>
+    <button id="next-service" class="absolute top-1/2 right-0 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-opacity">
+      &#10095;
+    </button>
+  </div>
+</section>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const carousel = document.getElementById('service-carousel');
+    const prevButton = document.getElementById('prev-service');
+    const nextButton = document.getElementById('next-service');
+
+    if (carousel && prevButton && nextButton) {
+      prevButton.addEventListener('click', () => {
+        carousel.scrollBy({
+          left: -carousel.offsetWidth,
+          behavior: 'smooth'
+        });
+      });
+
+      nextButton.addEventListener('click', () => {
+        carousel.scrollBy({
+          left: carousel.offsetWidth,
+          behavior: 'smooth'
+        });
+      });
+    }
+  });
+</script>

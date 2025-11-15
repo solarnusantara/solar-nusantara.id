@@ -1,8 +1,53 @@
 ---
-// src/components/MobileHeader.astro
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png';
 ---
 
-<div>
-  <!-- Logo, Ikon Search, Ikon Menu "Hamburger" -->
-  <p>Mobile Header</p>
+<div class="lg:hidden bg-white shadow-md">
+  <div class="container mx-auto px-4">
+    <div class="flex justify-between items-center py-4">
+      <a href="/">
+        <Image src={logo} alt="Solar Nusantara Logo" width={120} />
+      </a>
+      <div class="flex items-center space-x-4">
+        <button id="search-button-mobile" aria-label="Search">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z" />
+          </svg>
+        </button>
+        <button id="menu-toggle" aria-label="Open menu">
+          <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16m-7 6h7" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
 </div>
+
+<div id="mobile-menu" class="hidden lg:hidden bg-white p-4">
+  <nav>
+    <ul class="flex flex-col space-y-4">
+      <li><a href="/" class="text-gray-700 hover:text-blue-600">Beranda</a></li>
+      <li><a href="/tentang" class="text-gray-700 hover:text-blue-600">Tentang Kami</a></li>
+      <li><a href="/layanan" class="text-gray-700 hover:text-blue-600">Layanan</a></li>
+      <li><a href="/produk" class="text-gray-700 hover:text-blue-600">Produk</a></li>
+      <li><a href="/pintar" class="text-gray-700 hover:text-blue-600">Pintar</a></li>
+      <li><a href="/kontak" class="text-gray-700 hover:text-blue-600">Kontak</a></li>
+      <li><a href="/berita" class="text-gray-700 hover:text-blue-600">Berita</a></li>
+    </ul>
+  </nav>
+</div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const menuToggle = document.getElementById('menu-toggle');
+    const mobileMenu = document.getElementById('mobile-menu');
+
+    if (menuToggle && mobileMenu) {
+      menuToggle.addEventListener('click', () => {
+        mobileMenu.classList.toggle('hidden');
+      });
+    }
+  });
+</script>

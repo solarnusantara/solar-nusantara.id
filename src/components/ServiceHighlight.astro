@@ -1,8 +1,26 @@
 ---
 // src/components/ServiceHighlight.astro
+import StatItem from './StatItem.astro';
+
+interface Stat {
+  iconPath: string;
+  value: string;
+  title: string;
+}
+
+interface Props {
+  title: string;
+  stats: Stat[];
+}
+
+const { title, stats } = Astro.props;
 ---
 
-<div>
-  <!-- Sesi khusus untuk "Platform SonusHUB". -->
-  <p>Service Highlight</p>
-</div>
+<section class="container mx-auto px-4 py-16">
+  <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">{title}</h2>
+  <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+    {stats.map(stat => (
+      <StatItem iconPath={stat.iconPath} value={stat.value} title={stat.title} />
+    ))}
+  </div>
+</section>

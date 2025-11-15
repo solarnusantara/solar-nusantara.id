@@ -1,11 +1,46 @@
 ---
 // src/components/NewsSection.astro
 import NewsItem from './NewsItem.astro';
+import news1Image from '../assets/news1.jpg';
+import news2Image from '../assets/news2.jpg';
+
+const newsItems = [
+  {
+    imageSrc: news1Image,
+    title: "Penerapan Fotovoltaik: Retrofitting, BIPV, dan Grounding",
+    date: "21 August 2024",
+    description: "Pendahuluan Fotovoltaik (PV) adalah teknologi yang semakin banyak digunakan di berbagai belahan dunia sebagai solusi energi yang berkelanjutan. Dengan meningkatnya kebutuhan akan energi bersih dan terbarukan, memahami aplikasi dan integrasi PV menjadi sangat penting. Artikel ini akan membahas berbagai lokasi fisik di mana panel surya digunakan, perbedaan antara sistem on-grid dan off-grid, serta aplikasi PV…",
+    link: "https://solar-nusantara.id/penerapan-fotovoltaik-retrofitting-bipv-dan-grounding/",
+  },
+  {
+    imageSrc: news2Image,
+    title: "Pertumbuhan Fotovoltaik: Analisis Potensi Berdasarkan Data Global dan Tren Investasi",
+    date: "19 August 2024",
+    description: "Pendahuluan Dalam beberapa dekade terakhir, energi terbarukan telah menjadi fokus utama dalam upaya global untuk mengurangi ketergantungan pada bahan bakar fosil dan menekan emisi gas rumah kaca. Salah satu teknologi energi terbarukan yang berkembang pesat adalah fotovoltaik, yang memanfaatkan sinar matahari untuk menghasilkan listrik. Meskipun kontribusi fotovoltaik dalam total produksi listrik dunia masih relatif kecil,…",
+    link: "https://solar-nusantara.id/pertumbuhan-fotovoltaik-analisis-potensi-berdasarkan-data-global-dan-tren-investasi/",
+  },
+];
 ---
 
-<div>
-  <!-- Menampilkan "informasi terbaru". -->
-  <p>News Section</p>
-  <NewsItem />
-  <NewsItem />
-</div>
+<section class="container mx-auto px-4 py-16">
+  <div class="flex justify-between items-center mb-8">
+    <h2 class="text-3xl font-bold text-gray-800">informasi terbaru</h2>
+    <a href="/berita" class="text-blue-600 hover:text-blue-800 font-semibold">Lihat Semua Berita</a>
+  </div>
+  <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
+    {newsItems.map(item => (
+      <NewsItem
+        imageSrc={item.imageSrc}
+        title={item.title}
+        date={item.date}
+        description={item.description}
+        link={item.link}
+      />
+    ))}
+  </div>
+  <div class="text-center mt-12">
+    <a href="/berita" class="bg-blue-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-700 transition-colors">
+      Artikel Lainnya
+    </a>
+  </div>
+</section>

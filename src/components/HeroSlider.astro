@@ -1,8 +1,99 @@
 ---
 // src/components/HeroSlider.astro
+import { Image } from 'astro:assets';
+// Placeholder images - replace with actual images later
+import slide1 from '../assets/slide1.jpg';
+import slide2 from '../assets/slide2.jpg';
+import slide3 from '../assets/slide3.jpg';
+import slide4 from '../assets/slide4.jpg';
+
+const slides = [
+  {
+    image: slide1,
+    heading: "Solar Nusantara",
+    description: "ENERGI BARU INDONESIA",
+    buttonText: "About Us",
+    buttonLink: "/tentang",
+  },
+  {
+    image: slide2,
+    heading: "One-stop-shop solution:",
+    description: "Sonus is a one-stop-shop for renewable energy",
+    buttonText: "Learn Our Service",
+    buttonLink: "/layanan",
+  },
+  {
+    image: slide3,
+    heading: "Environmentally friendly:",
+    description: "Sonus promotes clean and sustainable energy sources",
+    buttonText: "Ask Us",
+    buttonLink: "/kontak",
+  },
+  {
+    image: slide4,
+    heading: "Affordable:",
+    description: "Sonus provides cost-effective renewable energy solutions",
+    buttonText: "Learn Our Product",
+    buttonLink: "/produk",
+  },
+];
 ---
 
-<div>
-  <!-- Slideshow utama di bagian atas halaman. -->
-  <p>Hero Slider</p>
+<div class="relative w-full overflow-hidden">
+  <div class="flex transition-transform duration-500 ease-in-out" id="slider-container">
+    {slides.map((slide, index) => (
+      <div class="w-full flex-shrink-0 relative h-[600px]">
+        <Image src={slide.image} alt={`Slide ${index + 1}`} class="absolute inset-0 w-full h-full object-cover" />
+        <div class="absolute inset-0 bg-black bg-opacity-50 flex flex-col justify-center items-center text-white p-4">
+          <h2 class="text-4xl font-bold mb-4 text-center">{slide.heading}</h2>
+          <p class="text-xl mb-8 text-center">{slide.description}</p>
+          <a href={slide.buttonLink} class="bg-blue-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-700 transition-colors">
+            {slide.buttonText}
+          </a>
+        </div>
+      </div>
+    ))}
+  </div>
+
+  <button id="prev-slide" class="absolute top-1/2 left-4 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-opacity">
+    &#10094;
+  </button>
+  <button id="next-slide" class="absolute top-1/2 right-4 -translate-y-1/2 bg-gray-800 bg-opacity-50 text-white p-2 rounded-full hover:bg-opacity-75 transition-opacity">
+    &#10095;
+  </button>
 </div>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const sliderContainer = document.getElementById('slider-container');
+    const prevButton = document.getElementById('prev-slide');
+    const nextButton = document.getElementById('next-slide');
+    const slides = sliderContainer?.children;
+    let currentIndex = 0;
+
+    if (!sliderContainer || !prevButton || !nextButton || !slides || slides.length === 0) {
+      console.error("Slider elements not found.");
+      return;
+    }
+
+    const updateSliderPosition = () => {
+      sliderContainer.style.transform = `translateX(-${currentIndex * 100}%)`;
+    };
+
+    prevButton.addEventListener('click', () => {
+      currentIndex = (currentIndex > 0) ? currentIndex - 1 : slides.length - 1;
+      updateSliderPosition();
+    });
+
+    nextButton.addEventListener('click', () => {
+      currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
+      updateSliderPosition();
+    });
+
+    // Optional: Auto-slide
+    setInterval(() => {
+      currentIndex = (currentIndex < slides.length - 1) ? currentIndex + 1 : 0;
+      updateSliderPosition();
+    }, 5000); // Change slide every 5 seconds
+  });
+</script>

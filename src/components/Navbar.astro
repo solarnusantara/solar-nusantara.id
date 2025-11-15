@@ -1,8 +1,27 @@
 ---
 // src/components/Navbar.astro
+const navLinks = [
+  { href: "/", text: "Beranda" },
+  { href: "/tentang", text: "Tentang Kami" },
+  { href: "/layanan", text: "Layanan" },
+  { href: "/produk", text: "Produk" },
+  { href: "/pintar", text: "Pintar" },
+  { href: "/kontak", text: "Kontak" },
+  { href: "/berita", text: "Berita" },
+];
 ---
-
-<nav>
-  <!-- Menu navigasi utama (Beranda, Tentang Kami, Layanan, Produk, dll.) termasuk logika dropdown. -->
-  <p>Navbar</p>
-</nav>
+<div class="hidden lg:block bg-white shadow-md">
+  <div class="container mx-auto px-4">
+    <nav class="flex justify-center items-center py-4">
+      <ul class="flex space-x-8">
+        {navLinks.map(link => (
+          <li>
+            <a href={link.href} class="text-gray-700 hover:text-blue-600 font-semibold transition-colors pb-2 border-b-2 border-transparent hover:border-blue-600">
+              {link.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  </div>
+</div>

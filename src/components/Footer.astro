@@ -1,10 +1,92 @@
 ---
 // src/components/Footer.astro
 import Copyright from './Copyright.astro';
+import { Image } from 'astro:assets';
+import footerLogo from '../assets/footer-logo.webp';
+import isoImage from '../assets/iso.png';
 ---
 
-<footer>
-  <!-- Logo, info kontak (Telepon, Alamat, Email), gambar ISO, ikon media sosial, dan menu navigasi footer. -->
-  <p>Footer</p>
+<footer class="bg-gray-900 text-gray-300 py-12">
+  <div class="container mx-auto px-4">
+    <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
+      <!-- Logo and Contact Info -->
+      <div>
+        <a href="/">
+          <Image src={footerLogo} alt="Solar Nusantara Footer Logo" width={150} class="mb-4" />
+        </a>
+        <div class="space-y-2">
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M10 2a8 8 0 100 16 8 8 0 000-16zM5.05 12.318a6.5 6.5 0 018.9-8.9l.354.353a.5.5 0 010 .707l-1.414 1.414a.5.5 0 01-.707 0l-.353-.354a4.5 4.5 0 00-6.364 6.364l.353.353a.5.5 0 010 .707l-1.414 1.414a.5.5 0 01-.707 0l-.353-.353a6.5 6.5 0 01-.001-9.192zM10 11a1 1 0 100-2 1 1 0 000 2z" clip-rule="evenodd" />
+              <path d="M14.95 7.682a6.5 6.5 0 01-8.9 8.9l-.354-.353a.5.5 0 010-.707l1.414-1.414a.5.5 0 01.707 0l.353.354a4.5 4.5 0 006.364-6.364l-.353-.353a.5.5 0 010-.707l1.414-1.414a.5.5 0 01.707 0l.353.353z" />
+            </svg>
+            <span>+62 821 7000 0575</span>
+          </div>
+          <div class="flex items-start space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path fill-rule="evenodd" d="M5.05 4.05A7 7 0 1110 18a7 7 0 01-5-12.95zM10 12a2 2 0 100-4 2 2 0 000 4z" clip-rule="evenodd" />
+            </svg>
+            <span>Gandaria Office 8 Tower lantai 8, Jl. Sultan Iskandar Muda No.8, RT.10/RW.6, Gandaria, Kec. Kby. Lama, Kota Jakarta Selatan, Daerah Khusus Ibukota Jakarta 12240</span>
+          </div>
+          <div class="flex items-center space-x-2">
+            <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 text-blue-400" viewBox="0 0 20 20" fill="currentColor">
+              <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+              <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+            </svg>
+            <span>bisnis@solarnusantara.id</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- ISO Image and Social Media -->
+      <div class="mt-8 md:mt-0">
+        <Image src={isoImage} alt="ISO Certification" width={150} class="mb-4" />
+        <div class="flex space-x-4">
+          <a href="https://www.facebook.com/people/Sonus-Id/pfbid02nY8ccTwxCBhUbjs3KLtUxZjqH6bUCMR2iR6GiookePQbD3zjqZB5k6HJisEGQYUxl/" target="_blank" rel="noopener noreferrer" aria-label="Facebook">
+            <svg class="h-6 w-6 text-blue-400 hover:text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2C6.477 2 2 6.477 2 12c0 5.016 3.657 9.18 8.438 9.879V14.25H8.062v-2.25h2.376V10.125c0-2.35 1.433-3.64 3.545-3.64 1.007 0 1.874.075 2.125.109v2.45h-1.45c-1.14 0-1.36.542-1.36 1.337v1.559h2.719l-.438 2.25H13.25v7.629C18.062 21.18 22 17.016 22 12c0-5.523-4.477-10-10-10z" />
+            </svg>
+          </a>
+          <a href="https://instagram.com/sonus.id_?igshid=YmMyMTA2M2Y=" target="_blank" rel="noopener noreferrer" aria-label="Instagram">
+            <svg class="h-6 w-6 text-blue-400 hover:text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M12 2.163c3.204 0 3.584.012 4.85.07c3.252.148 4.772 1.691 4.91 4.91.058 1.265.07 1.645.07 4.85s-.012 3.585-.07 4.85c-.148 3.252-1.691 4.772-4.91 4.91-1.265.058-1.645.07-4.85.07s-3.585-.012-4.85-.07c-3.252-.148-4.772-1.691-4.91-4.91-.058-1.265-.07-1.645-.07-4.85s.012-3.585.07-4.85c.148-3.252 1.691-4.772 4.91-4.91 1.265-.058 1.645-.07 4.85-.07zm0-2.163c-3.259 0-3.667.014-4.947.072C3.58 0.234 1.34 2.474 1.206 5.253c-.058 1.28-.072 1.688-.072 4.947s.014 3.667.072 4.947c.134 2.779 2.374 5.019 5.153 5.153 1.28.058 1.688.072 4.947.072s3.667-.014 4.947-.072c2.779-.134 5.019-2.374 5.153-5.153.058-1.28.072-1.688.072-4.947s-.014-3.667-.072-4.947c-.134-2.779-2.374-5.019-5.153-5.153-1.28-.058-1.688-.072-4.947-.072zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.162 6.162 6.162 6.162-2.759 6.162-6.162-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.791-4-4s1.791-4 4-4 4 1.791 4 4-1.791 4-4 4zm6.406-11.845c-.796 0-1.44-.644-1.44-1.44s.644-1.44 1.44-1.44 1.44.644 1.44 1.44-.644 1.44-1.44 1.44z" />
+            </svg>
+          </a>
+          <a href="https://www.youtube.com/@sonusid3157" target="_blank" rel="noopener noreferrer" aria-label="YouTube">
+            <svg class="h-6 w-6 text-blue-400 hover:text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M19.615 3.184c-3.613-.253-11.956-.253-15.569 0C1.85 3.42 0 5.388 0 7.788v8.424c0 2.4 1.85 4.368 4.046 4.604 3.613.253 11.956.253 15.569 0 2.196-.236 4.046-2.204 4.046-4.604V7.788c0-2.4-1.85-4.368-4.046-4.604zM10 15.5v-7l6 3.5-6 3.5z" />
+            </svg>
+          </a>
+          <a href="https://www.linkedin.com/company/solar-nusantara/" target="_blank" rel="noopener noreferrer" aria-label="LinkedIn">
+            <svg class="h-6 w-6 text-blue-400 hover:text-blue-600" fill="currentColor" viewBox="0 0 24 24">
+              <path d="M20.447 20.452h-3.554v-5.569c0-1.325-.028-3.044-1.852-3.044-1.853 0-2.136 1.445-2.136 2.951v5.662H9.596V9.048h3.418v1.561h.046c.477-.9 1.637-1.85 3.37-1.85 3.601 0 4.267 2.37 4.267 5.455v6.286zM5.337 7.433a2.062 2.062 0 01-2.064-2.065c0-1.136.92-2.063 2.064-2.063 1.136 0 2.064.927 2.064 2.063 0 1.136-.928 2.065-2.064 2.065zm1.782 13.019H3.555V9.048h3.564v11.404zM22.225 0H1.771C.792 0 0 .774 0 1.729v20.542C0 23.227.792 24 1.771 24h20.454C23.208 24 24 23.227 24 22.271V1.729C24 .774 23.208 0 22.225 0z" />
+            </svg>
+          </a>
+        </div>
+      </div>
+
+      <!-- Navigation Links -->
+      <div class="mt-8 md:mt-0">
+        <h3 class="text-xl font-semibold text-white mb-4">Layanan</h3>
+        <ul class="space-y-2">
+          <li><a href="/layanan/pv-ci" class="hover:text-blue-400">Tenaga Surya PV untuk C&I</a></li>
+          <li><a href="/layanan/energy-monitoring" class="hover:text-blue-400">Sistem Pemantauan Energi untuk C&I</a></li>
+          <li><a href="/layanan/pjuts" class="hover:text-blue-400">Sistem PJUTS</a></li>
+          <li><a href="https://sonushub.id" target="_blank" rel="noopener noreferrer" class="hover:text-blue-400">SonusHUB</a></li>
+        </ul>
+      </div>
+
+      <div class="mt-8 md:mt-0">
+        <h3 class="text-xl font-semibold text-white mb-4">Produk</h3>
+        <ul class="space-y-2">
+          <li><a href="/produk/impor-panel" class="hover:text-blue-400">Impor Panel</a></li>
+          <li><a href="/produk/panel-tkdn" class="hover:text-blue-400">Panel TKDN</a></li>
+          <li><a href="/produk/spkl" class="hover:text-blue-400">SPKL</a></li>
+          <li><a href="/produk/wood-pellet" class="hover:text-blue-400">Wood Pellet</a></li>
+          <li><a href="/produk/50100-fg-series" class="hover:text-blue-400">50100 FG Series</a></li>
+        </ul>
+      </div>
+    </div>
+  </div>
   <Copyright />
 </footer>
