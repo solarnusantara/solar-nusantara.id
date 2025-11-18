@@ -1,9 +1,28 @@
 ---
 import Layout from '../../layouts/Layout.astro';
 
-const { slug } = Astro.params;
+export async function getStaticPaths() {
+  // This is a placeholder. You should replace this with actual data fetching
+  // from your content source (e.g., Markdown files, API, database).
+  const posts = [
+    { slug: 'artikel-pertama', title: 'Judul Artikel Pertama', content: 'Ini adalah isi dari artikel pertama.' },
+    { slug: 'artikel-kedua', title: 'Judul Artikel Kedua', content: 'Ini adalah isi dari artikel kedua.' },
+  ];
+
+  return posts.map(post => ({
+    params: { slug: post.slug },
+    props: { post }, // Pass the post data as props to the page
+  }));
+}
+
+const { post } = Astro.props;
 ---
 
-<Layout title={`Berita: ${slug} - Solar Nusantara`}>
-  <h1>Berita: {slug}</h1>
+<Layout title={`${post.title} - Solar Nusantara`}>
+  <main class="container mx-auto px-4 py-16">
+    <article class="prose lg:prose-xl mx-auto">
+      <h1>{post.title}</h1>
+      <p>{post.content}</p>
+    </article>
+  </main>
 </Layout>
