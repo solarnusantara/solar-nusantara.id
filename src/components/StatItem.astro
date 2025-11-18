@@ -10,14 +10,12 @@ const { iconPath, value, title } = Astro.props;
 ---
 
 <div class="flex flex-col items-center p-4 text-center">
-  <div class="text-blue-600 mb-4">
-    <svg aria-hidden="true" class="w-16 h-16" viewBox="0 0 640 512" fill="currentColor" xmlns="http://www.w3.org/2000/svg">
-      <path d={iconPath}></path>
-    </svg>
-  </div>
+  <div class="mb-4 w-16 h-16 text-blue-600 [&>svg]:w-full [&>svg]:h-full [&>svg]:fill-current" set:html={iconPath}></div>
+
   <div class="text-5xl font-bold text-gray-900 mb-2">
     {value}
   </div>
+  
   <h4 class="text-lg font-semibold text-gray-700">
     {title}
   </h4>

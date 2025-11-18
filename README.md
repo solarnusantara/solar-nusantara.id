@@ -83,7 +83,6 @@ The reusable components are located in `src/components`:
 - `ServiceCarousel.astro`: A carousel to display services.
 - `ServiceHighlight.astro`: A section to highlight specific services with stats.
 - `StatItem.astro`: A single stat item used in `ServiceHighlight`.
-- `StatsGrid.astro`: A grid of animated statistics.
 - `VideoSection.astro`: A section to embed a YouTube video.
 
 ## Routes
