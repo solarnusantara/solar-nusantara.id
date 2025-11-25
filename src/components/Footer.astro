@@ -1,12 +1,11 @@
 ---
 // src/components/Footer.astro
-import Copyright from './Copyright.astro';
 import { Image } from 'astro:assets';
 import footerLogo from '../assets/footer-logo.webp';
 import isoImage from '../assets/iso.png';
 ---
 
-<footer class="bg-gray-900 text-gray-300 py-12">
+<footer class="bg-gray-900 text-gray-200 py-12">
   <div class="container mx-auto px-4">
     <div class="grid grid-cols-1 md:grid-cols-3 lg:grid-cols-4 gap-8">
       <!-- Logo and Contact Info -->
@@ -88,5 +87,8 @@ import isoImage from '../assets/iso.png';
       </div>
     </div>
   </div>
-  <Copyright />
+  <div class="container mx-auto px-4 mt-8 text-center text-sm text-gray-400">
+    <p class="mb-1">2025 © PT. Tripower Solar Nusantara. All rights reserved.</p>
+    <p>Built with <a href="https://astro.build/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Astro</a>, styled with <a href="https://tailwindcss.com/" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">Tailwind CSS</a>, dev by <a href="https://github.com/FarrosFR" target="_blank" rel="noopener noreferrer" class="text-blue-500 hover:underline">FarrosFR</a></p>
+  </div>
 </footer>
