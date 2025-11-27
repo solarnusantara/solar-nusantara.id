@@ -1,5 +1,6 @@
 
 ---
+
 layout: ../../../layouts/Layout.astro
 title: "Kebijakan Pencegahan Terjatuh"
 

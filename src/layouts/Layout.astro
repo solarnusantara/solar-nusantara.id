@@ -12,11 +12,15 @@ interface Heading {
 }
 
 interface Props {
-  title: string;
   headings?: Heading[];
+  frontmatter: {
+    title: string;
+    // Potentially other frontmatter properties like `description`, `author`, etc.
+  };
 }
 
-const { title, headings } = Astro.props;
+const { headings, frontmatter } = Astro.props;
+const title = frontmatter.title; // Correctly access title from frontmatter
 const hasHeadings = headings && headings.length > 0;
 ---
 
@@ -72,7 +76,8 @@ const hasHeadings = headings && headings.length > 0;
 
             {/* Main Content */}
             <div class="flex-1 w-full lg:w-3/4">
-              <article class="prose lg:prose-xl">
+              <article class="prose lg:prose-xl mx-auto">
+                <h1>{title}</h1>
                 <slot />
               </article>
             </div>
@@ -80,6 +85,7 @@ const hasHeadings = headings && headings.length > 0;
           </div>
         ) : (
           <article class="prose lg:prose-xl mx-auto">
+            <h1>{title}</h1>
             <slot />
           </article>
         )}
