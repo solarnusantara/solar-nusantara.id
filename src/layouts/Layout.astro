@@ -5,15 +5,23 @@ import MobileHeader from '../components/MobileHeader.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 
-interface Props {
-	title: string;
+interface Heading {
+  depth: number;
+  text: string;
+  slug: string;
 }
 
-const { title } = Astro.props;
+interface Props {
+  title: string;
+  headings?: Heading[];
+}
+
+const { title, headings } = Astro.props;
+const hasHeadings = headings && headings.length > 0;
 ---
 
 <!doctype html>
-<html lang="en">
+<html lang="en" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
 		<meta name="description" content="Astro description" />
@@ -35,8 +43,82 @@ const { title } = Astro.props;
 		<Navbar />
 		<MobileHeader />
 		<main>
-			<slot />
+			<div class="container mx-auto px-4 py-16">
+        {hasHeadings ? (
+          <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
+            
+            {/* Table of Contents Sidebar */}
+            <aside class="w-full lg:w-1/4 lg:sticky lg:top-24 self-start">
+              <nav id="toc-nav" class="border-l-2 border-gray-200 pl-4">
+                <h2 class="font-bold text-lg mb-4 text-gray-800">Di Halaman ini</h2>
+                <ul class="space-y-2">
+                  {headings.filter(h => h.depth === 2 || h.depth === 3).map(heading => (
+                    <li>
+                      <a 
+                        href={`#${heading.slug}`} 
+                        data-slug={heading.slug}
+                        class:list={[
+                          "toc-link text-gray-500 hover:text-blue-600 transition-colors duration-200",
+                          { 'pl-4': heading.depth === 3 }
+                        ]}
+                      >
+                        {heading.text}
+                      </a>
+                    </li>
+                  ))}
+                </ul>
+              </nav>
+            </aside>
+
+            {/* Main Content */}
+            <div class="flex-1 w-full lg:w-3/4">
+              <article class="prose lg:prose-xl">
+                <slot />
+              </article>
+            </div>
+
+          </div>
+        ) : (
+          <article class="prose lg:prose-xl mx-auto">
+            <slot />
+          </article>
+        )}
+			</div>
 		</main>
 		<Footer />
+
+    {hasHeadings && (
+      <script>
+        document.addEventListener('DOMContentLoaded', () => {
+          const tocLinks = document.querySelectorAll('.toc-link');
+          const headings = Array.from(document.querySelectorAll('h2, h3'));
+
+          if (!tocLinks.length || !headings.length) return;
+
+          const observer = new IntersectionObserver(entries => {
+            entries.forEach(entry => {
+              const slug = entry.target.id;
+              const tocLink = document.querySelector(`.toc-link[data-slug="${slug}"]`);
+              if (entry.isIntersecting) {
+                tocLinks.forEach(link => link.classList.remove('is-active'));
+                tocLink?.classList.add('is-active');
+              }
+            });
+          }, {
+            rootMargin: '-50% 0px -50% 0px', // More centered trigger
+            threshold: 0
+          });
+
+          headings.forEach(heading => observer.observe(heading));
+        });
+      </script>
+    )}
+
+    <style is:global>
+      .toc-link.is-active {
+        @apply text-blue-600 font-semibold;
+        transform: scale(1.05);
+      }
+    </style>
 	</body>
 </html>
