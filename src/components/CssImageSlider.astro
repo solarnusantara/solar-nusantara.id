@@ -1,0 +1,106 @@
+---
+interface Props {
+  images: { src: string; alt: string }[];
+}
+const { images } = Astro.props;
+const sliderId = `slider-${Math.random().toString(36).substr(2, 9)}`;
+
+// Generate the dynamic part of the CSS as a string.
+// This is the valid Astro way to inject dynamic styles.
+const dynamicStyles = images.map((_, index) => `
+  #${sliderId} > input:nth-of-type(${index + 1}):checked ~ .css-slider-wrapper {
+    transform: translateX(calc(-${index} * 100%));
+  }
+  #${sliderId} > input:nth-of-type(${index + 1}):checked ~ .css-slider-navigation label:nth-of-type(${index + 1}) {
+    background-color: rgba(0, 0, 0, 0.8);
+  }
+`).join('');
+---
+<div class="css-slider-container" id={sliderId}>
+  <!-- Radio inputs must be direct children for the sibling selector (~) to work -->
+  {images.map((_, index) => (
+    <input
+      type="radio"
+      name={`slider-${sliderId}`}
+      id={`slide-${sliderId}-${index}`}
+      checked={index === 0}
+      class="css-slider-radio"
+    />
+  ))}
+
+  <div class="css-slider-wrapper" style={`--num-images: ${images.length};`}>
+    <!-- Slides -->
+    {images.map((image) => (
+      <div class="css-slider-slide">
+        <img src={image.src} alt={image.alt} />
+      </div>
+    ))}
+  </div>
+
+  <div class="css-slider-navigation">
+    <!-- Navigation Dots -->
+    {images.map((_, index) => (
+      <label for={`slide-${sliderId}-${index}`} class="css-slider-dot"></label>
+    ))}
+  </div>
+</div>
+
+<!-- Static styles in a regular style block -->
+<style>
+  .css-slider-container {
+    position: relative;
+    width: 100%;
+    margin-bottom: 1.5rem;
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+  }
+  .css-slider-radio {
+    display: none;
+  }
+  .css-slider-wrapper {
+    display: flex;
+    width: calc(100% * var(--num-images));
+    transition: transform 0.6s ease-in-out;
+  }
+  .css-slider-slide {
+    flex-shrink: 0;
+    width: calc(100% / var(--num-images));
+    height: auto;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    background-color: #f0f0f0;
+  }
+  .css-slider-slide img {
+    width: 100%;
+    height: auto;
+    object-fit: contain;
+    display: block;
+  }
+  .css-slider-navigation {
+    position: absolute;
+    bottom: 1rem;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: 10;
+    display: flex;
+    gap: 0.5rem;
+  }
+  .css-slider-dot {
+    display: block;
+    width: 0.75rem;
+    height: 0.75rem;
+    background-color: rgba(255, 255, 255, 0.7);
+    border: 1px solid rgba(0, 0, 0, 0.2);
+    border-radius: 50%;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+  }
+  .css-slider-dot:hover {
+    background-color: #fff;
+  }
+</style>
+
+<!-- Inject the dynamically generated styles -->
+<style set:html={dynamicStyles}></style>
