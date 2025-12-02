@@ -1,7 +1,12 @@
 ---
 import Layout from '../layouts/Layout.astro';
----
+import IntroPageMenu from '../components/IntroPageMenu.astro';
+import { navLinks } from '../data/navLinks';
 
-<Layout title="Produk - Solar Nusantara">
-  <h1>Produk</h1>
+const pageData = navLinks.find(link => link.href === '/produk');
+const title = pageData?.text || 'Produk';
+const menuItems = pageData?.children;
+---
+<Layout title={title}>
+  <IntroPageMenu title={title} items={menuItems} />
 </Layout>

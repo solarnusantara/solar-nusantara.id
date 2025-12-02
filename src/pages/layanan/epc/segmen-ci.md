@@ -107,14 +107,14 @@ title: "Segmen C & I"
 #s4:checked ~ #slide4, #s4:checked ~ #nav4 { opacity: 1; display: flex; pointer-events: auto; z-index: 1; }
 </style>
 
-Welcome to SONUS, a leading provider of EPC Solar PV Systems for corporate and industrial segments.
+**Selamat datang di SONUS — penyedia solusi EPC Solar PV untuk segmen korporasi dan industri.**
 
-At SONUS, we offer comprehensive services for designing, engineering, constructing, and maintaining Solar PV Systems. Our team of experienced professionals works closely with clients to understand their unique requirements and design customized solutions that maximize energy savings and reduce costs.
+SONUS menghadirkan layanan lengkap mulai dari desain, engineering, konstruksi, hingga maintenance sistem Solar PV. Tim kami bekerja langsung dengan klien untuk memahami kebutuhan khusus dan menghadirkan solusi yang efisien, hemat energi, dan sesuai tujuan bisnis.
 
-We specialize in providing turnkey solutions that include procurement, construction, and commissioning of Solar PV Systems. Our expertise in project management ensures timely and efficient completion of projects while maintaining the highest safety and quality standards.
+Kami berpengalaman menyediakan **turnkey solution**: pengadaan, pembangunan, hingga commissioning. Dengan manajemen proyek yang kuat, kami memastikan setiap instalasi selesai tepat waktu, aman, dan memenuhi standar kualitas tertinggi.
 
-We have a proven track record of successfully completing Solar PV System installations for clients in various industries, including manufacturing, healthcare, hospitality, and more. Our solutions are tailored to meet the specific needs of each industry segment, ensuring maximum energy savings and minimal impact on the environment.
+Kami telah menyelesaikan berbagai proyek Solar PV di sektor manufaktur, kesehatan, hospitality, dan industri lainnya—dengan solusi yang disesuaikan untuk menghasilkan penghematan energi maksimal dan dampak lingkungan minimal.
 
-At SONUS, we understand the importance of sustainability and take pride in contributing to a greener future. Our Solar PV Systems help reduce carbon footprints, save energy costs, and increase the overall value of a property.
+Di SONUS, keberlanjutan adalah prioritas. Sistem Solar PV kami membantu menekan emisi karbon, mengurangi biaya energi, dan meningkatkan nilai aset.
 
-Partner with us for your Solar PV System needs and experience our commitment to quality, innovation, and customer satisfaction.
+**Percayakan kebutuhan Solar PV Anda pada SONUS dan rasakan komitmen kami terhadap kualitas, inovasi, dan kepuasan pelanggan.**

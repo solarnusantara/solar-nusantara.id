@@ -1,123 +1,5 @@
 ---
-// src/components/Navbar.astro
-
-// Updated navLinks with nested children for "Tentang"
-interface NavLink {
-  href: string;
-  text: string;
-  children?: NavLink[];
-}
-
-const navLinks: NavLink[] = [
-  { href: "/", text: "Beranda" },
-  { 
-    href: "/tentang", 
-    text: "Tentang",
-    children: [
-      { 
-        href: "/tentang/tentang-solar-nusantara", 
-        text: "Tentang Solar Nusantara",
-        children: [
-          { href: "/tentang/tentang-solar-nusantara/kebijakan-k3l-dan-sosial", text: "Kebijakan K3L dan Sosial" },
-          { href: "/tentang/tentang-solar-nusantara/kebijakan-larangan-penggunaan-obat-obatan-terlarang-dan-alkohol", text: "Kebijakan Larangan Penggunaan Obat-obatan Terlarang dan Alkohol" },
-          { href: "/tentang/tentang-solar-nusantara/kebijakan-pencegahan-terjatuh", text: "Kebijakan Pencegahan Terjatuh" },
-        ]
-      },
-      {
-        href: "https://profile.sonushub.id/",
-        text: "Tentang SonusHUB"
-      },
-      { href: "/tentang/visi-dan-misi", text: "Visi dan Misi" },
-      { href: "/tentang/nilai-sonusian", text: "Nilai Sonusian" },
-      { href: "/tentang/tim-kita", text: "Tim Kita" },
-      {
-        href: "/tentang/berkolaborasi-dengan",
-        text: "Berkolaborasi dengan",
-        children: [
-          { href: "/tentang/kolaborasi/mitra-suplier", text: "Mitra Suplier" },
-          { href: "/tentang/kolaborasi/mitra-bisnis", text: "Mitra Bisnis" },
-        ]
-      },
-      { href: "/tentang/karir", text: "Karir" },
-    ]
-  },
-  { 
-    href: "/layanan", 
-    text: "Layanan",
-    children: [
-        {
-            href: "/layanan/sistem-tenaga-surya-epc",
-            text: "Sistem Tenaga Surya EPC",
-            children: [
-                { href: "/layanan/epc/segmen-ci", text: "Segmen C & I" },
-                { href: "/layanan/epc/segmen-shs", text: "Segmen SHS" },
-                { href: "/layanan/epc/sistem-pjuts", text: "Sistem PJUTS" },
-            ]
-        },
-        {
-            href: "/layanan/manajemen-energi",
-            text: "Manajemen Energi",
-            children: [
-                { href: "/layanan/manajemen-energi/sistem-pemantauan-energi-ci", text: "Sistem Pemantauan Energi untuk C&I" },
-                { href: "/layanan/manajemen-energi/sistem-otomasi-bangunan", text: "Sistem Otomasi Bangunan" },
-                { href: "/layanan/manajemen-energi/sistem-manajemen-armada", text: "Sistem Manajemen Armada" },
-                { href: "/layanan/manajemen-energi/sistem-rumah-pintar", text: "Sistem Rumah Pintar" },
-                { href: "/layanan/manajemen-energi/carbon-capture-system", text: "Carbon Capture System" },
-            ]
-        }
-    ]
-  },
-  { 
-    href: "/produk", 
-    text: "Produk",
-    children: [
-        {
-            href: "/produk/sistem-panel-surya",
-            text: "Sistem Panel Surya",
-            children: [
-                {
-                    href: "/produk/sistem-panel-surya/panel-surya",
-                    text: "Panel Surya",
-                    children: [
-                        { href: "/produk/panel-surya/panel-impor", text: "Panel Impor" },
-                        { href: "/produk/panel-surya/panel-tkdn", text: "Panel TKDN" },
-                    ]
-                },
-                {
-                    href: "/produk/sistem-panel-surya/inverter",
-                    text: "Inverter",
-                    children: [
-                        { href: "/produk/inverter/on-grid", text: "Inverter On Grid" },
-                        { href: "/produk/inverter/off-grid", text: "Inverter Off Grid" },
-                    ]
-                },
-                { href: "/produk/sistem-panel-surya/sistem-pemasangan", text: "Sistem Pemasangan" },
-                { href: "/produk/sistem-panel-surya/sistem-pengkabelan", text: "Sistem Pengkabelan" },
-                { href: "/produk/sistem-panel-surya/sistem-baterai", text: "Sistem Baterai" },
-            ]
-        },
-        {
-            href: "/produk/ekosistem-ev",
-            text: "Ekosistem EV",
-            children: [
-                { href: "/produk/ekosistem-ev/spkl", text: "SPKL | Pengisian Daya Kendaraan Listrik" },
-            ]
-        },
-        {
-            href: "/produk/energi-biomassa",
-            text: "Energi Biomassa",
-            children: [
-                { href: "/produk/energi-biomassa/pelet-kayu", text: "Pelet Kayu" },
-                { href: "/produk/energi-biomassa/rdf-srf", text: "RDF SRF" },
-                { href: "/produk/energi-biomassa/seri-50100-fg", text: "Seri 50100 FG" },
-            ]
-        }
-    ]
-  },
-  { href: "/pintar", text: "Pintar" },
-  { href: "/kontak", text: "Kontak" },
-  { href: "/berita", text: "Berita" },
-];
+import { navLinks, type NavLink } from '../data/navLinks';
 
 ---
 
@@ -127,9 +9,9 @@ const navLinks: NavLink[] = [
       {navLinks.map(link => (
         <li class="relative group">
           <a 
-            href={link.href} 
+            href={link.href || '#'} 
             class="flex items-center gap-2 text-center text-gray-700 font-medium transition-colors duration-300 py-2 px-4"
-            class:list={{'text-blue-600': (Astro.url.pathname.startsWith(link.href) && link.href !== '/') || (Astro.url.pathname === '/' && link.href === '/')}}
+            class:list={{'text-blue-600':(link.href && Astro.url.pathname.startsWith(link.href) && link.href !== '/') || (Astro.url.pathname === '/' && link.href === '/')}}
           >
             <span>{link.text}</span>
             {link.children && (
@@ -138,7 +20,7 @@ const navLinks: NavLink[] = [
           </a>
           <span 
             class="absolute -top-3 left-1/2 -translate-x-1/2 h-1 bg-blue-600 transition-all duration-300"
-            class:list={{'w-full': (Astro.url.pathname.startsWith(link.href) && link.href !== '/') || (Astro.url.pathname === '/' && link.href === '/'), 'w-0 group-hover:w-full': !((Astro.url.pathname.startsWith(link.href) && link.href !== '/') || (Astro.url.pathname === '/' && link.href === '/'))}}
+            class:list={{'w-full':(link.href && Astro.url.pathname.startsWith(link.href) && link.href !== '/') || (Astro.url.pathname === '/' && link.href === '/'), 'w-0 group-hover:w-full': !((link.href && Astro.url.pathname.startsWith(link.href) && link.href !== '/') || (Astro.url.pathname === '/' && link.href === '/'))}}
           ></span>
           
           {/* First level submenu */}
@@ -147,9 +29,9 @@ const navLinks: NavLink[] = [
               {link.children.map(child => (
                 <li class="relative group/sub">
                   <a 
-                    href={child.href} 
+                    href={child.href || '#'} 
                     class="flex items-center justify-between w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                    class:list={{'text-blue-600 bg-gray-100': Astro.url.pathname.startsWith(child.href)}}
+                    class:list={{'text-blue-600 bg-gray-100': child.href && Astro.url.pathname.startsWith(child.href)}}
                   >
                     <span>{child.text}</span>
                     {child.children && (
@@ -163,9 +45,9 @@ const navLinks: NavLink[] = [
                       {child.children.map(subChild => (
                         <li class="relative group/sub">
                           <a 
-                            href={subChild.href} 
+                            href={subChild.href || '#'} 
                             class="flex items-center justify-between w-full px-4 py-2 text-left text-sm text-gray-700 hover:bg-gray-100"
-                            class:list={{'text-blue-600 bg-gray-100': Astro.url.pathname.startsWith(subChild.href)}}
+                            class:list={{'text-blue-600 bg-gray-100': subChild.href && Astro.url.pathname.startsWith(subChild.href)}}
                           >
                             <span>{subChild.text}</span>
                             {subChild.children && (
@@ -179,9 +61,9 @@ const navLinks: NavLink[] = [
                               {subChild.children.map(superSubChild => (
                                 <li>
                                   <a 
-                                    href={superSubChild.href} 
+                                    href={superSubChild.href || '#'} 
                                     class="block px-4 py-2 text-sm text-gray-700 hover:bg-gray-100"
-                                    class:list={{'text-blue-600 bg-gray-100': Astro.url.pathname.startsWith(superSubChild.href)}}
+                                    class:list={{'text-blue-600 bg-gray-100': superSubChild.href && Astro.url.pathname.startsWith(superSubChild.href)}}
                                   >
                                     {superSubChild.text}
                                   </a>
