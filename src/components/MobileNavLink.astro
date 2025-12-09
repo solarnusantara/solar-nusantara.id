@@ -1,6 +1,7 @@
 ---
 import type { NavLink } from '../data/navLinks';
-import MobileNavLink from './MobileNavLink.astro';
+import RecursiveMobileNavLink from './MobileNavLink.astro';
+
 
 export interface Props {
   link: NavLink;
@@ -42,7 +43,7 @@ const textSize = textSizeClasses[level] || "text-sm";
   {link.children && (
     <ul class="submenu hidden mt-2 space-y-2">
       {link.children.map(child => (
-        <MobileNavLink link={child} level={level + 1} />
+        <RecursiveMobileNavLink link={child} level={level + 1} />
       ))}
     </ul>
   )}

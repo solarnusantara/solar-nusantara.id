@@ -1,28 +1,71 @@
 ---
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
 
 export async function getStaticPaths() {
-  // This is a placeholder. You should replace this with actual data fetching
-  // from your content source (e.g., Markdown files, API, database).
-  const posts = [
-    { slug: 'artikel-pertama', title: 'Judul Artikel Pertama', content: 'Ini adalah isi dari artikel pertama.' },
-    { slug: 'artikel-kedua', title: 'Judul Artikel Kedua', content: 'Ini adalah isi dari artikel kedua.' },
-  ];
-
+  const posts = await getCollection('berita');
   return posts.map(post => ({
     params: { slug: post.slug },
-    props: { post }, // Pass the post data as props to the page
+    props: post,
   }));
 }
+type Props = Awaited<ReturnType<typeof getStaticPaths>>[number]['props'];
 
-const { post } = Astro.props;
+const post = Astro.props;
+const { Content } = await post.render();
 ---
 
-<Layout title={`${post.title} - Solar Nusantara`}>
-  <main class="container mx-auto px-4 py-16">
-    <article class="prose lg:prose-xl mx-auto">
-      <h1>{post.title}</h1>
-      <p>{post.content}</p>
+<Layout title={`${post.data.title} - Solar Nusantara`}>
+  <main class="py-20 px-4 sm:px-6 lg:px-8 bg-white">
+    <article class="max-w-4xl mx-auto">
+      <header class="text-center mb-12">
+        <p class="text-lg font-semibold text-blue-600">
+          {post.data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' })}
+        </p>
+        <h1 class="mt-2 text-4xl md:text-5xl font-bold text-gray-900 tracking-tight">{post.data.title}</h1>
+        <p class="mt-4 text-xl text-gray-600">{post.data.description}</p>
+      </header>
+
+      {post.data.heroImage && (
+        <div class="mb-12">
+          <Image src={post.data.heroImage} alt={post.data.title} width={1200} height={600} class="w-full h-auto object-cover rounded-2xl shadow-lg" loading="eager" />
+        </div>
+      )}
+
+      <div class="prose prose-lg lg:prose-xl max-w-none mx-auto">
+        <Content />
+      </div>
     </article>
   </main>
 </Layout>
+
+<style is:global>
+  .prose {
+    --tw-prose-body: theme(colors.gray.700);
+    --tw-prose-headings: theme(colors.gray.900);
+    --tw-prose-lead: theme(colors.gray.600);
+    --tw-prose-links: theme(colors.blue.600);
+    --tw-prose-bold: theme(colors.gray.900);
+    --tw-prose-counters: theme(colors.gray.500);
+    --tw-prose-bullets: theme(colors.gray.400);
+    --tw-prose-hr: theme(colors.gray.200);
+    --tw-prose-quotes: theme(colors.gray.900);
+    --tw-prose-quote-borders: theme(colors.blue.200);
+    --tw-prose-captions: theme(colors.gray.500);
+    --tw-prose-code: theme(colors.pink.600);
+    --tw-prose-pre-code: theme(colors.pink.100);
+    --tw-prose-pre-bg: theme(colors.gray.800);
+    --tw-prose-th-borders: theme(colors.gray.300);
+    --tw-prose-td-borders: theme(colors.gray.200);
+  }
+  .prose img {
+    @apply rounded-xl shadow-md;
+  }
+  .prose h2 {
+    @apply text-3xl font-bold mt-12 mb-4;
+  }
+  .prose h3 {
+    @apply text-2xl font-bold mt-8 mb-4;
+  }
+</style>

@@ -1,7 +1,80 @@
 ---
 import Layout from '../layouts/Layout.astro';
+
+const locations = [
+  {
+    name: "Kantor Jakarta",
+    address: [
+      "Gandaria Office 8 Tower Lt. 8",
+      "Jl. Sultan Iskandar Muda Arteri Pondok Indah",
+      "Jakarta Selatan 12240"
+    ],
+    phone: "+62 821 7000 0575",
+    waPhone: "6282170000575",
+    mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3966.1594473258133!2d106.78058257692878!3d-6.242706793745641!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e69f11768911619%3A0x70d80dcb6eab1da3!2sGandaria%208%20Office%20Tower!5e0!3m2!1sen!2sid!4v1765249047720!5m2!1sen!2sid"
+  },
+  {
+    name: "Kantor Yogyakarta (Pusat)",
+    address: [
+      "Pusat Desain Industri Nasional Lt. 2",
+      "Jl. C. Simanjuntak, Kec. Gondokusuman",
+      "Kota Yogyakarta DIY 55223"
+    ],
+    phone: "+62 821 8000 0575",
+    waPhone: "6282180000575",
+    mapSrc: "https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d15812.309742187357!2d110.35352878006921!3d-7.781614501330258!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x2e7a59001dea5167%3A0xd4e3b66a901e895!2sPT%20Tripower%20Solar%20Nusantara!5e0!3m2!1sen!2sid!4v1765249140562!5m2!1sen!2sid"
+  }
+];
 ---
 
 <Layout title="Kontak - Solar Nusantara">
-  <h1>Kontak</h1>
+  <main class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50">
+    <div class="max-w-7xl mx-auto text-center">
+      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Hubungi Kami</h1>
+      <p class="text-lg md:text-xl text-gray-600 max-w-3xl mx-auto">
+        Kami siap membantu mewujudkan solusi energi Anda. Hubungi kami melalui salah satu kantor kami atau kirimkan email.
+      </p>
+    </div>
+
+    <div class="max-w-7xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 gap-10">
+      {locations.map(location => (
+        <div class="bg-white rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 overflow-hidden flex flex-col">
+          <div class="h-80 md:h-96 w-full">
+            <iframe
+              src={location.mapSrc}
+              class="w-full h-full border-0"
+              allowfullscreen=""
+              loading="lazy"
+              referrerpolicy="no-referrer-when-downgrade"
+            ></iframe>
+          </div>
+          <div class="p-8 flex-grow">
+            <h2 class="text-2xl font-bold text-gray-800 mb-3">{location.name}</h2>
+            <address class="text-gray-600 not-italic mb-5 leading-relaxed">
+              {location.address.map(line => <span>{line}<br/></span>)}
+            </address>
+            <a href={`https://wa.me/${location.waPhone}`} target="_blank" rel="noopener noreferrer" class="inline-flex items-center text-gray-700 font-medium hover:text-green-600 transition-colors">
+              <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 mr-3" fill="currentColor" viewBox="0 0 24 24">
+                <path d="M.057 24l1.687-6.163c-1.041-1.804-1.588-3.849-1.587-5.946.003-6.556 5.338-11.891 11.893-11.891 3.181.001 6.167 1.24 8.413 3.488 2.245 2.248 3.481 5.236 3.48 8.414-.003 6.557-5.338 11.892-11.894 11.892-1.99-.001-3.951-.5-5.688-1.448l-6.305 1.654zm6.597-3.807c1.676.995 3.276 1.591 5.392 1.592 5.448 0 9.886-4.434 9.889-9.885.002-5.462-4.415-9.89-9.881-9.892-5.452 0-9.887 4.434-9.889 9.886-.001 2.269.655 4.357 1.849 6.087l-1.215 4.433 4.515-1.182z"/>
+              </svg>
+              <span>{location.phone}</span>
+            </a>
+          </div>
+        </div>
+      ))}
+    </div>
+
+    <div class="text-center mt-20">
+      <h2 class="text-3xl font-bold text-gray-900 mb-4 tracking-tight">Atau Kirim Email</h2>
+      <div class="inline-flex items-center text-lg text-gray-800 bg-white py-4 px-8 rounded-lg shadow-md hover:shadow-lg transition-shadow duration-300">
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 mr-4 text-blue-600" viewBox="0 0 20 20" fill="currentColor">
+          <path d="M2.003 5.884L10 9.882l7.997-3.998A2 2 0 0016 4H4a2 2 0 00-1.997 1.884z" />
+          <path d="M18 8.118l-8 4-8-4V14a2 2 0 002 2h12a2 2 0 002-2V8.118z" />
+        </svg>
+        <a href="mailto:busdev.sonus@solar-nusantara.id" class="font-medium hover:text-blue-600 transition-colors">
+          busdev.sonus@solar-nusantara.id
+        </a>
+      </div>
+    </div>
+  </main>
 </Layout>

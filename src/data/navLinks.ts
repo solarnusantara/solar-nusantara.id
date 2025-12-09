@@ -111,7 +111,7 @@ export const navLinks: NavLink[] = [
         { href: "/produk/seri-50100-fg", text: "Seri 50100 FG" }
     ]
   },
-  { href: "/pintar", text: "Pintar" },
-  { href: "/kontak", text: "Kontak" },
+  { href: "/pintar", text: "PINTAR" },
   { href: "/berita", text: "Berita" },
+  { href: "/kontak", text: "Kontak" },
 ];

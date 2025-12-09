@@ -4,7 +4,7 @@ title: "RDF"
 ---
 ![alt text](image-3.png)
 
-## Mengubah Sampah Menjadi Energi: Kekuatan Refuse-Derived Fuel (RDF)
+> Mengubah Sampah Menjadi Energi: Kekuatan Refuse-Derived Fuel (RDF)
 
 Tahukah Anda bahwa sampah rumah tangga dapat diubah menjadi sumber energi bernilai tinggi? Inilah Refuse-Derived Fuel (RDF), jenis bahan bakar yang dihasilkan dari pengolahan sampah padat perkotaan (Municipal Solid Waste/MSW) atau sampah rumah tangga. Sampah terlebih dahulu dipilah untuk memisahkan material yang dapat didaur ulang, kemudian diolah menjadi bahan bakar dengan nilai kalor tinggi.
 

@@ -51,7 +51,8 @@ import MobileNavLink from './MobileNavLink.astro';
     // --- Submenu accordion toggle ---
     if (mobileMenu) {
       mobileMenu.addEventListener('click', (event) => {
-        const toggle = event.target.closest('.submenu-toggle');
+        const target = event.target as HTMLElement;
+        const toggle = target?.closest('.submenu-toggle');
         if (!toggle) return;
 
         const parentLi = toggle.closest('li');
@@ -60,7 +61,7 @@ import MobileNavLink from './MobileNavLink.astro';
         const submenu = parentLi.querySelector('.submenu');
         const icon = toggle.querySelector('svg');
 
-        if (submenu) {
+        if (submenu && icon) {
           submenu.classList.toggle('hidden');
           icon.classList.toggle('rotate-180');
         }
