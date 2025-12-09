@@ -1,7 +1,7 @@
 ---
-title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV – Bagian 1: Peran Penelitian, Organisasi Standar, & Produsen"
+title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV | Bagian 1"
 pubDate: "2024-9-23"
-description: ""
+description: "Peran Penelitian, Organisasi Standar, & Produsen"
 heroImage: "./image6.png"
 ---
 ## Pendahuluan

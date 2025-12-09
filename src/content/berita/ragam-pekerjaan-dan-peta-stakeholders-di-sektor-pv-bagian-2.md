@@ -1,7 +1,7 @@
 ---
-title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV – Bagian 2: Peran Integrator, Pemasang, Regulator & Asosiasi Industri PV"
+title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV | Bagian 2"
 pubDate: "2024-9-24"
-description: ""
+description: "Peran Integrator, Pemasang, Regulator & Asosiasi Industri PV"
 heroImage: "./image7.png"
 ---
 ## Pendahuluan

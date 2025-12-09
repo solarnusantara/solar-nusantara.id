@@ -1,7 +1,7 @@
 ---
-title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV — Bagian 3: Pelatihan, Perusahaan Utilitas, dan Kebutuhan Tenaga Kerja"
+title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV | Bagian 3"
 pubDate: "2024-9-25"
-description: ""
+description: "Pelatihan, Perusahaan Utilitas, dan Kebutuhan Tenaga Kerja"
 heroImage: "./image8.png"
 ---
 ## Pendahuluan
