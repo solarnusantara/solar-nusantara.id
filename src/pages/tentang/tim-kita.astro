@@ -1,16 +1,17 @@
 ---
 import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets'; // Added Image import
 
 // Import images from assets
-import djokoMulyono from '../../assets/tim/djoko-mulyono.png';
-import harryWidjaja from '../../assets/tim/harry-widjaja.png';
-import tediWintoko from '../../assets/tim/tedi-wintoko.png';
-import adityaPerdana from '../../assets/tim/aditya-perdana.png';
-import jerichoPutranto from '../../assets/tim/jericho-putranto.png';
-import ahmadNando from '../../assets/tim/ahmad-nando.png';
-import riskiAgustina from '../../assets/tim/riski-agustina.png';
-import wempiSaputra from '../../assets/tim/wempi-saputra.png';
-import pramanaPutra from '../../assets/tim/pramana-putra.png';
+import djokoMulyono from '../../assets/tim/Irjend-Pol-Pur-Drs-Djoko-Mulyono-Msi.png';
+import harryWidjaja from '../../assets/tim/Harry-Widjaja.png';
+import tediWintoko from '../../assets/tim/Tedi-S-Wintoko.png';
+import adityaPerdana from '../../assets/tim/Aditya-Perdana.png';
+import jerichoPutranto from '../../assets/tim/IG-Jericho-P-Putranto.png';
+import ahmadNando from '../../assets/tim/Desain-tanpa-judul-16.png';
+import riskiAgustina from '../../assets/tim/Riski-Agustina.png';
+import wempiSaputra from '../../assets/tim/wempi.png';
+import pramanaPutra from '../../assets/tim/Pramana-Putra.png';
 
 // Data extracted and corrected
 const commissioners = [
@@ -96,7 +97,7 @@ const introText = "Tim SONUS terdiri dari para ahli berpengalaman dan berdedikas
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
           {commissioners.map(person => (
             <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <img class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy">
+              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
               <div class="p-6 text-center">
                 <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
                 <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
@@ -118,7 +119,7 @@ const introText = "Tim SONUS terdiri dari para ahli berpengalaman dan berdedikas
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
           {directors.map(person => (
             <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <img class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy">
+              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
               <div class="p-6 text-center">
                 <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
                 <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
@@ -140,7 +141,7 @@ const introText = "Tim SONUS terdiri dari para ahli berpengalaman dan berdedikas
         <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 max-w-7xl mx-auto">
           {management.map(person => (
             <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <img class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy">
+              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
               <div class="p-6 text-center">
                 <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
                 <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
@@ -162,7 +163,7 @@ const introText = "Tim SONUS terdiri dari para ahli berpengalaman dan berdedikas
         <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
           {regional.map(person => (
             <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <img class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy">
+              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
               <div class="p-6 text-center">
                 <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
                 <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
