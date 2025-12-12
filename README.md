@@ -1,4 +1,4 @@
-# Astro Solar Nusantara
+# Solar Nusantara
 
 This is a corporate website for Solar Nusantara, built with Astro.
 
