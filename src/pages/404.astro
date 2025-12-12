@@ -1,0 +1,25 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import logo from '../assets/logo.png'; // Assuming this is the 'solar nusantara' logo
+---
+
+<Layout title="404 Not Found">
+  <div class="flex flex-col items-center justify-center min-h-[calc(100vh-theme(spacing.20)-theme(spacing.20))] px-4 py-16 text-center">
+    <Image 
+      src={logo} 
+      alt="Solar Nusantara Logo" 
+      width={200} 
+      height={200} 
+      class="mb-8"
+    />
+    <h1 class="text-6xl font-bold text-gray-800 mb-4">404</h1>
+    <p class="text-xl text-gray-600 mb-8">Maaf, halaman yang Anda cari tidak ditemukan.</p>
+    <a 
+      href="/" 
+      class="inline-flex items-center px-6 py-3 border border-transparent text-base font-medium rounded-md shadow-sm text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition duration-150 ease-in-out"
+    >
+      Kembali ke Beranda
+    </a>
+  </div>
+</Layout>
