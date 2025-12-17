@@ -1,7 +1,7 @@
 ---
 // src/components/Footer.astro
 import { Image } from 'astro:assets';
-import footerLogo from '../assets/footer-logo.webp';
+import footerLogo from '../assets/footer-logo.png';
 import isoImage from '../assets/iso.png';
 import { navLinks, type NavLink } from '../data/navLinks';
 import { getCollection } from 'astro:content';
@@ -27,7 +27,7 @@ const latestPosts = posts.sort((a, b) => b.data.pubDate.valueOf() - a.data.pubDa
       <!-- Logo and Contact Info -->
       <div>
         <a href="/">
-          <Image src={footerLogo} alt="Solar Nusantara Footer Logo" width={150} class="mb-4" />
+          <Image src={footerLogo} alt="Solar Nusantara Footer Logo" width={200} class="mb-4" />
         </a>
         <div class="space-y-2">
           <div class="flex items-center space-x-2">
