@@ -32,10 +32,10 @@ const frontmatter = {
 
 <Layout frontmatter={frontmatter} headings={headings}>
 
-  <div class="text-lg text-gray-500 -mt-8 mb-8 flex items-center space-x-2">
-    <span>{post.data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
+  <div class="text-lg text-gray-500 -mt-8 mb-8 flex flex-wrap items-center gap-x-2">
+    <span class="whitespace-nowrap">{post.data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}</span>
     {post.data.author && (
-      <>
+      <span class="whitespace-nowrap">
         <span class="text-gray-400">•</span>
         {post.data.authorUrl ? (
           <>
@@ -47,10 +47,12 @@ const frontmatter = {
         ) : (
           <span>Oleh {post.data.author}</span>
         )}
-      </>
+      </span>
     )}
-    <span class="text-gray-400">•</span>
-    <span>{readingTime} menit baca</span>
+    <span class="whitespace-nowrap">
+      <span class="text-gray-400">•</span>
+      <span>{readingTime} menit baca</span>
+    </span>
   </div>
 
   {post.data.heroImage && (
