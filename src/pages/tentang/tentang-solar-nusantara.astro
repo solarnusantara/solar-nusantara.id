@@ -1,5 +1,8 @@
 ---
+import PartnerSlider from '../../components/PartnerSlider.astro';
 import Layout from '../../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+import logo2 from '../../assets/logo2.png';
 
 const whyChooseUs = [
   {
@@ -72,10 +75,11 @@ const partners = [
           </p>
         </div>
         <div>
-          <img 
-            src="https://solar-nusantara.id/wp-content/uploads/elementor/thumbs/About-Us-2-qlh2rb4r4xm082rb9zyobaivy7j5j51xhywj0nu79c.webp" 
+          <Image 
+            src={logo2} 
             alt="Tim Solar Nusantara sedang bekerja di lapangan" 
             class="rounded-lg shadow-2xl w-full h-auto object-cover"
+            width={700} height={400} // Placeholder values, adjust as needed
           />
         </div>
       </div>
@@ -107,13 +111,7 @@ const partners = [
         <p class="text-gray-600 text-lg max-w-3xl mx-auto mb-12">
           Kami bekerja sama dengan para pemimpin industri untuk memberikan solusi terbaik.
         </p>
-        <div class="flex flex-wrap justify-center items-center gap-8 md:gap-12">
-          {partners.map(partner => (
-            <div class="opacity-60 hover:opacity-100 transition-opacity duration-300">
-              <img src={partner.logo} alt={partner.name} class="h-20" />
-            </div>
-          ))}
-        </div>
+        <PartnerSlider partners={partners} />
       </div>
     </section>
   </main>

@@ -1,0 +1,87 @@
+---
+const { partners } = Astro.props;
+// Duplicate partners to create a seamless scrolling illusion
+const allPartners = [...partners, ...partners];
+---
+
+<div class="relative w-full group">
+  <div id="slider-container" class="w-full overflow-x-auto" style="scrollbar-width: none; -ms-overflow-style: none;">
+    <div class="flex" id="partner-track">
+      {allPartners.map((partner) => (
+        <div class="flex-shrink-0 w-auto flex justify-center items-center px-8">
+          <img src={partner.logo} alt={partner.name} class="h-[100px] w-auto object-contain" />
+        </div>
+      ))}
+    </div>
+  </div>
+  
+  <button id="prev" class="absolute left-2 top-1/2 -translate-y-1/2 bg-white/60 p-2 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 19l-7-7 7-7" /></svg>
+  </button>
+  <button id="next" class="absolute right-2 top-1/2 -translate-y-1/2 bg-white/60 p-2 rounded-full shadow-lg hover:bg-white transition-all opacity-0 group-hover:opacity-100">
+    <svg xmlns="http://www.w3.org/2000/svg" class="h-6 w-6 text-gray-700" fill="none" viewBox="0 0 24 24" stroke="currentColor"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 5l7 7-7 7" /></svg>
+  </button>
+</div>
+
+<script>
+document.addEventListener('DOMContentLoaded', () => {
+  const container = document.getElementById('slider-container');
+  const prevButton = document.getElementById('prev');
+  const nextButton = document.getElementById('next');
+
+  if (!container || !prevButton || !nextButton) {
+    return;
+  }
+
+  let autoScrollInterval;
+  let isHovering = false;
+  const scrollAmount = container.clientWidth / 3; // How far to jump on button click
+
+  const startAutoScroll = () => {
+    // Prevent multiple intervals from running
+    clearInterval(autoScrollInterval); 
+    if (isHovering) return;
+
+    autoScrollInterval = setInterval(() => {
+      // If scrolled past the first half of the content, reset to the beginning
+      if (container.scrollLeft >= container.scrollWidth / 2) {
+        container.scrollLeft = 0;
+      } else {
+        container.scrollLeft += 1;
+      }
+    }, 25); // Adjust speed of the scroll here
+  };
+
+  const stopAutoScroll = () => {
+    clearInterval(autoScrollInterval);
+  };
+  
+  const handleManualScroll = (amount) => {
+    stopAutoScroll();
+    container.scrollBy({ left: amount, behavior: 'smooth' });
+    // Restart auto-scroll after a delay, but only if not hovering
+    setTimeout(() => {
+        if (!isHovering) {
+            startAutoScroll();
+        }
+    }, 3000); // 3-second delay before resuming
+  }
+
+  prevButton.addEventListener('click', () => handleManualScroll(-scrollAmount));
+  nextButton.addEventListener('click', () => handleManualScroll(scrollAmount));
+
+  // Pause on hover
+  container.addEventListener('mouseenter', () => {
+    isHovering = true;
+    stopAutoScroll();
+  });
+  // Resume on leave
+  container.addEventListener('mouseleave', () => {
+    isHovering = false;
+    startAutoScroll();
+  });
+
+  // Initial start
+  startAutoScroll();
+});
+</script>
