@@ -3,7 +3,7 @@ title: "Evolusi Efisiensi Sel Surya Menurut NREL"
 pubDate: "2026-02-20"
 description: "Bagaimana efisiensi sel surya meningkat dari 1970-an hingga kini? Analisis grafik NREL, batas teori fisika, dan masa depan teknologi PV."
 heroImage: "./a.webp"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 

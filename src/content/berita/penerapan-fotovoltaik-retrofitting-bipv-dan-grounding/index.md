@@ -3,7 +3,7 @@ title: "Penerapan Fotovoltaik: Retrofitting, BIPV, dan Grounding"
 pubDate: "2024-8-21"
 description: ""
 heroImage: "./image5.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan

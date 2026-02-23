@@ -3,7 +3,7 @@ title: "Menghitung Ukuran Sistem PV: Optimalisasi Efisiensi Energi dari Nilai â€
 pubDate: "2024-8-14"
 description: ""
 heroImage: "./image1.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 

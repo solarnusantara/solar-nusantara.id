@@ -3,7 +3,7 @@ title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV | Bagian 2"
 pubDate: "2024-9-24"
 description: "Peran Integrator, Pemasang, Regulator & Asosiasi Industri PV"
 heroImage: "./image7.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan

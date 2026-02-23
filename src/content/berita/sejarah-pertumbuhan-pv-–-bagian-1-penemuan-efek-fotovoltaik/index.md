@@ -3,7 +3,7 @@ title: "Sejarah Pertumbuhan PV – Bagian 1: Penemuan Efek Fotovoltaik"
 pubDate: "2024-8-15"
 description: ""
 heroImage: "./image2.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan

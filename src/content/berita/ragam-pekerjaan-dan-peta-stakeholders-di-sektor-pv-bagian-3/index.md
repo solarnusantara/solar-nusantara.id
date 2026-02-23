@@ -3,7 +3,7 @@ title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV | Bagian 3"
 pubDate: "2024-9-25"
 description: "Pelatihan, Perusahaan Utilitas, dan Kebutuhan Tenaga Kerja"
 heroImage: "./image8.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan

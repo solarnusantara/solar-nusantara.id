@@ -3,7 +3,7 @@ title: "Sejarah Pertumbuhan PV – Bagian 2: Evolusi dan Perkembangan Industri F
 pubDate: "2024-8-19"
 description: ""
 heroImage: "./image3.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan

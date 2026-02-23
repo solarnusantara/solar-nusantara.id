@@ -3,7 +3,7 @@ title: "Pertumbuhan Fotovoltaik: Analisis Potensi Berdasarkan Data Global dan Tr
 pubDate: "2024-8-19"
 description: ""
 heroImage: "./image4.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan

@@ -3,7 +3,7 @@ title: "Ragam Pekerjaan dan Peta Stakeholders di Sektor PV | Bagian 1"
 pubDate: "2024-9-23"
 description: "Peran Penelitian, Organisasi Standar, & Produsen"
 heroImage: "./image6.png"
-author: "FarrosFR"
+author: "Farros"
 authorUrl: "https://farrosfr.com"
 ---
 ## Pendahuluan
@@ -53,4 +53,3 @@ Abrams, Neal. “Jobs and stakeholders in PV.” Solar Energy Basics. Coursera. 
 Badan Standardisasi Nasional (BSN). (2021). Standar Nasional Indonesia (SNI) untuk Instalasi Listrik dan Peralatan Fotovoltaik. Jakarta: BSN. bsn.go.id
 
 ementerian Energi dan Sumber Daya Mineral (ESDM). (2023). Laporan Tahunan Energi Baru Terbarukan dan Konservasi Energi (EBTKE). Jakarta: Direktorat Jenderal Ketenagalistrikan. ebtke.esdm.go.id
-
