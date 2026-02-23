@@ -4,14 +4,53 @@ import { Image } from 'astro:assets';
 import logo2 from '../assets/logo2.png';
 ---
 
-<section class="bg-white py-8 xl:py-16">
+<section class="bg-white py-8 xl:py-16 overflow-hidden">
     <div class="container mx-auto px-4 grid md:grid-cols-2 gap-8 items-center xl:gap-16">
-        <div class="mt-4 md:mt-0">
+        <div id="about-text" class="mt-4 md:mt-0 opacity-0">
             <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900">Mewujudkan Energi Terbarukan untuk Bisnis Berkelanjutan Anda.</h2>
             <p class="mb-6 font-light text-gray-500 md:text-lg"><strong>Turunkan Biaya Operasional, Penuhi Target ESG. Solusi Energi Cerdas untuk Industri & Komersial.</strong></p>
             <p class="mb-6 font-light text-gray-500 md:text-lg">Ubah atap pabrik, gedung, dan lahan tak terpakai Anda menjadi aset produktif. Solar-Nusantara.ID adalah mitra strategis Anda dalam merancang dan mengimplementasikan solusi energi terbarukan yang andal dan terukur.</p>
             <p class="mb-6 font-light text-gray-500 md:text-lg">Layanan kami dirancang untuk hasil bisnis yang nyata: dari instalasi panel surya skala besar yang memangkas OPEX secara signifikan, sistem manajemen energi untuk meningkatkan efisiensi pabrik, hingga solusi biomassa untuk mengurangi jejak karbon Anda.</p>
         </div>
-        <Image class="w-full hidden md:block" src={logo2} alt="dashboard" width={600} loading="eager" />
+        <div id="about-image" class="opacity-0">
+            <Image class="w-full hidden md:block" src={logo2} alt="dashboard" width={600} loading="eager" />
+        </div>
     </div>
 </section>
+
+<script>
+    import { gsap } from 'gsap';
+    import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+    gsap.registerPlugin(ScrollTrigger);
+
+    document.addEventListener('DOMContentLoaded', () => {
+        // Text animation from left
+        gsap.to('#about-text', {
+            scrollTrigger: {
+                trigger: '#about-text',
+                start: 'top 80%',
+                toggleActions: 'play none none none'
+            },
+            opacity: 1,
+            x: 0,
+            duration: 1.2,
+            ease: 'power3.out',
+            startAt: { x: -100 }
+        });
+
+        // Image animation from right
+        gsap.to('#about-image', {
+            scrollTrigger: {
+                trigger: '#about-image',
+                start: 'top 80%',
+                toggleActions: 'play none none none'
+            },
+            opacity: 1,
+            x: 0,
+            duration: 1.2,
+            ease: 'power3.out',
+            startAt: { x: 100 }
+        });
+    });
+</script>

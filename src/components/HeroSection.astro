@@ -13,14 +13,28 @@ import heroImage from '../assets/slide1.png';
 
   <!-- Content -->
   <div class="relative z-10 text-center px-4">
-    <h1 class="text-4xl md:text-6xl font-extrabold leading-tight mb-4">
+    <h1 id="hero-title" class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 opacity-0">
       Solar Nusantara
     </h1>
-    <p class="text-lg md:text-2xl font-medium mb-8">
+    <p id="hero-subtitle" class="text-lg md:text-2xl font-medium mb-8 opacity-0">
       ENERGI BARU INDONESIA
     </p>
-    <a href="/tentang" class="bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-transform hover:scale-105 duration-300">
-      Tentang Kami
-    </a>
+    <div id="hero-btn" class="opacity-0">
+      <a href="/tentang" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-transform hover:scale-105 duration-300">
+        Tentang Kami
+      </a>
+    </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1 } });
+
+    tl.to('#hero-title', { opacity: 1, y: -20, delay: 0.2 })
+      .to('#hero-subtitle', { opacity: 1, y: -20 }, '-=0.7')
+      .to('#hero-btn', { opacity: 1, y: -20 }, '-=0.7');
+  });
+</script>

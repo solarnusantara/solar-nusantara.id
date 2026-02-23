@@ -26,16 +26,16 @@ const otherBenefits = [
 ];
 ---
 
-<section class="bg-white py-8 xl:py-16">
+<section id="benefits-section" class="bg-white py-8 xl:py-16 overflow-hidden">
   <div class="container mx-auto px-4">
-    <div class="mb-16">
+    <div class="mb-16 benefit-item opacity-0">
       <h2 class="mb-4 text-4xl tracking-tight font-extrabold text-gray-900">Mari kita bicarakan tentang manfaatnya.</h2>
       <p class="text-gray-600 sm:text-xl">Solar Nusantara memberikan berbagai manfaat, mulai dari penghematan biaya hingga kontribusi positif bagi lingkungan.</p>
     </div>
     
     <div class="grid grid-cols-1 md:grid-cols-3 gap-8 lg:gap-12">
       <!-- Column 1 -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 benefit-item opacity-0">
         <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
           <Fragment set:html={mainBenefits[0].icon} />
         </div>
@@ -46,7 +46,7 @@ const otherBenefits = [
       </div>
       
       <!-- Column 2 -->
-      <div class="flex flex-col gap-4">
+      <div class="flex flex-col gap-4 benefit-item opacity-0">
         <div class="flex-shrink-0 w-12 h-12 bg-gray-200 rounded-full flex items-center justify-center">
           <Fragment set:html={mainBenefits[1].icon} />
         </div>
@@ -59,7 +59,7 @@ const otherBenefits = [
       <!-- Column 3 -->
       <div class="flex flex-col gap-y-5">
         {otherBenefits.map(benefit => (
-          <div class="flex items-center gap-4">
+          <div class="flex items-center gap-4 benefit-item opacity-0">
             <div class="flex-shrink-0 w-10 h-10 bg-gray-200 rounded-full flex items-center justify-center">
               <Fragment set:html={benefit.icon} />
             </div>
@@ -70,3 +70,26 @@ const otherBenefits = [
     </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    gsap.to('.benefit-item', {
+      scrollTrigger: {
+        trigger: '#benefits-section',
+        start: 'top 80%',
+        toggleActions: 'play none none none'
+      },
+      opacity: 1,
+      y: 0,
+      duration: 0.8,
+      stagger: 0.2,
+      ease: 'power2.out',
+      startAt: { y: 30 }
+    });
+  });
+</script>

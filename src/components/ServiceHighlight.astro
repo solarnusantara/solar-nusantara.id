@@ -16,53 +16,75 @@ interface Props {
 const { title, stats } = Astro.props;
 ---
 
-<section class="py-8 xl:py-16">
+<section class="py-8 xl:py-16 service-highlight-section opacity-0">
     <div class="container mx-auto px-4">
-        <h2 class="text-3xl font-bold text-gray-800 text-center mb-12">{title}</h2>
+        <h2 class="text-3xl font-bold text-gray-800 text-center mb-12 service-title">{title}</h2>
         <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
             {stats.map(stat => (
-            <StatItem iconPath={stat.iconPath} value={stat.value} title={stat.title} />
+            <div class="stat-container">
+                <StatItem iconPath={stat.iconPath} value={stat.value} title={stat.title} />
+            </div>
             ))}
         </div>
     </div>
 </section>
 
 <script>
-  // This script runs when the component becomes visible on the client,
-  // thanks to the `client:visible` directive that will be used on it.
-  const counters = document.querySelectorAll('.stat-value');
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
 
-  const animateCountUp = (el: Element) => {
-    const rawValue = el.textContent || '0';
-    const target = parseInt(rawValue.replace(/[^0-9]/g, ''), 10);
-    const suffix = rawValue.replace(/[0-9,.]/g, '');
-    
-    const duration = 2000; // Animation duration in milliseconds
-    let start: number;
+  gsap.registerPlugin(ScrollTrigger);
 
-    const step = (timestamp: number) => {
-      if (!start) start = timestamp;
-      const progress = timestamp - start;
-      const percentage = Math.min(progress / duration, 1);
-      
-      const current = Math.floor(percentage * target);
-      el.textContent = current.toLocaleString() + suffix;
+  // Function to init animations for each section
+  const initServiceAnimations = () => {
+    const sections = document.querySelectorAll('.service-highlight-section');
 
-      if (progress < duration) {
-        requestAnimationFrame(step);
-      } else {
-        // Ensure it ends on the exact target value
-        el.textContent = target.toLocaleString() + suffix;
-      }
-    };
-    
-    // Set initial text to 0 before starting animation
-    el.textContent = '0' + suffix;
-    requestAnimationFrame(step);
+    sections.forEach((section) => {
+      const title = section.querySelector('.service-title');
+      const stats = section.querySelectorAll('.stat-container');
+      const counters = section.querySelectorAll('.stat-value');
+
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: section,
+          start: 'top 85%',
+          toggleActions: 'play none none none'
+        }
+      });
+
+      // Section entrance
+      tl.to(section, { opacity: 1, duration: 0.5 })
+        .from(title, { y: 30, opacity: 0, duration: 0.8, ease: 'power2.out' }, '-=0.3')
+        .from(stats, { 
+          y: 40, 
+          opacity: 0, 
+          duration: 0.8, 
+          stagger: 0.2, 
+          ease: 'power2.out' 
+        }, '-=0.5');
+
+      // Counter animation
+      counters.forEach((counter) => {
+        const rawValue = counter.textContent || '0';
+        const target = parseInt(rawValue.replace(/[^0-9]/g, ''), 10);
+        const suffix = rawValue.replace(/[0-9,.]/g, '');
+        
+        // Initial state: start from 0
+        counter.textContent = '0' + suffix;
+        
+        const obj = { val: 0 };
+        
+        tl.to(obj, {
+          val: target,
+          duration: 2,
+          ease: 'power2.out',
+          onUpdate: () => {
+            counter.textContent = Math.floor(obj.val).toLocaleString('id-ID') + suffix;
+          }
+        }, '-=1'); // Start counting while stats are still sliding up
+      });
+    });
   };
 
-  // Animate all counters found within this component
-  counters.forEach(counter => {
-    animateCountUp(counter);
-  });
+  document.addEventListener('DOMContentLoaded', initServiceAnimations);
 </script>

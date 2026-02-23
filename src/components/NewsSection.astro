@@ -9,15 +9,15 @@ interface Props {
 const { posts } = Astro.props;
 ---
 
-<section class="bg-white py-8 xl:py-16">
+<section id="news-section" class="bg-white py-8 xl:py-16 overflow-hidden">
   <div class="container mx-auto px-4">
-      <div class="mx-auto text-center mb-12">
+      <div class="mx-auto text-center mb-12 news-header opacity-0">
           <h2 class="mb-4 text-3xl lg:text-4xl tracking-tight font-extrabold text-gray-900">Informasi Terbaru</h2>
           <p class="font-light text-gray-500 sm:text-xl">Dapatkan informasi terbaru seputar energi terbarukan dan inovasi dari Solar Nusantara.</p>
       </div> 
       <div class="grid gap-8 lg:grid-cols-2">
           {posts.map(post => (
-            <article class="p-6 bg-white rounded-lg border border-gray-200 shadow-md flex flex-col h-full group">
+            <article class="p-6 bg-white rounded-lg border border-gray-200 shadow-md flex flex-col h-full group news-card opacity-0">
                 {post.data.heroImage && (
                   <div class="mb-5 overflow-hidden rounded-lg">
                     <Image 
@@ -47,10 +47,38 @@ const { posts } = Astro.props;
             </article>
           ))}
       </div>
-      <div class="text-center mt-12">
+      <div class="text-center mt-12 news-footer opacity-0">
         <a href="/berita" class="bg-blue-600 text-white px-6 py-3 rounded-md text-lg font-semibold hover:bg-blue-700 transition-colors">
           Artikel Lainnya
         </a>
       </div>
   </div>
 </section>
+
+<script>
+  import { gsap } from 'gsap';
+  import { ScrollTrigger } from 'gsap/ScrollTrigger';
+
+  gsap.registerPlugin(ScrollTrigger);
+
+  document.addEventListener('DOMContentLoaded', () => {
+    const tl = gsap.timeline({
+      scrollTrigger: {
+        trigger: '#news-section',
+        start: 'top 80%',
+        toggleActions: 'play none none none'
+      }
+    });
+
+    tl.to('.news-header', { opacity: 1, y: 0, duration: 0.8, ease: 'power2.out', startAt: { y: 30 } })
+      .to('.news-card', { 
+        opacity: 1, 
+        y: 0, 
+        duration: 0.8, 
+        stagger: 0.2, 
+        ease: 'power2.out', 
+        startAt: { y: 40 } 
+      }, '-=0.4')
+      .to('.news-footer', { opacity: 1, y: 0, duration: 0.6, ease: 'power2.out', startAt: { y: 20 } }, '-=0.2');
+  });
+</script>
