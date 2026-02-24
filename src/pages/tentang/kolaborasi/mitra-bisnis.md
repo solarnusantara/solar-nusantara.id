@@ -3,7 +3,7 @@ layout: ../../../layouts/Layout.astro
 title: "Mitra Bisnis"
 ---
 
-![alt text](image-1.png)
+![alt text](_image-1.png)
 
 Selamat datang di SONUS, distributor panel surya terkemuka yang berkomitmen untuk memberikan solusi energi berkelanjutan. Di SONUS, kami bersemangat untuk menciptakan masa depan yang lebih baik bagi planet kita dengan menyediakan produk surya inovatif dan layanan luar biasa kepada pelanggan kami.
 

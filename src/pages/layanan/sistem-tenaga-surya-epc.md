@@ -6,7 +6,7 @@ Selamat datang di layanan Engineering, Procurement, and Construction (EPC) Siste
 
 Kami memahami bahwa setiap klien memiliki tantangan unik. Oleh karena itu, kami merancang layanan EPC kami untuk mencakup tiga segmen utama, memastikan solusi yang kami tawarkan tidak hanya efisien tetapi juga relevan dengan tujuan Anda.
 
-### Tiga Pilar Layanan EPC Kami
+## Tiga Pilar Layanan EPC Kami
 
 1. **[Segmen Komersial & Industri (C&I)](/layanan/epc/segmen-ci)**
     Solusi turnkey kami untuk perusahaan dan industri mencakup segalanya mulai dari desain, pengadaan, hingga pemeliharaan. Kami fokus pada ROI yang cepat dan sistem yang andal untuk mendukung operasional bisnis Anda.

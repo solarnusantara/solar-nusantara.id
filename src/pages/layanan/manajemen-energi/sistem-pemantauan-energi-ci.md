@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "Sistem Pemantauan Energi untuk C&I"
 ---
-![alt text](image.png)
+![alt text](_image.png)
 Selamat datang di SONUS, perusahaan manajemen energi terkemuka yang menyediakan solusi inovatif untuk membantu bisnis dan industri mengoptimalkan penggunaan energi mereka. Misi kami adalah memberikan dampak positif bagi lingkungan dengan mengurangi emisi karbon dan meningkatkan efisiensi energi.
 
 ## Layanan Kami

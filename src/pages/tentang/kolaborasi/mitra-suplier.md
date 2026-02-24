@@ -3,7 +3,7 @@ layout: ../../../layouts/Layout.astro
 title: "Mitra Suplier"
 ---
 
-![alt text](image.png)
+![alt text](_image.png)
 
 Di SONUS, kami berkomitmen untuk menyediakan panel surya kualitas terbaik kepada pelanggan kami. Untuk melakukan ini, kami bekerja sama dengan mitra pemasok kami untuk memastikan bahwa kami mendapatkan bahan dan komponen kualitas tertinggi untuk produk kami.
 

@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "SRF"
 ---
-![alt text](image-4.png)
+![alt text](_image-4.png)
 > Solid Recovered Fuel: Sumber Energi yang Lebih Bersih dan Berkelanjutan
 
 Solid Recovered Fuel (SRF) adalah masa depan energi berkelanjutan. Seiring dengan meningkatnya kebutuhan dunia akan alternatif yang lebih bersih dan ramah lingkungan dibandingkan bahan bakar fosil, SRF hadir sebagai solusi yang semakin relevan. Jenis bahan bakar ini diproduksi dari pemulihan limbah non-daur ulang yang berasal dari sektor komersial, industri, maupun rumah tangga. Limbah tersebut diproses dan diolah untuk menghilangkan material yang tidak diinginkan, sehingga menghasilkan bahan bakar dengan nilai kalor yang tinggi.

@@ -2,7 +2,7 @@
   layout: ../../layouts/Layout.astro
   title: 'Seri 50100 FG'
 ---
-![alt text](image.png)
+![alt text](_image.png)
 Jika Anda adalah seseorang yang gemar menghabiskan waktu di daerah terpencil—entah itu untuk berkemah, mendaki, atau bahkan hidup mandiri di luar jaringan listrik—Anda pasti tahu betapa pentingnya memiliki sumber daya listrik yang andal. Di sinilah 50100 FG Series berperan. Produk luar biasa ini merupakan pembangkit listrik berbentuk kontainer yang memanfaatkan energi surya untuk menyediakan listrik di mana pun Anda membutuhkannya.
 
 Salah satu keunggulan terbesar dari 50100 FG Series adalah kemudahannya. Berbeda dengan generator tradisional yang memerlukan bahan bakar, sistem ini berjalan menggunakan tenaga matahari. Anda hanya perlu menempatkannya di area yang cukup mendapatkan sinar matahari, dan biarkan ia bekerja. Penggunaannya sangat simpel dan hampir tidak memerlukan perawatan.

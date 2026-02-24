@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "Sistem Penangkapan Karbon"
 ---
-![alt text](image-4.png)
+![alt text](_image-4.png)
 
 Seiring meningkatnya kekhawatiran terhadap perubahan iklim, semakin banyak perusahaan mencari cara untuk mengurangi jejak karbon mereka. Di sinilah sistem penangkapan karbon dari SONUS berperan. Sistem kami menangkap emisi karbon dioksida dan menyimpannya, mencegahnya terlepas ke atmosfer dan berkontribusi pada pemanasan global.
 

@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "Sistem Otomasi Bangunan"
 ---
-![alt text](image-1.png)
+![alt text](_image-1.png)
 
 Layanan Pemantauan dan Analitik Energi (EMAS) dan Sistem Otomasi Bangunan (BAS) adalah dua alat penting bagi bisnis dan organisasi yang ingin mengoptimalkan penggunaan energi dan meminimalkan biaya.
 

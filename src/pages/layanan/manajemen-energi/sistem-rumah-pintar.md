@@ -3,7 +3,7 @@ layout: ../../../layouts/Layout.astro
 title: "Sistem Rumah Pintar"
 ---
 
-![alt text](image-3.png)
+![alt text](_image-3.png)
 
 Jika Anda mencari cara untuk mengurangi konsumsi dan biaya listrik rumah tangga Anda, maka Sistem Rumah Pintar kami yang ditenagai oleh energi surya adalah solusinya. Dengan tingkat konsumsi listrik di rumah tangga yang terus meningkat, semakin penting untuk menemukan sumber daya alternatif yang berkelanjutan dan terjangkau.
 

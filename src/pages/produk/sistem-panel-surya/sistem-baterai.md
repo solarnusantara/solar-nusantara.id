@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "Sistem Baterai"
 ---
-![alt text](image-2.png)
+![alt text](_image-2.png)
 SONUS menyediakan rangkaian lengkap sistem panel surya dan sistem baterai yang dirancang untuk memberikan solusi yang andal dan hemat biaya bagi kebutuhan residensial, komersial, maupun industri.
 
 Sistem Panel Surya terdiri dari panel-panel surya berkualitas tinggi yang menghasilkan listrik dari energi matahari. SONUS menawarkan beragam panel surya yang efisien dan tahan lama, dengan tingkat konversi yang tinggi untuk mengubah lebih banyak cahaya matahari menjadi listrik yang dapat digunakan. Panel-panel ini tersedia dalam berbagai ukuran dan kapasitas watt untuk memenuhi kebutuhan energi spesifik dari setiap aplikasi. Selain itu, panel surya dirancang untuk tahan terhadap kondisi cuaca ekstrem serta resisten terhadap korosi dan kerusakan.

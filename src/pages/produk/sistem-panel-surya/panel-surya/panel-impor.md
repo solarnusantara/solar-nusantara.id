@@ -3,7 +3,7 @@ layout: ../../../../layouts/Layout.astro
 title: "Panel Impor"
 ---
 
-![alt text](image-1.png)
+![alt text](_image-1.png)
 
 Sistem Panel Surya adalah solusi inovatif dan efektif untuk menghasilkan listrik dengan memanfaatkan energi matahari. Panel surya merupakan komponen utama dalam sistem ini, yang berfungsi menangkap cahaya matahari dan mengubahnya menjadi listrik. SonusID menyediakan Panel Surya berkualitas tinggi yang dibuat untuk tahan lama dan menghasilkan daya maksimal. Panel surya tersebut dirancang agar mampu bertahan dalam kondisi cuaca ekstrem serta tetap bekerja optimal bahkan pada lingkungan dengan cahaya rendah.
 

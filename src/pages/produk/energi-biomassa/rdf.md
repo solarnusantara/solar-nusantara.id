@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "RDF"
 ---
-![alt text](image-3.png)
+![alt text](_image-3.png)
 
 > Mengubah Sampah Menjadi Energi: Kekuatan Refuse-Derived Fuel (RDF)
 

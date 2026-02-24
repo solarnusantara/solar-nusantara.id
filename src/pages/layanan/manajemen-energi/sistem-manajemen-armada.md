@@ -2,7 +2,7 @@
 layout: ../../../layouts/Layout.astro
 title: "Sistem Manajemen Armada"
 ---
-![alt text](image-2.png)
+![alt text](_image-2.png)
 
 Apakah Anda mencari cara yang efisien dan hemat biaya untuk mengelola operasional armada Anda? Layanan manajemen energi dan manajemen armada kami adalah solusinya!
 
