@@ -29,10 +29,10 @@ const isMarkdownPage = !!frontmatter;
 
 // Determine title and description based on page type
 const title = isMarkdownPage ? frontmatter.title : directTitle || 'Solar Nusantara';
-const description = frontmatter?.description || 'Menggerakkan masa depan Indonesia dengan energi bersih dan berkelanjutan. Solar Nusantara menyediakan solusi energi surya terdepan untuk perumahan, komersial, dan industri.';
+const description = frontmatter?.description || 'Solar Nusantara menyediakan solusi energi surya terdepan untuk perumahan, komersial, dan industri. Wujudkan masa depan Indonesia dengan energi bersih.';
 
 // Determine Open Graph image
-const imageSrc = ogImage || frontmatter?.heroImage?.src || '/og-fallback.png';
+const imageSrc = ogImage || frontmatter?.heroImage?.src || '/meta.png';
 const ogImageUrl = new URL(imageSrc, Astro.url).href;
 
 const hasHeadings = headings && headings.length > 0;
@@ -47,6 +47,7 @@ const hasHeadings = headings && headings.length > 0;
 		<!-- Primary Meta Tags -->
 		<meta name="viewport" content="width=device-width" />
 		<link rel="icon" type="image/svg+xml" href="/favicon.svg" />
+		<link rel="canonical" href={Astro.url.href} />
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 
