@@ -2,26 +2,37 @@
 // src/components/HeroSection.astro
 import { Image } from 'astro:assets';
 import heroImage from '../assets/slide1.png';
+import { SITE_CONFIG } from '../config';
 ---
 
-<section class="relative h-[75vh] flex items-center justify-center text-white">
-  <!-- Background Image with Overlay -->
+<section class="relative h-[85vh] flex items-center justify-center overflow-hidden">
+  <!-- Background Image with Enhanced Cinematic Overlay -->
   <div class="absolute inset-0">
-    <Image src={heroImage} alt="Solar panels on a roof" class="w-full h-full object-cover" loading="eager" fetchpriority="high" quality={50} />
-    <div class="absolute inset-0 bg-black/60"></div>
+    <Image 
+      src={heroImage} 
+      alt="Solar panels on a roof" 
+      class="w-full h-full object-cover scale-105" 
+      loading="eager" 
+      fetchpriority="high" 
+      quality={80} 
+    />
+    <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-black/40 to-black/20"></div>
   </div>
 
-  <!-- Content -->
-  <div class="relative z-10 text-center px-4">
-    <h1 id="hero-title" class="text-4xl md:text-6xl font-extrabold leading-tight mb-4 opacity-0">
-      Solar Nusantara
+  <!-- Content with Premium Typography -->
+  <div class="relative z-10 text-center px-4 max-w-4xl mx-auto">
+    <h1 id="hero-title" class="text-5xl md:text-7xl font-extrabold leading-tight mb-6 opacity-0 tracking-tight text-white">
+      {SITE_CONFIG.title}
     </h1>
-    <p id="hero-subtitle" class="text-lg md:text-2xl font-medium mb-8 opacity-0">
-      ENERGI BARU INDONESIA
+    <p id="hero-subtitle" class="text-xl md:text-2xl font-light mb-10 opacity-0 tracking-[0.2em] text-blue-100 uppercase">
+      {SITE_CONFIG.tagline}
     </p>
     <div id="hero-btn" class="opacity-0">
-      <a href="/tentang" class="inline-block bg-blue-600 text-white px-8 py-3 rounded-lg text-lg font-semibold hover:bg-blue-700 transition-transform hover:scale-105 duration-300">
+      <a href="/tentang" class="group relative inline-flex items-center gap-2 bg-blue-600 text-white px-10 py-4 rounded-full text-lg font-bold hover:bg-blue-700 transition-all hover:shadow-[0_0_30px_rgba(37,99,235,0.4)] hover:-translate-y-1 duration-300">
         Tentang Kami
+        <svg xmlns="http://www.w3.org/2000/svg" class="h-5 w-5 transition-transform group-hover:translate-x-1" fill="none" viewBox="0 0 24 24" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M14 5l7 7m0 0l-7 7m7-7H3" />
+        </svg>
       </a>
     </div>
   </div>
@@ -31,10 +42,19 @@ import heroImage from '../assets/slide1.png';
   import { gsap } from 'gsap';
 
   document.addEventListener('DOMContentLoaded', () => {
-    const tl = gsap.timeline({ defaults: { ease: 'power3.out', duration: 1 } });
+    const tl = gsap.timeline({ defaults: { ease: 'power4.out', duration: 1.2 } });
 
-    tl.to('#hero-title', { opacity: 1, y: -20, delay: 0.2 })
-      .to('#hero-subtitle', { opacity: 1, y: -20 }, '-=0.7')
-      .to('#hero-btn', { opacity: 1, y: -20 }, '-=0.7');
+    tl.to('#hero-title', { opacity: 1, y: 0, startAt: { y: 30 } })
+      .to('#hero-subtitle', { opacity: 1, y: 0, startAt: { y: 20 } }, '-=0.8')
+      .to('#hero-btn', { opacity: 1, y: 0, startAt: { y: 20 } }, '-=0.8');
+    
+    // Subtle parallax effect on background image
+    window.addEventListener('scroll', () => {
+      const scrolled = window.scrollY;
+      const heroImage = document.querySelector('section img');
+      if (heroImage instanceof HTMLElement) {
+        heroImage.style.transform = `scale(1.05) translateY(${scrolled * 0.15}px)`;
+      }
+    });
   });
 </script>
