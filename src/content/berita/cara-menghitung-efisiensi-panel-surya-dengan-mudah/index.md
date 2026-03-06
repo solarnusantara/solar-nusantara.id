@@ -169,6 +169,8 @@ Memahami parameter ini akan membantu perusahaan merancang sistem solar yang **le
 
 **Solar Nusantara** berfokus pada pengembangan solusi energi surya untuk sektor komersial dan industri. Melalui pendekatan berbasis data dan analisis teknis, kami membantu perusahaan merancang sistem photovoltaic yang efisien dan berkelanjutan.
 
+Untuk implementasi proyek secara menyeluruh, Anda juga dapat mengunjungi [**Sonus EPC**](https://sonus-epc.id), yang menyediakan layanan EPC (Engineering, Procurement, and Construction) untuk pemasangan sistem panel surya. Sementara itu, [**SonusHUB**](https://sonushub.id) hadir sebagai platform B2B yang menyediakan berbagai material kelistrikan dan komponen energi terbarukan bagi kebutuhan proyek dan instalasi profesional.
+
 <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mt-8">
   <a
     href="https://wa.me/6282180000575"

@@ -10,6 +10,7 @@ const beritaCollection = defineCollection({
     // Transform string to Date object
     pubDate: z.coerce.date(),
     heroImage: image().optional(),
+    heroImageAlt: z.string().optional(),
   }),
 });
 

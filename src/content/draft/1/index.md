@@ -3,6 +3,8 @@ title: ""
 pubDate: "2026-01-20"
 description: ""
 heroImage: "./1.jpg"
+author: "Farros"
+authorUrl: "https://farrosfr.com"
 ---
 
 
