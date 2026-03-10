@@ -163,9 +163,13 @@ const structuredData = {
 		<meta property="twitter:url" content={Astro.url} />
 		<meta property="twitter:title" content={title} />
 		<meta property="twitter:description" content={description} />
-		<meta property="twitter:image" content={ogImageUrl} />
+		<meta name="twitter:image" content={ogImageUrl} />
 
-    <!-- Structured Data -->
+		<!-- KaTeX CSS for math formulas -->
+		<link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/katex@0.16.21/dist/katex.min.css" integrity="sha384-zh0CIuu+PnAe8mreGmxaC5YG8F4D0X94s4H/pTToz4fS2u1Tq2Vl/V1+72k6J4G8" crossorigin="anonymous">
+
+		<!-- Structured Data -->
+
     <script type="application/ld+json" set:html={JSON.stringify(structuredData)} />
 
 		<link rel="preconnect" href="https://fonts.googleapis.com">
