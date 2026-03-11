@@ -138,6 +138,12 @@ Dalam proyek skala industri atau komersial, perhitungan ini biasanya dikombinasi
 
 [Mochammad Farros Fatchur Roji](https://farrosfr.com)
 
+---
+
+**Solar Nusantara** berfokus pada pengembangan solusi energi surya untuk sektor komersial dan industri. Kami membantu perusahaan merancang sistem photovoltaic yang efisien dan berkelanjutan.
+
+Untuk implementasi proyek, Anda dapat mengunjungi [**Sonus EPC**](https://sonus-epc.id), yang menyediakan layanan EPC (Engineering, Procurement, and Construction) untuk pemasangan sistem panel surya. Sementara itu, [**SonusHUB**](https://sonushub.id) hadir sebagai platform B2B yang menyediakan berbagai material kelistrikan dan komponen energi terbarukan bagi kebutuhan proyek dan instalasi profesional.
+
 <div class="flex flex-col sm:flex-row justify-center items-center gap-6 mt-8">
   <a
     href="https://wa.me/6282180000575"
