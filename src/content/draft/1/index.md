@@ -4,14 +4,6 @@ pubDate: "2026-01-20"
 description: ""
 heroImage: "./1.png"
 heroImageAlt: "AI Generated Image"
-author: "Farros"
-authorUrl: "https://farrosfr.com"
----
-
-## Penulis
-
-[Mochammad Farros Fatchur Roji](https://farrosfr.com)
-
 ---
 
 **Solar Nusantara** berfokus pada pengembangan solusi energi surya untuk sektor komersial dan industri. Kami membantu perusahaan merancang sistem photovoltaic yang efisien dan berkelanjutan.
