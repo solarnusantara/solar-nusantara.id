@@ -155,7 +155,7 @@ Pendekatan ini juga digunakan dalam tahap awal analisis sebelum perencanaan sist
 
 ## Penulis
 
-[Mochammad Farros Fatchur Roji](https://farrosfr.com)
+[Mochammad Farros Fatchur Roji](https://farros.co)
 
 ---
 

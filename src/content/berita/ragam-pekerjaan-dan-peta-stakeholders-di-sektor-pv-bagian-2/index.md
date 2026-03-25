@@ -4,7 +4,7 @@ pubDate: "2024-9-24"
 description: "Peran Integrator, Pemasang, Regulator & Asosiasi Industri PV"
 heroImage: "./image7.png"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 ## Pendahuluan
 

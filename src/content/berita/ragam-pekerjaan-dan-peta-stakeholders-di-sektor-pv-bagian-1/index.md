@@ -4,7 +4,7 @@ pubDate: "2024-9-23"
 description: "Peran Penelitian, Organisasi Standar, & Produsen"
 heroImage: "./image6.png"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 ## Pendahuluan
 

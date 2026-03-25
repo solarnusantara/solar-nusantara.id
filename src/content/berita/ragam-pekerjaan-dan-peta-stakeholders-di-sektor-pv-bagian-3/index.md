@@ -4,7 +4,7 @@ pubDate: "2024-9-25"
 description: "Pelatihan, Perusahaan Utilitas, dan Kebutuhan Tenaga Kerja"
 heroImage: "./image8.png"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 ## Pendahuluan
 

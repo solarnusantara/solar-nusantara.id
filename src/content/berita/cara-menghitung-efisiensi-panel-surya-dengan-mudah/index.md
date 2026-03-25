@@ -4,7 +4,7 @@ pubDate: "2026-03-05"
 description: "Pelajari cara menghitung efisiensi panel surya dengan rumus sederhana, contoh perhitungan, dan faktor yang mempengaruhi performa sistem photovoltaic."
 heroImage: "./1.png"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 
 Dalam beberapa tahun terakhir, instalasi **panel surya (photovoltaic / PV)** semakin banyak digunakan oleh perusahaan, industri, dan pengembang properti. Selain membantu menekan biaya listrik jangka panjang, sistem PV juga menjadi bagian dari strategi **transisi energi dan ESG perusahaan**.

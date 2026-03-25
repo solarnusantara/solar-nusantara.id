@@ -136,7 +136,7 @@ Dalam proyek skala industri atau komersial, perhitungan ini biasanya dikombinasi
 
 ## Penulis
 
-[Mochammad Farros Fatchur Roji](https://farrosfr.com)
+[Mochammad Farros Fatchur Roji](https://farros.co)
 
 ---
 

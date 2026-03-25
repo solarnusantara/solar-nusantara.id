@@ -5,7 +5,7 @@ description: "Analisis data insolation Indonesia dan estimasi produksi listrik P
 heroImage: "./1.png"
 heroImageAlt: "AI Generated Image"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 
 Indonesia berada di wilayah khatulistiwa sehingga menerima radiasi matahari relatif stabil sepanjang tahun. Kondisi ini membuat energi surya menjadi salah satu sumber energi terbarukan yang memiliki potensi besar untuk pengembangan pembangkit listrik tenaga surya (PLTS).
@@ -117,7 +117,7 @@ Residential Rooftop Solar Potential in 34 Provinces in Indonesia.
 
 ## Penulis
 
-[Mochammad Farros Fatchur Roji](https://farrosfr.com)
+[Mochammad Farros Fatchur Roji](https://farros.co)
 
 ---
 

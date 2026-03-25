@@ -4,7 +4,7 @@ pubDate: "2024-8-19"
 description: ""
 heroImage: "./image4.png"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 ## Pendahuluan
 

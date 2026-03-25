@@ -4,7 +4,7 @@ pubDate: "2026-02-20"
 description: "Bagaimana efisiensi sel surya meningkat dari 1970-an hingga kini? Analisis grafik NREL, batas teori fisika, dan masa depan teknologi PV."
 heroImage: "./a.jpg"
 author: "Farros"
-authorUrl: "https://farrosfr.com"
+authorUrl: "https://farros.co"
 ---
 
 Selama beberapa dekade terakhir, teknologi sel surya mengalami peningkatan efisiensi yang luar biasa. Jika pada tahun 1970-an efisiensinya masih di bawah 10%, kini beberapa teknologi telah menembus angka di atas 45% di laboratorium.
