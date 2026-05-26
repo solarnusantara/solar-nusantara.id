@@ -1,5 +1,5 @@
 import { defineConfig } from 'astro/config';
-import tailwind from "@astrojs/tailwind";
+import UnoCSS from 'unocss/astro';
 import sitemap from "@astrojs/sitemap";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
@@ -7,7 +7,12 @@ import rehypeKatex from 'rehype-katex';
 // https://astro.build/config
 export default defineConfig({
   site: 'https://solar-nusantara.id', // Ganti dengan domain produksi Anda
-  integrations: [tailwind(), sitemap()],
+  integrations: [
+    UnoCSS({
+      injectReset: true,
+    }), 
+    sitemap()
+  ],
   markdown: {
     remarkPlugins: [remarkMath],
     rehypePlugins: [

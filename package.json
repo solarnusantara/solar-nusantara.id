@@ -10,15 +10,17 @@
   },
   "dependencies": {
     "@astrojs/sitemap": "^3.6.0",
-    "@astrojs/tailwind": "^6.0.2",
     "astro": "^5.15.6",
     "gsap": "^3.14.2",
     "rehype-katex": "^7.0.1",
     "remark-math": "^6.0.0",
-    "swiper": "^12.0.3",
-    "tailwindcss": "^3.4.18"
+    "swiper": "^12.0.3"
   },
   "devDependencies": {
-    "@tailwindcss/typography": "^0.5.19"
+    "@unocss/astro": "^66.7.0",
+    "@unocss/preset-attributify": "^66.7.0",
+    "@unocss/preset-icons": "^66.7.0",
+    "@unocss/preset-uno": "^66.7.0",
+    "unocss": "^66.7.0"
   }
 }

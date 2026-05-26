@@ -5,24 +5,25 @@ import IntroPageMenu from '../../components/IntroPageMenu.astro';
 import { navLinks, type NavLink } from '../../data/navLinks';
 
 export async function getStaticPaths() {
-  const entries = await getCollection('tentang');
-  const parentLink = navLinks.find(link => link.href === '/tentang');
+  const layananEntries = await getCollection('layanan');
+  const layananLink = navLinks.find(link => link.href === '/layanan');
   
   const paths = [];
 
   // 1. Paths from Content Collections
-  for (const entry of entries) {
+  for (const entry of layananEntries) {
     paths.push({
       params: { slug: entry.slug },
       props: { type: 'content', entry },
     });
   }
 
-  // 2. Paths from navLinks (for hub pages)
+  // 2. Paths from navLinks (for hub pages that might not have content)
   function extractHubPaths(links: NavLink[]) {
     for (const link of links) {
-      if (link.href?.startsWith('/tentang/') && link.children) {
-        const slug = link.href.substring('/tentang/'.length);
+      if (link.href?.startsWith('/layanan/') && link.children) {
+        const slug = link.href.substring('/layanan/'.length);
+        // Only add if not already added by content
         if (!paths.find(p => p.params.slug === slug)) {
           paths.push({
             params: { slug },
@@ -34,8 +35,8 @@ export async function getStaticPaths() {
     }
   }
 
-  if (parentLink?.children) {
-    extractHubPaths(parentLink.children);
+  if (layananLink?.children) {
+    extractHubPaths(layananLink.children);
   }
 
   return paths;
@@ -53,7 +54,8 @@ if (type === 'content') {
   Content = rendered.Content;
   title = entry.data.title;
   
-  const fullPath = `/tentang/${slug}`;
+  // Also find if it has children for a bottom menu
+  const fullPath = `/layanan/${slug}`;
   const findInNav = (links: NavLink[]): NavLink | undefined => {
     for (const l of links) {
       if (l.href === fullPath) return l;
@@ -66,8 +68,8 @@ if (type === 'content') {
   const navItem = findInNav(navLinks);
   menuItems = navItem?.children || [];
 } else {
-  title = hubLink?.text || 'Tentang';
-  menuItems = hubLink?.children || [];
+  title = hubLink.text;
+  menuItems = hubLink.children || [];
 }
 ---
 
@@ -80,7 +82,7 @@ if (type === 'content') {
         
         {menuItems.length > 0 && (
           <div class="mt-16 pt-8 border-t">
-            <h2 class="text-2xl font-bold mb-6">Lanjut Membaca</h2>
+            <h2 class="text-2xl font-bold mb-6">Sub-Layanan</h2>
             <div class="grid md:grid-cols-2 gap-4">
               {menuItems.map(item => (
                 <a href={item.href} class="p-4 border rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-all">

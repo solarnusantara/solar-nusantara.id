@@ -1,8 +1,4 @@
-@tailwind base;
-@tailwind components;
-@tailwind utilities;
-
-/* Add some base styles for a modern look */
+/* Global styles */
 html {
   scroll-behavior: smooth;
 }
@@ -19,7 +15,7 @@ section {
 .prose img {
   margin-left: auto;
   margin-right: auto;
-  display: block; /* Ensures margin auto works for horizontal centering */
-  border-radius: 0.5rem; /* Slightly rounded corners */
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); /* Subtle shadow for modern feel */
+  display: block; 
+  border-radius: 0.5rem; 
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
 }

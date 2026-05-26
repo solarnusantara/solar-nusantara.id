@@ -1,65 +1,98 @@
 ---
+import { getCollection, getEntry } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import IntroPageMenu from '../../components/IntroPageMenu.astro';
 import { navLinks, type NavLink } from '../../data/navLinks';
 
 export async function getStaticPaths() {
-  const productLink = navLinks.find(link => link.href === '/produk');
-  const paths: { params: { slug: string | undefined } }[] = [];
+  const entries = await getCollection('produk');
+  const parentLink = navLinks.find(link => link.href === '/produk');
+  
+  const paths = [];
 
-  // Recursive function to extract all paths
-  function extractPaths(links: NavLink[]) {
+  // 1. Paths from Content Collections
+  for (const entry of entries) {
+    paths.push({
+      params: { slug: entry.slug },
+      props: { type: 'content', entry },
+    });
+  }
+
+  // 2. Paths from navLinks (for hub pages)
+  function extractHubPaths(links: NavLink[]) {
     for (const link of links) {
-      if (link.href) {
-        // The slug is the part of the path *after* /produk/
-        // For the main /produk page, the slug will be undefined
-        const slug = link.href.startsWith('/produk/') ? link.href.substring('/produk/'.length) : (link.href === '/produk' ? undefined : null);
-
-        if (slug !== null) {
-          paths.push({ params: { slug } });
+      if (link.href?.startsWith('/produk/') && link.children) {
+        const slug = link.href.substring('/produk/'.length);
+        if (!paths.find(p => p.params.slug === slug)) {
+          paths.push({
+            params: { slug },
+            props: { type: 'hub', link },
+          });
         }
       }
-      if (link.children) {
-        extractPaths(link.children);
-      }
+      if (link.children) extractHubPaths(link.children);
     }
   }
 
-  // Start extraction from the children of the main "Produk" link, and include the "Produk" link itself
-  if (productLink) {
-    extractPaths([productLink]);
+  if (parentLink?.children) {
+    extractHubPaths(parentLink.children);
   }
 
   return paths;
 }
 
-// Get the slug from the URL
 const { slug } = Astro.params;
-const currentPath = `/produk${slug ? `/${slug}` : ''}`;
+const { type, entry, link: hubLink } = Astro.props;
 
-// Recursive function to find the link by href in the nested navLinks structure
-function findLinkByHref(links: NavLink[], href: string): NavLink | undefined {
-  for (const link of links) {
-    if (link.href === href) {
-      return link;
-    }
-    if (link.children) {
-      const found = findLinkByHref(link.children, href);
-      if (found) {
-        return found;
+let title = '';
+let menuItems = [];
+let Content = null;
+
+if (type === 'content') {
+  const rendered = await entry.render();
+  Content = rendered.Content;
+  title = entry.data.title;
+  
+  const fullPath = `/produk/${slug}`;
+  const findInNav = (links: NavLink[]): NavLink | undefined => {
+    for (const l of links) {
+      if (l.href === fullPath) return l;
+      if (l.children) {
+        const found = findInNav(l.children);
+        if (found) return found;
       }
     }
-  }
-  return undefined;
+  };
+  const navItem = findInNav(navLinks);
+  menuItems = navItem?.children || [];
+} else {
+  title = hubLink.text;
+  menuItems = hubLink.children || [];
 }
-
-// Find the data for the current page
-const pageData = findLinkByHref(navLinks, currentPath);
-
-const title = pageData?.text || 'Halaman Produk';
-const menuItems = pageData?.children;
 ---
 
 <Layout title={title}>
-  <IntroPageMenu title={title} items={menuItems} />
+  <div class="container mx-auto px-4 py-12">
+    {Content ? (
+      <article class="prose prose-lg max-w-4xl mx-auto">
+        <h1>{title}</h1>
+        <Content />
+        
+        {menuItems.length > 0 && (
+          <div class="mt-16 pt-8 border-t">
+            <h2 class="text-2xl font-bold mb-6">Sub-Produk</h2>
+            <div class="grid md:grid-cols-2 gap-4">
+              {menuItems.map(item => (
+                <a href={item.href} class="p-4 border rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-all">
+                  <h3 class="font-semibold text-blue-600">{item.text}</h3>
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
+      </article>
+    ) : (
+      <IntroPageMenu title={title} items={menuItems} />
+    )}
+  </div>
 </Layout>

@@ -1,0 +1,59 @@
+---
+import type { NavLink } from '../data/navLinks';
+
+export interface Props {
+  link: NavLink;
+  isSubmenu?: boolean;
+}
+
+const { link, isSubmenu = false } = Astro.props;
+const hasChildren = link.children && link.children.length > 0;
+const isActive = link.href && Astro.url.pathname.startsWith(link.href) && (link.href !== '/' || Astro.url.pathname === '/');
+---
+
+<li class={`relative group ${isSubmenu ? 'w-full' : ''}`}>
+  <a 
+    href={link.href || '#'} 
+    class:list={[
+      "flex items-center justify-between gap-2 transition-colors duration-300",
+      isSubmenu ? "px-4 py-2 text-sm text-gray-700 hover:bg-gray-50" : "py-2 px-4 font-medium text-gray-700",
+      isActive ? "text-blue-600" : "hover:text-blue-600"
+    ]}
+  >
+    <span>{link.text}</span>
+    {hasChildren && (
+      <svg 
+        class:list={[
+          "w-3 h-3 fill-current transition-transform duration-200",
+          isSubmenu ? "-rotate-90 group-hover:rotate-0" : "group-hover:rotate-180"
+        ]} 
+        xmlns="http://www.w3.org/2000/svg" 
+        viewBox="0 0 20 20"
+      >
+        <path d="M9.293 12.95l.707.707L15.657 8l-1.414-1.414L10 10.828 5.757 6.586 4.343 8z"/>
+      </svg>
+    )}
+  </a>
+
+  {!isSubmenu && (
+    <span 
+      class:list={[
+        "absolute -bottom-1 left-1/2 -translate-x-1/2 h-0.5 bg-blue-600 transition-all duration-300",
+        isActive ? "w-full" : "w-0 group-hover:w-full"
+      ]}
+    ></span>
+  )}
+  
+  {hasChildren && (
+    <ul 
+      class:list={[
+        "absolute bg-white shadow-xl rounded-lg border border-gray-100 py-2 min-w-[220px] invisible opacity-0 group-hover:visible group-hover:opacity-100 transition-all duration-200 z-50",
+        isSubmenu ? "left-full top-0 ml-1" : "top-full left-0 mt-2"
+      ]}
+    >
+      {link.children!.map(child => (
+        <Astro.self link={child} isSubmenu={true} />
+      ))}
+    </ul>
+  )}
+</li>
