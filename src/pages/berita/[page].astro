@@ -7,13 +7,16 @@ export async function getStaticPaths({ paginate }) {
   const posts = (await getCollection('berita')).sort(
     (a, b) => b.data.pubDate.valueOf() - a.data.pubDate.valueOf()
   );
-  return paginate(posts, { pageSize: 6 });
+  return paginate(posts, { pageSize: 6 }).filter(p => p.params.page !== 1);
 }
 
 const { page } = Astro.props;
+
+// Adjust the previous page link if it's page 1
+const prevUrl = page.url.prev === '/berita/1' ? '/berita' : page.url.prev;
 ---
 
-<Layout title="Berita - Solar Nusantara - Halaman ${page.currentPage}">
+<Layout title={`Berita - Solar Nusantara - Halaman ${page.currentPage}`}>
   <main class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
     <div class="max-w-7xl mx-auto text-center">
       <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Berita & Wawasan</h1>
@@ -55,8 +58,8 @@ const { page } = Astro.props;
 
     <div class="max-w-7xl mx-auto mt-16 flex justify-between items-center">
       <div>
-        {page.url.prev && (
-          <a href={page.url.prev} class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
+        {prevUrl && (
+          <a href={prevUrl} class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
             &larr; Halaman Sebelumnya
           </a>
         )}

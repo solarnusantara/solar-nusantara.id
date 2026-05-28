@@ -113,6 +113,6 @@ export const navLinks: NavLink[] = [
     ]
   },
   { href: "/pintar", text: "PINTAR" },
-  { href: "/berita/1", text: "Berita" },
+  { href: "/berita", text: "Berita" },
   { href: "/kontak", text: "Kontak" },
 ];
