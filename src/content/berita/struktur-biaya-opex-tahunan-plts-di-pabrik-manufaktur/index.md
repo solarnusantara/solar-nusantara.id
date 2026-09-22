@@ -4,7 +4,7 @@ description: "Rincian biaya dan payback opex tahunan PLTS pabrik manufaktur, dar
 focusKeyphrase: "opex tahunan plts pabrik manufaktur"
 pubDate: "2026-09-22"
 tags: ["manufaktur", "biaya-roi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Biaya operasional tahunan sebuah PLTS atap 1 MWp di pabrik manufaktur umumnya berada di kisaran Rp 220 juta. Angka ini mengacu pada contoh nyata perusahaan industri yang memasang PLTS 1 MWp dengan CAPEX Rp 11 miliar dan estimasi OPEX Rp 220 juta per tahun. Artinya, opex tahunan PLTS pabrik manufaktur setara sekitar 2% dari nilai investasi awal sistem. Rasio inilah yang membuat diskusi PLTS di lantai produksi selalu bergerak antara biaya modal dan biaya operasional.

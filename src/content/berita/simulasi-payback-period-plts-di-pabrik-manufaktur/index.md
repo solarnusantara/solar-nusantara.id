@@ -4,7 +4,7 @@ description: "Simulasi payback period PLTS pabrik manufaktur dengan contoh CAPEX
 focusKeyphrase: "payback period plts pabrik manufaktur"
 pubDate: "2026-09-22"
 tags: ["manufaktur", "biaya-roi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Pabrik manufaktur yang memasang PLTS 1 MWp hari ini berhadapan dengan angka CAPEX Rp 9–13 miliar. Contoh nyata di pasar bahkan menyebut Rp 11 miliar untuk kapasitas 1 MWp, dengan OPEX tahunan sekitar Rp 220 juta. Simulasi payback period PLTS pabrik manufaktur karena itu layak dimulai dari dua angka itu, bukan dari proyeksi jangka panjang yang mengawang.
