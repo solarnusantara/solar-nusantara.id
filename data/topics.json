@@ -10,7 +10,7 @@
     {
       "id": "pabrik-manufaktur--biaya-roi--pilar",
       "kind": "pillar",
-      "status": "failed",
+      "status": "pending",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -25,8 +25,7 @@
         "panduan"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 100,
-      "lastError": "DeepSeek returned no content"
+      "priority": 100
     },
     {
       "id": "pabrik-manufaktur--biaya-roi--t1",
