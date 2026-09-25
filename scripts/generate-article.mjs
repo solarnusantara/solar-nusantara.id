@@ -155,8 +155,45 @@ const INTENT_SHAPE = {
 };
 
 // --- prompt -----------------------------------------------------------------
+/**
+ * Length and shape per article kind.
+ *
+ * A pillar is the hub its seven children link into, and the B2B pillar-cluster
+ * model puts it at 1,800-2,500 words structured for a featured snippet. Writing
+ * both kinds to one 900-1,400 spec produced pillars the same size as the
+ * articles meant to hang off them.
+ */
+const KIND_SPEC = {
+	pillar: {
+		words: '1800-2500',
+		headings: 6,
+		shape:
+			'Ini artikel PILAR - rujukan utama untuk seluruh topik ini di segmen tersebut. ' +
+			'Bahas menyeluruh, bukan satu sudut sempit. Setelah paragraf pembuka, sisipkan satu ' +
+			'ringkasan 40-60 kata yang menjawab pertanyaan utama secara langsung dan mandiri ' +
+			'(ini yang diambil Google sebagai featured snippet). Tiap heading ## adalah subtopik ' +
+			'yang berdiri sendiri, karena artikel turunan akan menautkan balik ke sini. ' +
+			// A global word count is too abstract to steer against: asked for
+			// 1800-2500 the model produced 1199 across 8 headings, which is 150
+			// words a section. A per-section floor is concrete and it hits.
+			'PENTING soal kedalaman: tiap bagian ## harus 250-350 kata. Jangan menulis ' +
+			'bagian sepanjang tiga kalimat lalu pindah heading - itu menghasilkan artikel ' +
+			'yang terlihat lengkap tapi tidak menjawab apa pun. Tiap bagian wajib memuat ' +
+			'minimal satu hal konkret: angka, tahapan, kriteria, atau contoh perhitungan.',
+	},
+	longtail: {
+		words: '900-1200',
+		headings: 4,
+		shape:
+			'Ini artikel TURUNAN - menjawab satu pertanyaan spesifik secara tuntas. ' +
+			'Jangan mengulang penjelasan dasar yang sudah menjadi porsi artikel pilar; ' +
+			'langsung ke kekhususan pertanyaannya.',
+	},
+};
+
 function buildPrompt(topic, previousErrors) {
 	const others = INTERNAL_TARGETS.filter((t) => t !== topic.internalLink).slice(0, 4);
+	const spec = KIND_SPEC[topic.kind] ?? KIND_SPEC.longtail;
 
 	const retry = previousErrors?.length
 		? `
@@ -174,6 +211,8 @@ SEGMEN PEMBACA: ${topic.segmentLabel}
 
 BENTUK ARTIKEL: ${INTENT_SHAPE[topic.intent]}
 
+JENIS ARTIKEL: ${spec.shape}
+
 ${FACTS}
 
 ${COMPANY}
@@ -188,13 +227,17 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
    kalimat terbaca sebagai keyword stuffing, sedangkan "payback period PLTS
    pabrik" terbaca wajar dan tetap dihitung cocok. Susun kalimatnya agar frasa
    itu mengalir alami, bukan ditempelkan.
-2. Panjang 900-1400 kata.
-3. Minimal 4 heading tingkat "## ". DILARANG memakai heading "# ".
+2. Panjang ${spec.words} kata.
+3. Minimal ${spec.headings} heading tingkat "## ". DILARANG memakai heading "# ".
 4. Setiap paragraf maksimal 4 kalimat. Paragraf pendek lebih mudah dibaca.
 5. Minimal satu daftar berpoin atau bernomor.
-6. Minimal 2 tautan internal. Wajib memakai: ${topic.internalLink}
+6. Minimal 2 tautan internal, dan MINIMAL SATU di antaranya harus menuju halaman
+   layanan atau produk - bukan ke artikel lain. Wajib memakai: ${topic.internalLink}
    Boleh ditambah dari: ${others.join(', ')}
    Format: [teks deskriptif](${topic.internalLink}) - harus diakhiri garis miring.
+   Tautan ke /berita/ tidak dihitung sebagai tautan konversi. Artikel yang hanya
+   menautkan ke artikel lain membangun trafik tanpa pernah mengantar pembaca ke
+   halaman yang menghasilkan permintaan penawaran.
 7. Minimal 1 tautan ke sumber otoritatif eksternal. Hanya boleh dari domain:
    ${TRUSTED_EXTERNAL.slice(0, 8).join(', ')}
    Gunakan URL beranda domain tersebut jika Anda tidak yakin URL halaman spesifiknya.
@@ -230,8 +273,13 @@ async function callModel(topic, previousErrors) {
 			// ~6.2k of ~9.3k. At the old 4000 the article was truncated mid-sentence
 			// every time, which surfaced as three confusing validation errors
 			// (missing closing section, missing list, one internal link) instead of
-			// the one real cause. 16000 leaves room for reasoning plus a full article.
-			max_tokens: 16000,
+			// the one real cause.
+			//
+			// Kind-aware since pillars moved to 1800-2500 words: Indonesian runs
+			// roughly two tokens a word, so a 2,000-word pillar is ~4-5k output
+			// tokens on top of the same 6-8k of reasoning, and 16000 truncated it
+			// on every attempt. Long-tail articles are unchanged.
+			max_tokens: topic.kind === 'pillar' ? 32000 : 16000,
 		}),
 	});
 
@@ -329,7 +377,7 @@ function validate(topic, description, body) {
 		if (!m[1].trim()) errors.push(`markdown image with empty alt: ${m[2]}`);
 	}
 
-	const seo = checkSeo({ title: topic.title, focusKeyphrase: topic.focusKeyphrase, body });
+	const seo = checkSeo({ title: topic.title, focusKeyphrase: topic.focusKeyphrase, body, kind: topic.kind });
 	errors.push(...seo.errors);
 
 	// Fabricated facts are caught here, in the loop, rather than only at publish
@@ -389,6 +437,24 @@ async function generateOne(topic) {
 
 		previousErrors = errors;
 		if (attempt === MAX_ATTEMPTS) {
+			// Keep the last rejected draft. Without it a three-attempt failure is a
+			// list of error strings with no way to see what the model actually
+			// wrote, and diagnosing a prompt problem means reproducing the call by
+			// hand. Written outside src/ so Astro never sees it.
+			try {
+				mkdirSync('data/failed', { recursive: true });
+				const header = [
+					`<!-- ${topic.id} | ${topic.kind} | rejected ${new Date().toISOString()}`,
+					...errors.map((e) => `  - ${e}`),
+					'-->',
+					'',
+					`DESCRIPTION (${parsed.description.length}): ${parsed.description}`,
+					'',
+				].join('\n');
+				writeFileSync(join('data/failed', `${topic.slug}.md`), `${header}\n${parsed.body}\n`, 'utf8');
+			} catch {
+				/* diagnostics only */
+			}
 			return { ok: false, reason: `failed ${MAX_ATTEMPTS} attempts`, errors, stats };
 		}
 	}

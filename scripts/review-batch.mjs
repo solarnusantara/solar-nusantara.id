@@ -20,7 +20,7 @@
  */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
-import { checkSeo, splitFrontmatter, parseFrontmatter } from './lib/seo-rules.mjs';
+import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 const OUT_DIR = 'data/review';
@@ -106,7 +106,7 @@ for (const dir of readdirSync(CONTENT_DIR).filter((d) => statSync(join(CONTENT_D
 		slug: dir,
 		data,
 		body: split.body,
-		seo: checkSeo({ title: data.title || '', focusKeyphrase: data.focusKeyphrase || '', body: split.body }),
+		seo: checkSeo({ title: data.title || '', focusKeyphrase: data.focusKeyphrase || '', body: split.body, kind: kindFromTags(data.tags) }),
 	});
 	if (drafts.length >= limit) break;
 }

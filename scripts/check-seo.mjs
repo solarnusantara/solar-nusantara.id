@@ -29,7 +29,7 @@
  */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { checkSeo, splitFrontmatter, parseFrontmatter } from './lib/seo-rules.mjs';
+import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 const only = new Set(process.argv.slice(2).filter((a) => !a.startsWith('--')));
@@ -74,6 +74,7 @@ for (const dir of dirs) {
 		title: data.title || '',
 		focusKeyphrase: data.focusKeyphrase || '',
 		body: split.body,
+		kind: kindFromTags(data.tags),
 	});
 
 	if (errors.length || warnings.length) {

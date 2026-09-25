@@ -101,7 +101,7 @@ const SEGMENTS = [
 // ---------------------------------------------------------------------------
 const INTENTS = [
 	{
-		key: 'biaya-roi', tag: 'biaya-roi', priority: 10,
+		key: 'biaya-roi', tag: 'biaya-roi', priority: 10, funnel: 'bofu',
 		pillar: { t: 'Biaya dan ROI PLTS untuk', s: 'Biaya dan ROI PLTS', k: 'biaya plts' },
 		link: '/layanan/epc/segmen-ci/',
 		children: [
@@ -115,7 +115,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'desain-sizing', tag: 'desain-sistem', priority: 9,
+		key: 'desain-sizing', tag: 'desain-sistem', priority: 9, funnel: 'mofu',
 		pillar: { t: 'Desain dan Sizing PLTS untuk', s: 'Desain dan Sizing PLTS', k: 'desain plts' },
 		link: '/layanan/sistem-tenaga-surya-epc/',
 		children: [
@@ -129,7 +129,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'regulasi', tag: 'regulasi', priority: 10,
+		key: 'regulasi', tag: 'regulasi', priority: 10, funnel: 'tofu',
 		pillar: { t: 'Regulasi dan Perizinan PLTS untuk', s: 'Regulasi PLTS', k: 'regulasi plts' },
 		link: '/layanan/sistem-tenaga-surya-epc/',
 		children: [
@@ -143,7 +143,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'komponen', tag: 'komponen', priority: 8,
+		key: 'komponen', tag: 'komponen', priority: 8, funnel: 'mofu',
 		pillar: { t: 'Panduan Pemilihan Komponen PLTS untuk', s: 'Komponen PLTS', k: 'komponen plts' },
 		link: '/produk/sistem-panel-surya/panel-surya/panel-tkdn/',
 		children: [
@@ -157,7 +157,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'instalasi', tag: 'instalasi', priority: 7,
+		key: 'instalasi', tag: 'instalasi', priority: 7, funnel: 'mofu',
 		pillar: { t: 'Instalasi dan Konstruksi PLTS untuk', s: 'Instalasi PLTS', k: 'instalasi plts' },
 		link: '/layanan/sistem-tenaga-surya-epc/',
 		children: [
@@ -171,7 +171,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'om', tag: 'operasi-pemeliharaan', priority: 7,
+		key: 'om', tag: 'operasi-pemeliharaan', priority: 7, funnel: 'mofu',
 		pillar: { t: 'Operasi dan Pemeliharaan PLTS untuk', s: 'Pemeliharaan PLTS', k: 'pemeliharaan plts' },
 		link: '/layanan/manajemen-energi/',
 		children: [
@@ -185,7 +185,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'pembiayaan', tag: 'pembiayaan', priority: 9,
+		key: 'pembiayaan', tag: 'pembiayaan', priority: 9, funnel: 'bofu',
 		pillar: { t: 'Skema Pembiayaan PLTS untuk', s: 'Pembiayaan PLTS', k: 'pembiayaan plts' },
 		link: '/layanan/epc/segmen-ci/',
 		children: [
@@ -199,7 +199,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'esg', tag: 'esg', priority: 8,
+		key: 'esg', tag: 'esg', priority: 8, funnel: 'mofu',
 		pillar: { t: 'PLTS untuk Pelaporan ESG di', s: 'PLTS dan Pelaporan ESG', k: 'esg plts' },
 		link: '/layanan/manajemen-energi/',
 		children: [
@@ -213,7 +213,7 @@ const INTENTS = [
 		],
 	},
 	{
-		key: 'pengadaan', tag: 'pengadaan', priority: 10,
+		key: 'pengadaan', tag: 'pengadaan', priority: 10, funnel: 'bofu',
 		pillar: { t: 'Panduan Pengadaan PLTS untuk', s: 'Pengadaan PLTS', k: 'pengadaan plts' },
 		link: '/tentang/sonushub/',
 		children: [
@@ -291,6 +291,7 @@ for (const seg of SEGMENTS) {
 				segment: seg.key,
 				segmentLabel: seg.label,
 				intent: intent.key,
+				funnel: intent.funnel,
 				title,
 				// Only emit seoTitle when the real title would be truncated in the
 				// SERP. Setting it unconditionally would throw away descriptive
@@ -306,18 +307,81 @@ for (const seg of SEGMENTS) {
 	}
 }
 
+// --- preserve generation state ---------------------------------------------
+// Re-running this script after a matrix tweak must not forget which topics have
+// already been written. Without this, adjusting one intent's funnel label would
+// silently reset every `generated` row to `pending` and the next run would
+// regenerate articles that already exist - which generate-article.mjs then
+// refuses as "directory already exists", leaving the queue wedged.
+//
+// Keyed by id, and only the mutable run fields are carried over; everything
+// describing WHAT to write is rebuilt from the matrix on purpose.
+if (existsSync(OUT)) {
+	try {
+		const prev = JSON.parse(readFileSync(OUT, 'utf8'));
+		const byId = new Map((prev.topics ?? []).map((t) => [t.id, t]));
+		let carried = 0;
+		for (const t of topics) {
+			const old = byId.get(t.id);
+			if (!old || old.status === 'pending') continue;
+			t.status = old.status;
+			if (old.generatedAt) t.generatedAt = old.generatedAt;
+			if (old.lastError) t.lastError = old.lastError;
+			carried += 1;
+		}
+		if (carried) console.log(`  carried over ${carried} non-pending status row(s) from the previous plan`);
+	} catch {
+		console.log('  previous topics.json was unreadable; starting from a clean state');
+	}
+}
+
 // --- wave assignment -------------------------------------------------------
-// Wave 1 is the 100 articles that prove the whole chain before the other ~900
-// are written. Pillars outrank long-tail at equal priority: a pillar is the hub
-// its 7 children will link into, so publishing children first would build a
-// cluster with no centre.
-const ranked = [...topics].sort((a, b) => {
+// Wave 1 is the 100 articles that prove the whole chain before the other ~900.
+//
+// Composition is a QUOTA, not a side effect of priority. Measured B2B guidance
+// puts 60-70% of production at bottom-of-funnel, and the reason is a gap rather
+// than a preference: only 4.7% of B2B content teams work BOFU at all, while the
+// other 95.3% publish top-of-funnel that earns traffic and closes nothing.
+// Sorting purely by priority would have filled wave 1 with whatever scored high,
+// which on this matrix skews informational - the same mistake at a larger scale.
+//
+// So the buckets are filled separately and explicitly, and the run prints the
+// resulting split. Pillars still outrank their own long-tail inside a bucket: a
+// pillar is the hub its 7 children link into, so shipping children first builds
+// a cluster with no centre.
+const FUNNEL_QUOTA = { bofu: 0.65, mofu: 0.25, tofu: 0.10 };
+
+const byPriority = (a, b) => {
 	if (b.priority !== a.priority) return b.priority - a.priority;
 	if (a.kind !== b.kind) return a.kind === 'pillar' ? -1 : 1;
 	return a.id.localeCompare(b.id);
-});
-ranked.slice(0, WAVE_1_SIZE).forEach((t) => { t.wave = 1; });
-ranked.slice(WAVE_1_SIZE).forEach((t) => { t.wave = 2; });
+};
+
+const buckets = { bofu: [], mofu: [], tofu: [] };
+for (const t of topics) buckets[t.funnel].push(t);
+for (const k of Object.keys(buckets)) buckets[k].sort(byPriority);
+
+topics.forEach((t) => { t.wave = 2; });
+
+let placed = 0;
+for (const [funnel, share] of Object.entries(FUNNEL_QUOTA)) {
+	const want = Math.round(WAVE_1_SIZE * share);
+	for (const t of buckets[funnel].slice(0, want)) {
+		t.wave = 1;
+		placed += 1;
+	}
+}
+
+// Rounding can leave wave 1 a seat or two short. Fill from BOFU, because that is
+// the bucket the quota exists to protect.
+if (placed < WAVE_1_SIZE) {
+	for (const t of buckets.bofu) {
+		if (placed >= WAVE_1_SIZE) break;
+		if (t.wave === 1) continue;
+		t.wave = 1;
+		placed += 1;
+	}
+}
 
 // --- validation ------------------------------------------------------------
 // The matrix should make collisions impossible. This proves it rather than
@@ -337,9 +401,15 @@ for (const t of topics) {
 		}
 	}
 
-	if (existing.slugs.has(t.slug)) problems.push(`${t.id}: slug "${t.slug}" already exists on the site`);
-	if (existing.keyphrases.has(t.focusKeyphrase.toLowerCase())) problems.push(`${t.id}: focusKeyphrase "${t.focusKeyphrase}" already used by a published article`);
-	if (existing.titles.has(t.title.toLowerCase())) problems.push(`${t.id}: title already used by a published article`);
+	// Collisions against the live site only matter for topics this plan has not
+	// written yet. Once a topic has been generated, its own article is sitting in
+	// src/content/berita and would otherwise be reported as a foreign collision -
+	// which deadlocks every re-run after the first generation batch.
+	if (t.status === 'pending') {
+		if (existing.slugs.has(t.slug)) problems.push(`${t.id}: slug "${t.slug}" already exists on the site`);
+		if (existing.keyphrases.has(t.focusKeyphrase.toLowerCase())) problems.push(`${t.id}: focusKeyphrase "${t.focusKeyphrase}" already used by a published article`);
+		if (existing.titles.has(t.title.toLowerCase())) problems.push(`${t.id}: title already used by a published article`);
+	}
 
 	if (t.title.length > TITLE_MAX) problems.push(`${t.id}: title is ${t.title.length} chars (max ${TITLE_MAX})`);
 	if (t.seoTitle && t.seoTitle.length > SEO_TITLE_MAX) problems.push(`${t.id}: seoTitle is ${t.seoTitle.length} chars (max ${SEO_TITLE_MAX})`);
@@ -363,6 +433,9 @@ console.log(`\nplan-topics: ${topics.length} topics`);
 console.log(`  ${SEGMENTS.length} segments x ${INTENTS.length} intents = ${SEGMENTS.length * INTENTS.length} pillars`);
 console.log(`  ${topics.filter((t) => t.kind === 'pillar').length} pillars, ${topics.filter((t) => t.kind === 'longtail').length} long-tail`);
 console.log(`  wave 1: ${topics.filter((t) => t.wave === 1).length}   wave 2: ${topics.filter((t) => t.wave === 2).length}`);
+const w1 = topics.filter((t) => t.wave === 1);
+const pct = (f) => Math.round((w1.filter((t) => t.funnel === f).length / w1.length) * 100);
+console.log(`  wave 1 funnel: ${pct('bofu')}% bofu / ${pct('mofu')}% mofu / ${pct('tofu')}% tofu  (target 65/25/10)`);
 console.log(`  seoTitle needed on ${topics.filter((t) => t.seoTitle).length} of ${topics.length}`);
 console.log(`  existing on site: ${existing.slugs.size} slugs, ${existing.keyphrases.size} keyphrases - checked against, no collisions`);
 

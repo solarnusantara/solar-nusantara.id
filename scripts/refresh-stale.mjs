@@ -22,7 +22,7 @@
  */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
-import { checkSeo, splitFrontmatter, parseFrontmatter } from './lib/seo-rules.mjs';
+import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 
@@ -52,7 +52,7 @@ for (const dir of readdirSync(CONTENT_DIR).filter((d) => statSync(join(CONTENT_D
 	const date = dateStr ? new Date(dateStr) : null;
 	if (!date || Number.isNaN(date.valueOf())) continue;
 
-	const seo = checkSeo({ title: data.title || '', focusKeyphrase: data.focusKeyphrase || '', body: split.body });
+	const seo = checkSeo({ title: data.title || '', focusKeyphrase: data.focusKeyphrase || '', body: split.body, kind: kindFromTags(data.tags) });
 	const ageMonths = Math.round((Date.now() - date.valueOf()) / (1000 * 60 * 60 * 24 * 30));
 	const row = { dir, date: dateStr.slice(0, 10), ageMonths, errors: seo.errors.length, words: seo.stats.wordCount ?? 0 };
 

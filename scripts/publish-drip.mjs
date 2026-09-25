@@ -26,7 +26,7 @@
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
-import { checkSeo, splitFrontmatter, parseFrontmatter } from './lib/seo-rules.mjs';
+import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 import { checkFacts } from './lib/fact-guard.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
@@ -87,6 +87,7 @@ function inspect(slug) {
 		title: data.title || '',
 		focusKeyphrase: data.focusKeyphrase || '',
 		body: split.body,
+		kind: kindFromTags(data.tags),
 	});
 	const facts = checkFacts({ body: split.body });
 
