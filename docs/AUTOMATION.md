@@ -141,68 +141,96 @@ dan gangguan API sesaat hanya merugikan satu batch.
 
 ## 5. Alur kerja harian
 
+Tidak ada. Itu memang tujuannya.
+
 ```
-plan-topics  ->  generate  ->  review  ->  approve  ->  publish  ->  Actions  ->  live
-  sekali       otomatis     Anda baca   Anda putuskan  otomatis
+server generate draft  →  tiga gate mesin  →  server terbit + push  →  Actions  →  live
+   tiap jam, 4 artikel      otomatis            harian, 12 artikel
 ```
 
-Yang otomatis hanya generate dan publish. **Persetujuan tetap manusia.**
-
-### Sekali di awal
+Sekali di awal, untuk membuat rencana topiknya:
 
 ```bash
-cd ~/solar-nusantara.id
+cd /opt/solar-nusantara.id
 npm run plan-topics          # 1008 topik -> data/topics.json
 ```
 
-Baca judul-judulnya sebelum generate. Memperbaiki 1000 judul di satu file JSON
-butuh beberapa menit; memperbaikinya setelah artikel ditulis berarti menulis
+Baca judul-judulnya sebelum generator mulai. Memperbaiki 1000 judul di satu file
+JSON butuh beberapa menit; memperbaikinya setelah artikel ditulis berarti menulis
 ulang.
 
-### Rutin
+Setelah itu tidak ada langkah manual. Perintah di bawah tetap ada untuk saat kamu
+ingin melihat atau ikut campur, bukan karena pipeline menunggunya:
 
 ```bash
-npm run review                    # render semua draft jadi satu HTML
-# buka data/review/index.html, baca
-
-cp data/review/approved-candidates.txt data/approved.txt
-# HAPUS baris artikel yang tidak Anda setujui
-
-npm run publish -- --dry-run      # lihat apa yang akan terbit
-npm run publish                   # terbitkan dan push
+npm run publish -- --auto --dry-run   # apa yang akan terbit hari ini
+npm run review                        # render draft jadi satu HTML untuk dibaca
+npm run check-seo                     # laporan mutu seluruh situs
+npm run refresh                       # artikel mana yang mulai usang
+journalctl -u solar-nusantara-generate -n 50
 ```
 
-Menghapus yang ditolak lebih cepat daripada mengetik yang disetujui, dan gagal
-ke arah aman: baris yang tidak pernah Anda baca akan tetap ada di file hanya
-jika Anda memang tidak membacanya — dan itu terlihat.
+Mode persetujuan manual masih utuh kalau suatu saat kamu menginginkannya kembali:
+isi `data/approved.txt` lalu jalankan `npm run publish` tanpa `--auto`.
 
 ---
 
-## 6. Yang menahan artikel buruk
+## 6. Yang menahan artikel buruk tanpa ada manusia membaca
 
-Empat lapis, dan ketiganya sudah diuji:
+Tiga gate mesin, satu pemutus arus, satu sampel. Semuanya sudah diuji.
 
-1. **Di dalam loop generasi.** Artikel divalidasi sebelum ditulis ke disk.
-   Gagal berarti digenerate ulang dengan daftar kesalahannya diumpankan balik.
-   Maksimal 3 percobaan.
-2. **`npm run check`** — gate struktur yang sudah ada: slug, panjang
-   description, duplikat metadata, `$` tanpa escape, alt gambar. Menggagalkan
-   build lewat `prebuild`.
-3. **`npm run check-seo`** — gate penulisan: penempatan dan densitas kata
-   kunci, panjang paragraf, tautan internal dan eksternal, panjang artikel.
-4. **Persetujuan Anda.** Artikel lahir `draft: true`. `publish-drip.mjs` hanya
-   menerbitkan slug yang ada di `data/approved.txt`.
+**Gate 1 — struktur** (`npm run check`). Slug, panjang description, duplikat
+metadata, `$` tanpa escape, alt gambar. Menggagalkan build lewat `prebuild`.
 
-Kalau gate mana pun gagal saat publish, **seluruh batch dikembalikan ke draft
-dan tidak ada yang di-push.** Remote terhubung ke deploy, jadi gate yang gagal
+**Gate 2 — penulisan** (`npm run check-seo`). Penempatan dan densitas kata kunci,
+panjang paragraf, jumlah heading, tautan internal dan eksternal, panjang artikel.
+
+**Gate 3 — fakta** (`scripts/lib/fact-guard.mjs`). Ini yang menggantikan mata
+manusia, dan alasannya penting: dua gate di atas memeriksa bentuk, bukan
+kebenaran. "Permen ESDM No. 5 Tahun 2023" dan "Permen ESDM No. 2 Tahun 2024"
+sama-sama lolos keduanya; satu nyata, satu tidak ada.
+
+Fact-guard memakai **daftar putih**, bukan pemeriksaan kewajaran:
+
+| Yang diperiksa | Aturan |
+|---|---|
+| Kutipan regulasi | Harus ada di `KNOWN_REGULATIONS`. Nomor dan tahun dua-duanya dicocokkan |
+| TKDN | Harus 40 persen |
+| Faktor emisi grid | Harus sekitar 0,87 kg CO2/kWh |
+| Porsi modul terhadap CAPEX | Harus sekitar 40% |
+| CAPEX PLTS 1 MWp | Harus dalam Rp 9-13 miliar, dalam satuan miliar |
+| Studi kasus | Nama perusahaan di luar daftar + kata kerja keberhasilan = ditolak |
+| Tautan eksternal | **Di-fetch sungguhan.** HTTP 4xx/5xx ditolak |
+
+Tautan tidak dinilai dari bentuk URL-nya. Versi pertama menebak dari kedalaman
+path dan menolak `nrel.gov/docs/fy18osti/68696.pdf` - dokumen yang benar-benar
+ada. Satu-satunya cara membedakan kutipan nyata dari kutipan karangan adalah
+bertanya ke servernya.
+
+**Pemutus arus.** Kalau kurang dari **60%** draft lolos bersih, publikasi
+**berhenti** dan melaporkan kegagalan tersering. Ini untuk kegagalan sistemik -
+model bergeser, prompt lapuk, DeepSeek berubah perilaku. Dengan manusia membaca,
+itu ketahuan di batch pertama; tanpa itu, terbit tiap hari sampai ada yang sadar
+berminggu-minggu kemudian. Satu hari buruk merugikan satu hari; satu bulan buruk
+merugikan domainnya.
+
+**Lebih ketat tanpa pengawasan.** Di mode `--auto`, sebuah *warning* pun menahan
+artikel. Dengan manusia, warning adalah pertimbangan yang ia ambil; tanpa
+manusia, warning adalah satu-satunya sinyal tersisa bahwa ada yang janggal.
+
+**Sampel, bukan gerbang.** Satu dari tiap 10 artikel terbit dicatat di
+`data/spotcheck.log`. Tidak pernah menahan apa pun. Gate tidak bisa menilai
+apakah sebuah artikel layak dikirim ke calon klien - hanya kamu yang bisa, dan
+ini memberi kamu daftar pendek untuk itu.
+
+**Kalau gate mana pun gagal saat publish**, seluruh batch dikembalikan ke draft
+dan **tidak ada yang di-push**. Remote terhubung ke deploy, jadi yang gagal gate
 tidak boleh sampai ke sana.
 
 Catatan: saat publish, `check-seo` hanya menilai batch yang sedang terbit.
 Aturannya lebih baru daripada 18 artikel pertama situs ini, yang tidak
-memenuhinya (206–600 kata, tanpa tautan internal). Itu utang yang perlu
-diperbaiki, bukan alasan memblokir semua artikel baru. `npm run check-seo`
-tanpa argumen tetap melaporkan seluruh situs supaya utang itu tidak hilang dari
-pandangan.
+memenuhinya. Itu utang yang perlu diperbaiki, bukan alasan memblokir artikel
+baru. `npm run check-seo` tanpa argumen tetap melaporkan seluruh situs.
 
 ---
 

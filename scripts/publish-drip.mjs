@@ -23,13 +23,34 @@
  * A failing gate must never reach the remote, because the remote is wired to
  * deploy on push.
  */
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
+import { checkSeo, splitFrontmatter, parseFrontmatter } from './lib/seo-rules.mjs';
+import { checkFacts } from './lib/fact-guard.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 const APPROVED = 'data/approved.txt';
+const SPOTCHECK = 'data/spotcheck.log';
 const DEFAULT_BATCH = 12;
+
+/**
+ * Circuit breaker for --auto.
+ *
+ * With a human approving each batch, a systemic failure - the model drifting,
+ * the prompt rotting, DeepSeek changing behaviour - shows up as "these all read
+ * wrong" on the first batch. With nobody reading, the same failure publishes
+ * every day until someone notices in Search Console weeks later.
+ *
+ * So: if fewer than this share of the drafts examined are clean, publish
+ * nothing and say so. A bad day costs a day of publishing; a bad month costs
+ * the domain.
+ */
+const AUTO_MIN_PASS_RATE = 0.6;
+const AUTO_MIN_EXAMINED = 5;
+
+/** One in N published articles is logged for optional later reading. Never blocks. */
+const SPOTCHECK_EVERY = 10;
 
 const argv = process.argv.slice(2);
 const has = (n) => argv.includes(`--${n}`);
@@ -40,52 +61,141 @@ const flag = (n, d = null) => {
 
 const dryRun = has('dry-run');
 const noPush = has('no-push');
+const auto = has('auto');
 const limit = Number(flag('limit', String(DEFAULT_BATCH)));
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: 'pipe' });
 
-// --- approved list ----------------------------------------------------------
-if (!existsSync(APPROVED)) {
-	console.error(`${APPROVED} does not exist.`);
-	console.error('Create it with one approved slug per line, then run this again.');
-	console.error('Generate the review sheet first: npm run review');
-	process.exit(1);
-}
-
-const approved = readFileSync(APPROVED, 'utf8')
-	.split(/\r?\n/)
-	.map((l) => l.replace(/#.*$/, '').trim())
-	.filter(Boolean);
-
-if (approved.length === 0) {
-	console.log('No approved slugs yet. Nothing to publish.');
-	process.exit(0);
-}
-
-// --- find publishable drafts ------------------------------------------------
 const dirs = readdirSync(CONTENT_DIR).filter((d) => statSync(join(CONTENT_DIR, d)).isDirectory());
-const candidates = [];
 
-for (const slug of approved) {
-	if (!dirs.includes(slug)) {
-		console.log(`  ? ${slug} - approved but no article directory; skipped`);
-		continue;
-	}
+/** Read one draft and run every machine-checkable gate against it. */
+function inspect(slug) {
 	const file = join(CONTENT_DIR, slug, 'index.md');
-	const raw = readFileSync(file, 'utf8');
-	if (!/^draft:\s*true\s*$/m.test(raw)) continue; // already live
-	candidates.push({ slug, file, raw });
+	let raw;
+	try {
+		raw = readFileSync(file, 'utf8');
+	} catch {
+		return null;
+	}
+	if (!/^draft:\s*true\s*$/m.test(raw)) return null; // already live
+
+	const split = splitFrontmatter(raw);
+	if (!split) return { slug, file, raw, errors: ['frontmatter malformed'], warnings: [] };
+
+	const data = parseFrontmatter(split.frontmatter);
+	const seo = checkSeo({
+		title: data.title || '',
+		focusKeyphrase: data.focusKeyphrase || '',
+		body: split.body,
+	});
+	const facts = checkFacts({ body: split.body });
+
+	return {
+		slug,
+		file,
+		raw,
+		errors: [...seo.errors, ...facts.errors],
+		warnings: [...seo.warnings, ...facts.warnings],
+		stats: seo.stats,
+	};
+}
+
+let candidates = [];
+
+if (auto) {
+	// --- unattended selection ----------------------------------------------
+	// Stricter than the attended path on purpose. With a human in the loop, a
+	// warning is a judgement call they make; with nobody reading, a warning is
+	// the only signal left that something is off, so it holds the article back.
+	const examined = dirs.map(inspect).filter(Boolean);
+
+	if (examined.length === 0) {
+		console.log('No drafts waiting. Nothing to publish.');
+		process.exit(0);
+	}
+
+	const clean = examined.filter((a) => a.errors.length === 0 && a.warnings.length === 0);
+	const rate = clean.length / examined.length;
+
+	console.log(`\npublish-drip --auto: ${examined.length} draft(s) examined, ${clean.length} clean (${Math.round(rate * 100)}%)`);
+
+	// Circuit breaker. Only meaningful once there is a sample worth judging -
+	// two bad drafts out of two is noise, not a trend.
+	if (examined.length >= AUTO_MIN_EXAMINED && rate < AUTO_MIN_PASS_RATE) {
+		console.error(`\nHALTED: only ${Math.round(rate * 100)}% of drafts are clean (floor ${Math.round(AUTO_MIN_PASS_RATE * 100)}%).`);
+		console.error('That is a systemic failure, not a few bad articles. Nothing published.\n');
+		const tally = new Map();
+		for (const a of examined) {
+			for (const e of a.errors) {
+				//  so "B2B" does not become "BNB" - a digit inside a word is not a variable
+				const key = e.replace(/\d+(?:[.,]\d+)?/g, 'N').slice(0, 90);
+				tally.set(key, (tally.get(key) || 0) + 1);
+			}
+		}
+		console.error('Kegagalan paling sering:');
+		for (const [msg, n] of [...tally.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)) {
+			console.error(`  ${String(n).padStart(3)}x  ${msg}`);
+		}
+		console.error('');
+		process.exit(1);
+	}
+
+	const rejected = examined.length - clean.length;
+	if (rejected) console.log(`  ${rejected} ditahan karena masih punya error atau warning`);
+
+	candidates = clean;
+} else {
+	// --- attended selection -------------------------------------------------
+	if (!existsSync(APPROVED)) {
+		console.error(`${APPROVED} does not exist.`);
+		console.error('Create it with one approved slug per line, then run this again.');
+		console.error('Generate the review sheet first: npm run review');
+		console.error('Or run unattended: npm run publish -- --auto');
+		process.exit(1);
+	}
+
+	const approved = readFileSync(APPROVED, 'utf8')
+		.split(/\r?\n/)
+		.map((l) => l.replace(/#.*$/, '').trim())
+		.filter(Boolean);
+
+	if (approved.length === 0) {
+		console.log('No approved slugs yet. Nothing to publish.');
+		process.exit(0);
+	}
+
+	for (const slug of approved) {
+		if (!dirs.includes(slug)) {
+			console.log(`  ? ${slug} - approved but no article directory; skipped`);
+			continue;
+		}
+		const a = inspect(slug);
+		if (a) candidates.push(a);
+	}
 }
 
 if (candidates.length === 0) {
-	console.log('Every approved article is already published. Nothing to do.');
+	console.log('Nothing publishable right now.');
 	process.exit(0);
 }
 
 const batch = candidates.slice(0, limit);
 const today = new Date().toISOString().slice(0, 10);
 
-console.log(`\npublish-drip: ${batch.length} of ${candidates.length} approved draft(s)`);
+/**
+ * How many articles are already live. Used only to keep the spot-check sample
+ * spread evenly as the archive grows, rather than always landing on the first
+ * article of whichever batch happens to run.
+ */
+const publishedCount = dirs.filter((d) => {
+	try {
+		return !/^draft:\s*true\s*$/m.test(readFileSync(join(CONTENT_DIR, d, 'index.md'), 'utf8'));
+	} catch {
+		return false;
+	}
+}).length;
+
+console.log(`\npublish-drip: ${batch.length} of ${candidates.length} ${auto ? 'clean' : 'approved'} draft(s)`);
 for (const a of batch) console.log(`  -> /berita/${a.slug}/`);
 
 if (dryRun) {
@@ -148,6 +258,25 @@ try {
 	const bodyLines = batch.map((a) => `- /berita/${a.slug}/`).join('\n');
 	run('git', ['commit', '-m', subject, '-m', bodyLines]);
 	console.log(`\n  committed: ${subject}`);
+
+	// Sampling, not gating. Unattended publishing still benefits from a human
+	// reading SOMETHING occasionally - the gates cannot judge whether an article
+	// is worth sending to a prospect. This records a slice to read whenever
+	// there is time, and never holds anything back waiting for that.
+	try {
+		if (!existsSync('data')) mkdirSync('data', { recursive: true });
+		const sample = batch.filter((_, i) => (publishedCount + i) % SPOTCHECK_EVERY === 0);
+		if (sample.length) {
+			appendFileSync(
+				SPOTCHECK,
+				sample.map((a) => `${today}\t/berita/${a.slug}/\t${a.stats?.wordCount ?? '?'} kata`).join('\n') + '\n',
+				'utf8',
+			);
+			console.log(`  ${sample.length} artikel dicatat di ${SPOTCHECK} untuk dibaca sewaktu-waktu`);
+		}
+	} catch {
+		/* sampling is a convenience; never fail a publish over it */
+	}
 } catch (e) {
 	const out = `${e.stdout || ''}${e.stderr || ''}`;
 	if (/nothing to commit/i.test(out)) {

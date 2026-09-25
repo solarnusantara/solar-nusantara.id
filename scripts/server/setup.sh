@@ -189,7 +189,7 @@ User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
 ExecStartPre=/usr/bin/git pull --rebase --autostash
-ExecStart=/usr/bin/env node scripts/publish-drip.mjs --limit 12
+ExecStart=/usr/bin/env node scripts/publish-drip.mjs --auto --limit 12
 TimeoutStartSec=1800
 EOF
 
@@ -217,7 +217,7 @@ else
 	say "    crontab -e"
 	say ""
 	say "  7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && node scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1"
-	say " 23 9 * * * cd $CLONE && git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && node scripts/publish-drip.mjs --limit 12 >> \$HOME/sn-publish.log 2>&1"
+	say " 23 9 * * * cd $CLONE && git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && node scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1"
 fi
 
 hr
@@ -226,11 +226,16 @@ say ""
 say "Langkah berikutnya, berurutan:"
 say "  1. isi DEEPSEEK_API_KEY di $ENV_FILE  (kalau belum)"
 say "  2. cd $CLONE && npm run plan-topics"
-say "  3. npm run generate -- --limit 1   lalu BACA hasilnya sendiri"
-say "  4. npm run check && npm run check-seo"
-say "  5. npm run review                 lalu isi data/approved.txt"
-say "  6. npm run publish -- --dry-run   sebelum terbit sungguhan"
+say "  3. npm run generate -- --limit 1   lalu BACA hasilnya sendiri, sekali saja"
+say "  4. npm run publish -- --auto --dry-run   lihat apa yang akan terbit"
+say "  5. npm run publish -- --auto --limit 1   artikel pertama, sungguhan"
 say ""
-say "Generator jalan tiap jam. Publikasi HANYA menerbitkan slug yang ada di"
-say "data/approved.txt - tidak ada artikel yang terbit tanpa kamu setujui."
+say "Setelah itu berjalan tanpa campur tangan: generate tiap jam, terbit 12/hari."
+say "Yang menahan artikel buruk adalah tiga gate mesin - struktur, penulisan, dan"
+say "fakta - plus pemutus arus yang MENGHENTIKAN publikasi kalau kurang dari 60%"
+say "draft lolos bersih. Kegagalan sistemik berhenti sendiri, tidak terbit 1000 kali."
+say ""
+say "Satu artikel dari tiap 10 dicatat di data/spotcheck.log. Itu bukan gerbang,"
+say "hanya contoh untuk dibaca sewaktu-waktu - gate tidak bisa menilai apakah"
+say "sebuah artikel layak dikirim ke calon klien."
 hr

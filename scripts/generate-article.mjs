@@ -31,6 +31,7 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSeo, TRUSTED_EXTERNAL } from './lib/seo-rules.mjs';
+import { checkFacts, verifyExternalLinks } from './lib/fact-guard.mjs';
 
 const TOPICS = 'data/topics.json';
 const CONTENT_DIR = 'src/content/berita';
@@ -54,6 +55,9 @@ const onlyId = flag('id');
 const dryRun = has('dry-run');
 const modelOverride = flag('model');
 const concurrency = Math.max(1, Number(flag('concurrency', '2')));
+// Pemeriksaan tautan butuh egress. Dimatikan hanya untuk uji offline; pada
+// jalur normal sebuah URL karangan harus ketahuan di sini, bukan di situs.
+const skipLinkCheck = has('skip-link-check');
 
 const API_KEY = process.env.DEEPSEEK_API_KEY;
 if (!API_KEY) {
@@ -327,7 +331,15 @@ function validate(topic, description, body) {
 
 	const seo = checkSeo({ title: topic.title, focusKeyphrase: topic.focusKeyphrase, body });
 	errors.push(...seo.errors);
-	return { errors, stats: seo.stats };
+
+	// Fabricated facts are caught here, in the loop, rather than only at publish
+	// time. A wrong regulation number is a writing mistake the model can fix when
+	// told about it, and fixing it costs one retry; catching it at publish costs
+	// an article that has to be regenerated anyway, later, with less context.
+	const facts = checkFacts({ body });
+	errors.push(...facts.errors);
+
+	return { errors, stats: seo.stats, factWarnings: facts.warnings };
 }
 
 // --- one article ------------------------------------------------------------
@@ -359,6 +371,18 @@ async function generateOne(topic) {
 		}
 
 		const { errors, stats } = validate(topic, parsed.description, parsed.body);
+
+		// Only pay for the network check once the cheap checks pass. An article
+		// that already fails on keyword placement is getting regenerated anyway,
+		// and its links will change with it.
+		if (errors.length === 0 && !skipLinkCheck) {
+			const links = await verifyExternalLinks(parsed.body);
+			errors.push(...links.errors);
+			if (links.warnings.length) {
+				console.log(`          ${links.warnings.length} tautan tidak bisa diperiksa (jaringan), dilanjutkan`);
+			}
+		}
+
 		if (errors.length === 0) {
 			return { ok: true, description: parsed.description, body: parsed.body, stats, attempts: attempt };
 		}
