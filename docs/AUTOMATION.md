@@ -234,6 +234,37 @@ baru. `npm run check-seo` tanpa argumen tetap melaporkan seluruh situs.
 
 ---
 
+## 6b. Menahan publikasi (jendela penerbitan itu variabel)
+
+```bash
+sudo nano /etc/solar-nusantara/env
+# PUBLISH_NOT_BEFORE=2026-10-08
+```
+
+Generate tetap jalan, draft tetap bertambah, **tidak ada yang terbit** sampai
+tanggal itu. Hapus barisnya untuk melepas - tidak perlu menyentuh systemd unit
+maupun `daemon-reload`.
+
+**Kapan ini dipakai.** Spam update Google September 2026 mulai 24 September,
+butuh sampai dua minggu, dan targetnya *scaled content abuse* - persis pola yang
+ditampilkan gelombang pertama artikel berbantuan AI. Menerbitkan ke dalam rollout
+kebijakan yang menyasar dirimu adalah sebuah pilihan, jadi pilihan itu harus
+dibuat sadar, bukan karena kelewatan.
+
+Perilakunya sengaja dibuat begini:
+
+| | |
+|---|---|
+| Tahanan aktif | keluar dengan status **0** - sebuah oneshot systemd yang gagal tiap hari selama seminggu terbaca sebagai timer rusak, padahal ini perilaku yang diinginkan |
+| Tanggal tidak valid | **menolak terbit** (status 1). Menganggap tahanan rusak sebagai "tidak ada tahanan" berarti menerbitkan tepat di hari seseorang salah menulis nilai yang ia andalkan untuk menahannya |
+| Tahanan lewat | lanjut normal |
+
+Flag `--not-before YYYY-MM-DD` juga tersedia untuk sekali jalan, tapi env var
+yang relevan di server: file itu sudah dibaca systemd, jadi menahan dan melepas
+cukup mengedit satu baris yang tidak perlu diingat untuk dikembalikan.
+
+---
+
 ## 7. Kalau ada yang rusak
 
 | Gejala | Penyebab biasanya | Tindakan |

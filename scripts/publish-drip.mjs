@@ -66,6 +66,45 @@ const limit = Number(flag('limit', String(DEFAULT_BATCH)));
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: 'pipe' });
 
+// --- publication hold -------------------------------------------------------
+/**
+ * Hold publishing until a date. Generation is unaffected: drafts keep
+ * accumulating, only the step that makes them public waits.
+ *
+ * Exists because the window you publish into is a real variable. Google's
+ * September 2026 spam update began rolling out on 2026-09-24, took up to two
+ * weeks, and targeted scaled content abuse specifically - which is the exact
+ * pattern a first wave of AI-assisted articles presents. Launching into an
+ * active rollout of the policy aimed at you is a choice, so it should be one
+ * you can make explicitly rather than by accident.
+ *
+ * Accepted as a flag OR as PUBLISH_NOT_BEFORE in the environment. The env var
+ * is the one that matters on the server: /etc/solar-nusantara/env is already
+ * read by the systemd unit, so a hold can be set and lifted by editing one line
+ * in a file nobody has to remember to revert, instead of editing the unit and
+ * reloading the daemon.
+ */
+const notBeforeRaw = flag('not-before', process.env.PUBLISH_NOT_BEFORE || null);
+if (notBeforeRaw) {
+	// Fail closed on an unparseable date. Treating a malformed hold as "no hold"
+	// would publish on exactly the day somebody fat-fingered the value they were
+	// relying on to stop it.
+	if (!/^\d{4}-\d{2}-\d{2}$/.test(notBeforeRaw.trim())) {
+		console.error(`--not-before / PUBLISH_NOT_BEFORE must be YYYY-MM-DD, got "${notBeforeRaw}".`);
+		console.error('Refusing to publish rather than ignoring a hold that may have been intended.');
+		process.exit(1);
+	}
+	const today = new Date().toISOString().slice(0, 10);
+	if (today < notBeforeRaw.trim()) {
+		console.log(`\npublish-drip: ditahan sampai ${notBeforeRaw.trim()} (hari ini ${today}).`);
+		console.log('  Generate tetap jalan; draft terus bertambah dan tidak ada yang terbit.');
+		console.log('  Lepas tahanan: hapus PUBLISH_NOT_BEFORE dari /etc/solar-nusantara/env\n');
+		// Exit 0, not 1. A hold is the intended outcome, and a systemd oneshot
+		// that exits non-zero every day for a week reads as a broken timer.
+		process.exit(0);
+	}
+}
+
 const dirs = readdirSync(CONTENT_DIR).filter((d) => statSync(join(CONTENT_DIR, d)).isDirectory());
 
 /** Read one draft and run every machine-checkable gate against it. */

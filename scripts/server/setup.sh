@@ -128,6 +128,11 @@ else
 # Diisi manual. Jangan pernah commit file ini.
 # Ambil key di https://platform.deepseek.com
 DEEPSEEK_API_KEY=
+
+# Tahan publikasi sampai tanggal tertentu (YYYY-MM-DD). Generate tetap jalan.
+# Hapus baris ini untuk melepas tahanan - tidak perlu menyentuh systemd unit.
+# Berguna saat ada rollout spam update Google yang sedang berjalan.
+# PUBLISH_NOT_BEFORE=2026-10-08
 EOF
 	$SUDO chmod 600 "$ENV_FILE"
 	say "  template dibuat: $ENV_FILE (mode 600)"
@@ -238,4 +243,9 @@ say ""
 say "Satu artikel dari tiap 10 dicatat di data/spotcheck.log. Itu bukan gerbang,"
 say "hanya contoh untuk dibaca sewaktu-waktu - gate tidak bisa menilai apakah"
 say "sebuah artikel layak dikirim ke calon klien."
+say ""
+say "MENAHAN PUBLIKASI: set PUBLISH_NOT_BEFORE=YYYY-MM-DD di $ENV_FILE."
+say "Generate tetap jalan, draft tetap bertambah, tidak ada yang terbit sampai"
+say "tanggal itu. Hapus barisnya untuk melepas. Pakai ini saat ada rollout spam"
+say "update Google yang sedang berjalan - jendela penerbitan itu variabel nyata."
 hr
