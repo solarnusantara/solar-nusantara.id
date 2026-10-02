@@ -1,32 +1,5 @@
 #!/usr/bin/env node
-/**
- * SEO gate for solar-nusantara.id. Companion to scripts/check-content.mjs.
- *
- *   npm run check-seo                      # every published article
- *   npm run check-seo -- <slug> [slug...]  # only these, by directory name
- *
- * Scoping matters. These rules were written after the site's first 18 articles
- * existed, and those 18 do not meet them - they run 206-600 words with no
- * internal links. That is a backlog to improve, not a reason to block every
- * future publish, so publish-drip.mjs passes only the slugs in its own batch.
- * A bare run still reports the whole site, which is how the backlog stays
- * visible instead of quietly becoming the standard.
- *
- * Division of labour, so the two gates never argue:
- *   check-content.mjs  structure   slug shape, description length, duplicate
- *                                  metadata, unescaped `$`, `#` in body, alt text
- *   check-seo.mjs      writing     keyword placement and density, readability,
- *                                  internal and external linking, article length
- *
- * Drafts are skipped, exactly as check-content.mjs skips them. A draft is
- * allowed to be incomplete; the rules apply the moment `draft: true` comes off.
- *
- * This is deliberately NOT wired into `prebuild`. check-content.mjs blocks the
- * build because everything it catches ships a visible defect. An SEO rule is a
- * quality bar, and a quality bar that can block a deploy will eventually be
- * disabled by someone who needs to ship. It runs in the generation loop, where
- * failing is free, and on demand.
- */
+/** SEO gate, companion to check-content.mjs: that one owns structure, this one owns writing. Drafts are skipped. Deliberately NOT wired into prebuild - a quality bar that can block a deploy gets disabled by someone who needs to ship. Scoped runs exist because the site's first 18 articles predate these rules. */
 import { readdirSync, readFileSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';

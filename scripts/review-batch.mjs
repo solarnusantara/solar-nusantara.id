@@ -1,23 +1,5 @@
 #!/usr/bin/env node
-/**
- * Render every unpublished draft into one local HTML page for review.
- *
- *   npm run review              # all drafts
- *   npm run review -- --limit 15
- *
- * Why this exists: the approval gate only works if approving is fast. Opening
- * fifteen markdown files, scrolling past frontmatter in each, and remembering
- * which ones were fine is slow enough that in practice it turns into approving
- * everything unread - which is the same as having no gate.
- *
- * Output is data/review/index.html plus data/review/approved-candidates.txt,
- * a ready-made list to copy into data/approved.txt after deleting the lines you
- * are not happy with. Deleting what you reject is faster than typing what you
- * accept, and it fails safe: a line you never read stays in the file only if
- * you never looked, which is visible.
- *
- * Writes nothing into src/. Reads the content directory and nothing else.
- */
+/** Render every unpublished draft into one local HTML page, because an approval gate only works if approving is fast - fifteen markdown files turns into approving everything unread. Writes data/review/index.html plus a candidate list to prune. */
 import { readFileSync, writeFileSync, mkdirSync, readdirSync, statSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
@@ -32,11 +14,7 @@ const limit = flagIdx === -1 ? Infinity : Number(argv[flagIdx + 1]);
 const esc = (s) =>
 	String(s).replace(/[&<>"']/g, (c) => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
 
-/**
- * Just enough markdown for a review page: headings, lists, tables, links, bold.
- * Deliberately not a real parser - this page is read once and thrown away, and
- * a dependency for it would be a dependency in the site's tree forever.
- */
+/** Just enough markdown for a page read once and thrown away; a dependency for it would live in the site's tree forever. */
 function renderMarkdown(md) {
 	const out = [];
 	let inList = false;

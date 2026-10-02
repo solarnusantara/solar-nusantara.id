@@ -1,24 +1,5 @@
 #!/bin/sh
-# Install the article generation factory on the server.
-#
-#   sh scripts/server/setup.sh
-#
-# Run scripts/server/detect.sh FIRST and fix anything it marks [FAIL].
-#
-# What this does:
-#   1. creates a deploy key, and stops so you can register it on GitHub
-#   2. clones the repo over SSH once the key is registered
-#   3. writes /etc/solar-nusantara/env for the API key, mode 600
-#   4. installs systemd timers (or prints crontab lines if systemd is absent)
-#
-# What it deliberately does NOT do:
-#   - it never writes the API key itself. You paste it into the env file with
-#     your own editor, so the value never appears in shell history, in this
-#     script, or in a process listing.
-#   - it never force-pushes, never touches main's history, and never publishes.
-#     Publishing is publish-drip.mjs, gated on both content checks.
-#
-# Safe to re-run. Every step checks whether it has already been done.
+# Install the article generation factory. Run detect.sh first and fix anything it marks [FAIL]. Stops twice on purpose: once for deploy-key registration, once for the API key - which it never writes itself, so the value stays out of shell history and ps. Safe to re-run.
 
 set -eu
 
@@ -32,21 +13,7 @@ say() { printf '%s\n' "$*"; }
 hr() { say "------------------------------------------------------------"; }
 die() { say "ERROR: $*" >&2; exit 1; }
 
-# --- privilege mode --------------------------------------------------------
-# Two install shapes, chosen by what this account can actually do rather than
-# by a flag somebody has to remember.
-#
-# System mode follows the conventions the box already uses for the ERP:
-# /opt/<project>, a secret under /etc with mode 600, and systemd timers that log
-# to the journal. It needs root or passwordless sudo.
-#
-# User mode needs no privilege at all: the clone, the secret and the schedule
-# all live under $HOME, and cron replaces the timers. It is the honest fallback
-# on a box where sudo prompts for a password, because this script runs
-# non-interactively and cannot answer that prompt - and failing halfway through
-# a privileged step is worse than not starting it.
-#
-# SOLAR_NUSANTARA_FORCE_USER_MODE=1 selects user mode even where sudo works.
+# Privilege mode is chosen from what the account can actually do, not from a flag: system mode (root or passwordless sudo) uses /opt, /etc and systemd; user mode needs no privilege and puts everything under $HOME with cron. SOLAR_NUSANTARA_FORCE_USER_MODE=1 forces the latter.
 SUDO=""
 PRIV_MODE="user"
 if [ "${SOLAR_NUSANTARA_FORCE_USER_MODE:-0}" = "1" ]; then
@@ -59,8 +26,7 @@ elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
 fi
 
 if [ "$PRIV_MODE" = "user" ]; then
-	# An explicit SOLAR_NUSANTARA_DIR under /opt cannot be created without sudo,
-	# so user mode pins its own paths rather than failing on the caller's.
+	# An explicit SOLAR_NUSANTARA_DIR under /opt cannot be created without sudo, so user mode pins its own paths.
 	CLONE="$HOME/solar-nusantara.id"
 	ENV_DIR="$HOME/.config/solar-nusantara"
 	ENV_FILE="$ENV_DIR/env"
@@ -103,8 +69,7 @@ else
 	say "  ~/.ssh/config sudah mengarah ke key ini"
 fi
 
-# Authentication is the gate for everything after this, so stop here until the
-# public key is actually registered rather than failing later inside git clone.
+# Authentication gates everything after this, so stop here rather than failing inside git clone.
 if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
 	hr
 	say "BERHENTI: deploy key belum terdaftar di GitHub."
@@ -156,15 +121,14 @@ $SUDO mkdir -p "$ENV_DIR"
 if [ -f "$ENV_FILE" ]; then
 	say "  sudah ada: $ENV_FILE (tidak ditimpa)"
 else
-	# Written WITHOUT the value. The operator pastes it in with an editor, so the
-	# key never enters shell history or a process listing.
+	# Written WITHOUT the value - the operator pastes it in with an editor, so the key never enters shell history or a process listing.
 	$SUDO tee "$ENV_FILE" >/dev/null <<'EOF'
 # Diisi manual. Jangan pernah commit file ini.
 # Ambil key di https://platform.deepseek.com
 DEEPSEEK_API_KEY=
 
 # Tahan publikasi sampai tanggal tertentu (YYYY-MM-DD). Generate tetap jalan.
-# Hapus baris ini untuk melepas tahanan - tidak perlu menyentuh systemd unit.
+# Hapus baris ini untuk melepas tahanan - tidak perlu menyentuh penjadwal.
 # Berguna saat ada rollout spam update Google yang sedang berjalan.
 # PUBLISH_NOT_BEFORE=2026-10-08
 EOF
@@ -184,9 +148,7 @@ say "[4/4] Penjadwal"
 if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
-	# Generation: hourly, small batches. Small batches on a short interval beat
-	# one nightly bulk run - a bad prompt shows up within the hour instead of
-	# after 200 articles, and a transient API failure costs one batch.
+	# Hourly small batches beat one nightly run: a bad prompt shows up within the hour, and a transient API failure costs one batch.
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - generate article drafts
@@ -251,13 +213,7 @@ EOF
 	say ""
 	$SUDO systemctl list-timers 'solar-nusantara-*' --no-pager 2>/dev/null || true
 else
-	# Install the schedule rather than printing it. A printed crontab is a step
-	# somebody has to remember, and an unattended pipeline whose schedule was
-	# never installed looks identical to one that is simply quiet.
-	#
-	# Idempotent by marker: every line this script owns carries the tag, so a
-	# re-run strips its own previous lines instead of stacking duplicates, and
-	# never touches a line the operator added by hand.
+	# Install the schedule rather than printing it - a printed crontab is a step somebody has to remember, and a pipeline whose schedule was never installed looks identical to one that is quiet. Tagged lines make a re-run idempotent.
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
