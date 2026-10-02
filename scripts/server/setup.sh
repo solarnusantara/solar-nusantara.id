@@ -32,13 +32,47 @@ say() { printf '%s\n' "$*"; }
 hr() { say "------------------------------------------------------------"; }
 die() { say "ERROR: $*" >&2; exit 1; }
 
+# --- privilege mode --------------------------------------------------------
+# Two install shapes, chosen by what this account can actually do rather than
+# by a flag somebody has to remember.
+#
+# System mode follows the conventions the box already uses for the ERP:
+# /opt/<project>, a secret under /etc with mode 600, and systemd timers that log
+# to the journal. It needs root or passwordless sudo.
+#
+# User mode needs no privilege at all: the clone, the secret and the schedule
+# all live under $HOME, and cron replaces the timers. It is the honest fallback
+# on a box where sudo prompts for a password, because this script runs
+# non-interactively and cannot answer that prompt - and failing halfway through
+# a privileged step is worse than not starting it.
+#
+# SOLAR_NUSANTARA_FORCE_USER_MODE=1 selects user mode even where sudo works.
 SUDO=""
-if [ "$(id -u)" != "0" ]; then
-	command -v sudo >/dev/null 2>&1 && SUDO="sudo"
+PRIV_MODE="user"
+if [ "${SOLAR_NUSANTARA_FORCE_USER_MODE:-0}" = "1" ]; then
+	PRIV_MODE="user"
+elif [ "$(id -u)" = "0" ]; then
+	PRIV_MODE="system"
+elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+	SUDO="sudo"
+	PRIV_MODE="system"
+fi
+
+if [ "$PRIV_MODE" = "user" ]; then
+	# An explicit SOLAR_NUSANTARA_DIR under /opt cannot be created without sudo,
+	# so user mode pins its own paths rather than failing on the caller's.
+	CLONE="$HOME/solar-nusantara.id"
+	ENV_DIR="$HOME/.config/solar-nusantara"
+	ENV_FILE="$ENV_DIR/env"
 fi
 
 hr
 say "solar-nusantara.id  -  server setup"
+say "mode: $PRIV_MODE   (clone: $CLONE)"
+if [ "$PRIV_MODE" = "user" ]; then
+	say "  tanpa hak istimewa: sudo meminta password, semuanya di bawah \$HOME"
+	say "  penjadwalan lewat crontab user, bukan systemd timer"
+fi
 hr
 
 # --- 1. deploy key ----------------------------------------------------------
@@ -147,7 +181,7 @@ fi
 say ""
 say "[4/4] Penjadwal"
 
-if command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ] && [ -n "$SUDO$( [ "$(id -u)" = 0 ] && echo root )" ]; then
+if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
 	# Generation: hourly, small batches. Small batches on a short interval beat
@@ -217,12 +251,36 @@ EOF
 	say ""
 	$SUDO systemctl list-timers 'solar-nusantara-*' --no-pager 2>/dev/null || true
 else
-	say "  systemd tidak tersedia (atau tanpa akses root). Tambahkan ke crontab:"
+	# Install the schedule rather than printing it. A printed crontab is a step
+	# somebody has to remember, and an unattended pipeline whose schedule was
+	# never installed looks identical to one that is simply quiet.
+	#
+	# Idempotent by marker: every line this script owns carries the tag, so a
+	# re-run strips its own previous lines instead of stacking duplicates, and
+	# never touches a line the operator added by hand.
+	MARKER="# solar-nusantara-pipeline"
+	NODE_BIN="$(command -v node || echo /usr/bin/node)"
+
+	GEN_LINE="7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	PUB_LINE="23 9 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1 $MARKER"
+
+	CRON_TMP="$(mktemp)"
+	crontab -l 2>/dev/null | grep -vF "$MARKER" > "$CRON_TMP" || true
+	printf '%s
+%s
+' "$GEN_LINE" "$PUB_LINE" >> "$CRON_TMP"
+	if crontab "$CRON_TMP"; then
+		say "  crontab user terpasang (generate tiap jam menit :07, publish 09:23)"
+		say ""
+		crontab -l | grep -F "$MARKER" | sed 's/^/    /' | cut -c1-110
+	else
+		say "  PERINGATAN: gagal memasang crontab. Pasang manual:"
+		say "    crontab -e   lalu tambahkan dua baris dari $CRON_TMP"
+	fi
+	rm -f "$CRON_TMP"
 	say ""
-	say "    crontab -e"
-	say ""
-	say "  7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && node scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1"
-	say " 23 9 * * * cd $CLONE && git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && node scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1"
+	say "  Log: \$HOME/sn-generate.log dan \$HOME/sn-publish.log"
+	say "  (mode user tidak punya journald, jadi log ke file)"
 fi
 
 hr
