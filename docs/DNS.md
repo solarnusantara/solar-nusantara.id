@@ -4,6 +4,7 @@ Pengelolaan DNS domain ini lewat Cloudflare API, bukan dashboard.
 
 ```bash
 export CLOUDFLARE_API_TOKEN=...        # jangan tempel di perintah yang masuk history
+export CLOUDFLARE_ZONE_ID=...          # opsional; sudah ada di .env proyek sonushub
 npm run dns -- list
 npm run dns -- list --type TXT
 npm run dns -- add TXT @ "google-site-verification=..." --yes
@@ -14,7 +15,16 @@ npm run dns -- delete TXT _acme-challenge --yes
 
 Buat di dash.cloudflare.com/profile/api-tokens → **Create Token** → template
 **Edit zone DNS**, lalu **batasi ke zone `solar-nusantara.id`** saja, bukan All
-zones. Butuh `Zone:Read` (untuk menemukan zone id dari nama) dan `DNS:Edit`.
+zones.
+
+Token adalah satu-satunya dari tiga nilai ini yang rahasia, dan satu-satunya yang
+belum ada. `CLOUDFLARE_ZONE_ID` dan `CLOUDFLARE_ACCOUNT_ID` sudah tersimpan di
+`.env` proyek sonushub; keduanya pengenal, bukan kredensial.
+
+`CLOUDFLARE_ZONE_ID` bersifat opsional. Kalau diisi, skrip memakainya langsung;
+kalau tidak, zone id dicari dari nama domain — dan itu menambah satu syarat pada
+token: `Zone:Read`. Dengan zone id terpasang, token yang hanya punya `DNS:Edit`
+sudah cukup.
 
 Skrip membaca token dari environment dan tidak pernah mencetaknya, tidak pernah
 menuliskannya ke file, dan tidak pernah menerimanya sebagai argumen di command

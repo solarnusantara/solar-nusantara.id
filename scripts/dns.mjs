@@ -9,10 +9,12 @@
  *   npm run dns -- delete TXT _acme-challenge
  *   npm run dns -- verify-google "google-site-verification=..."
  *
- * Needs a Cloudflare API token in CLOUDFLARE_API_TOKEN, scoped to this zone
- * with Zone:Read + DNS:Edit. Create one at
- * dash.cloudflare.com/profile/api-tokens -> Create Token -> Edit zone DNS,
- * and restrict it to solar-nusantara.id rather than all zones.
+ * Needs a Cloudflare API token in CLOUDFLARE_API_TOKEN, scoped to this zone.
+ * Create one at dash.cloudflare.com/profile/api-tokens -> Create Token ->
+ * Edit zone DNS, and restrict it to solar-nusantara.id rather than all zones.
+ *
+ * CLOUDFLARE_ZONE_ID is optional; set it and the zone lookup is skipped, which
+ * also lets a DNS-only token work without Zone:Read.
  *
  * The token is read from the environment and never printed, never written to a
  * file, and never passed on a command line where it would land in shell
@@ -64,7 +66,8 @@ Flags
   --json                machine-readable output
 
 Environment
-  CLOUDFLARE_API_TOKEN  zone-scoped token with Zone:Read + DNS:Edit
+  CLOUDFLARE_API_TOKEN  required, zone-scoped token with DNS:Edit
+  CLOUDFLARE_ZONE_ID    optional, skips the zone lookup
 `);
 	process.exit(code);
 }
@@ -98,11 +101,19 @@ async function cf(path, init = {}) {
 	return body.result;
 }
 
-/** Resolve the zone id once, by name, so no id has to be hardcoded or pasted. */
+/** Prefer the configured zone id; fall back to resolving it by name so nothing has to be pasted. */
 async function zoneId() {
+	const configured = (process.env.CLOUDFLARE_ZONE_ID || '').trim();
+	// A wrong id fails as a confusing 404 on every later call, so reject a malformed one here.
+	if (configured) {
+		if (!/^[0-9a-f]{32}$/i.test(configured)) {
+			throw new Error('CLOUDFLARE_ZONE_ID is set but is not a 32-character hex id');
+		}
+		return configured;
+	}
 	const zones = await cf(`/zones?name=${encodeURIComponent(ZONE_NAME)}`);
 	if (!zones.length) {
-		throw new Error(`zone ${ZONE_NAME} not visible to this token - check the token's zone scope`);
+		throw new Error(`zone ${ZONE_NAME} not visible to this token - set CLOUDFLARE_ZONE_ID or widen the token's zone scope`);
 	}
 	return zones[0].id;
 }
@@ -198,97 +209,110 @@ function guardProtected(rec, action) {
 	process.exit(1);
 }
 
-const zid = await zoneId();
+async function main() {
+	const zid = await zoneId();
 
-switch (cmd) {
-	case 'list': {
-		printTable(await findRecords(zid, flag('type'), null));
-		break;
-	}
+	switch (cmd) {
+		case 'list': {
+			printTable(await findRecords(zid, flag('type'), null));
+			break;
+		}
 
-	case 'get': {
-		const [type, name] = positional;
-		if (!type || !name) usage(1);
-		printTable(await findRecords(zid, type, name));
-		break;
-	}
+		case 'get': {
+			const [type, name] = positional;
+			if (!type || !name) usage(1);
+			printTable(await findRecords(zid, type, name));
+			break;
+		}
 
-	case 'add':
-	case 'verify-google': {
-		const [type, name, content] =
-			cmd === 'verify-google' ? ['TXT', '@', positional[0]] : positional;
-		if (!type || !name || !content) usage(1);
+		case 'add':
+		case 'verify-google': {
+			const [type, name, content] =
+				cmd === 'verify-google' ? ['TXT', '@', positional[0]] : positional;
+			if (!type || !name || !content) usage(1);
 
-		const payload = {
-			type: type.toUpperCase(),
-			name: fqdn(name),
-			content,
-			ttl: Number(flag('ttl', '1')),
-		};
-		if (has('proxied')) payload.proxied = true;
+			const payload = {
+				type: type.toUpperCase(),
+				name: fqdn(name),
+				content,
+				ttl: Number(flag('ttl', '1')),
+			};
+			if (has('proxied')) payload.proxied = true;
 
-		console.log(`\nadd  ${payload.type}  ${shortName(payload.name)}  ${content}`);
-		// Google allows several verification TXT rows side by side, so adding one
-		// must not look like it needs the old one removed first.
-		if (cmd === 'verify-google') {
-			const existing = (await findRecords(zid, 'TXT', '@')).filter((r) =>
-				String(r.content).includes('site-verification'),
-			);
-			if (existing.length) {
-				console.log(`  note: ${existing.length} verification TXT already present - Google allows several, none is removed`);
+			console.log(`\nadd  ${payload.type}  ${shortName(payload.name)}  ${content}`);
+			// Google allows several verification TXT rows side by side, so adding one
+			// must not look like it needs the old one removed first.
+			if (cmd === 'verify-google') {
+				const existing = (await findRecords(zid, 'TXT', '@')).filter((r) =>
+					String(r.content).includes('site-verification'),
+				);
+				if (existing.length) {
+					console.log(`  note: ${existing.length} verification TXT already present - Google allows several, none is removed`);
+				}
 			}
+			requireYes('add a record');
+			const made = await cf(`/zones/${zid}/dns_records`, { method: 'POST', body: JSON.stringify(payload) });
+			console.log(`  created ${made.id}\n`);
+			break;
 		}
-		requireYes('add a record');
-		const made = await cf(`/zones/${zid}/dns_records`, { method: 'POST', body: JSON.stringify(payload) });
-		console.log(`  created ${made.id}\n`);
-		break;
-	}
 
-	case 'update': {
-		const [type, name, content] = positional;
-		if (!type || !name || !content) usage(1);
-		const found = await findRecords(zid, type, name);
-		if (found.length !== 1) {
-			console.error(`expected exactly 1 matching record, found ${found.length}`);
-			process.exit(1);
+		case 'update': {
+			const [type, name, content] = positional;
+			if (!type || !name || !content) usage(1);
+			const found = await findRecords(zid, type, name);
+			if (found.length !== 1) {
+				console.error(`expected exactly 1 matching record, found ${found.length}`);
+				process.exit(1);
+			}
+			const rec = found[0];
+			console.log(`\nupdate  ${rec.type}  ${shortName(rec.name)}`);
+			console.log(`  from: ${rec.content}`);
+			console.log(`  to:   ${content}`);
+			guardProtected(rec, 'change');
+			requireYes('change a record');
+			await cf(`/zones/${zid}/dns_records/${rec.id}`, {
+				method: 'PATCH',
+				body: JSON.stringify({ content }),
+			});
+			console.log('  updated\n');
+			break;
 		}
-		const rec = found[0];
-		console.log(`\nupdate  ${rec.type}  ${shortName(rec.name)}`);
-		console.log(`  from: ${rec.content}`);
-		console.log(`  to:   ${content}`);
-		guardProtected(rec, 'change');
-		requireYes('change a record');
-		await cf(`/zones/${zid}/dns_records/${rec.id}`, {
-			method: 'PATCH',
-			body: JSON.stringify({ content }),
-		});
-		console.log('  updated\n');
-		break;
-	}
 
-	case 'delete': {
-		const [type, name] = positional;
-		if (!type || !name) usage(1);
-		const found = await findRecords(zid, type, name);
-		if (!found.length) {
-			console.error('no such record');
-			process.exit(1);
+		case 'delete': {
+			const [type, name] = positional;
+			if (!type || !name) usage(1);
+			const found = await findRecords(zid, type, name);
+			if (!found.length) {
+				console.error('no such record');
+				process.exit(1);
+			}
+			if (found.length > 1) {
+				console.error(`${found.length} records match ${type} ${name}; delete is single-record only.`);
+				printTable(found);
+				process.exit(1);
+			}
+			const rec = found[0];
+			console.log(`\ndelete  ${rec.type}  ${shortName(rec.name)}  ${rec.content}`);
+			guardProtected(rec, 'delete');
+			requireYes('delete a record');
+			await cf(`/zones/${zid}/dns_records/${rec.id}`, { method: 'DELETE' });
+			console.log('  deleted\n');
+			break;
 		}
-		if (found.length > 1) {
-			console.error(`${found.length} records match ${type} ${name}; delete is single-record only.`);
-			printTable(found);
-			process.exit(1);
-		}
-		const rec = found[0];
-		console.log(`\ndelete  ${rec.type}  ${shortName(rec.name)}  ${rec.content}`);
-		guardProtected(rec, 'delete');
-		requireYes('delete a record');
-		await cf(`/zones/${zid}/dns_records/${rec.id}`, { method: 'DELETE' });
-		console.log('  deleted\n');
-		break;
-	}
 
-	default:
-		console.error(`unknown command "${cmd}"`);
-		usage(1);
+		default:
+			console.error(`unknown command "${cmd}"`);
+			usage(1);
+	}
+}
+
+// An operator mistake - wrong token, wrong zone id, a record that is not there -
+// is not a bug, so report the reason and exit rather than printing a stack trace.
+try {
+	await main();
+} catch (e) {
+	console.error(`
+${e.message}
+`);
+	process.exit(1);
 }
