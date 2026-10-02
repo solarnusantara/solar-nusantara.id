@@ -23,3 +23,9 @@ pnpm-debug.log*
 # jetbrains setting folder
 .idea/
 src/content/berita/draft/
+# article pipeline: local working state, not site content
+# topics.json IS committed - it is the plan of record, and the server needs it.
+data/review/
+data/approved.txt
+data/*.log
+data/failed/
