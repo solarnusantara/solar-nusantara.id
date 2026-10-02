@@ -1,5 +1,25 @@
 #!/usr/bin/env node
-/** Flag published articles that have gone stale. Reports only: it never sets updatedDate, because the sitemap lastmod and dateModified both read it, and claiming a thousand revisions that never happened is worse than leaving the dates honest. */
+/**
+ * Flag published articles that have gone stale.
+ *
+ *   npm run refresh                 # report, change nothing
+ *   npm run refresh -- --months 9
+ *
+ * Reports only. It never edits an article and never sets `updatedDate`.
+ *
+ * Why it refuses to touch updatedDate.
+ *
+ * astro.config.mjs derives the sitemap's <lastmod> from `updatedDate ?? pubDate`,
+ * and buildArticleSchema() derives `dateModified` the same way. Its comment
+ * spells out the consequence: a sitemap claiming a page changed today while the
+ * page's own schema says 2024 is a contradiction Google resolves by trusting
+ * neither. A script that stamped `updatedDate` on every stale article would
+ * claim a thousand revisions that never happened, which is worse than leaving
+ * the dates honest.
+ *
+ * So `updatedDate` is set by a human, in the same commit that actually changes
+ * the words. This script only answers "which articles are worth that effort".
+ */
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
@@ -36,7 +56,9 @@ for (const dir of readdirSync(CONTENT_DIR).filter((d) => statSync(join(CONTENT_D
 	const ageMonths = Math.round((Date.now() - date.valueOf()) / (1000 * 60 * 60 * 24 * 30));
 	const row = { dir, date: dateStr.slice(0, 10), ageMonths, errors: seo.errors.length, words: seo.stats.wordCount ?? 0 };
 
-	// Two separate reasons to revisit, reported separately - age needs fresher numbers, thinness needs a rewrite.
+	// Two separate reasons to revisit an article, reported separately because
+	// they need different work: age needs fresher numbers, thinness needs a
+	// rewrite. An article can be both.
 	if (date < cutoff) stale.push(row);
 	if (seo.errors.length > 0) thin.push(row);
 }

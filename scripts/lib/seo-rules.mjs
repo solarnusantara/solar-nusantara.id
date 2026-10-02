@@ -1,4 +1,30 @@
-/** SEO-writing rules as pure functions, shared by the generation loop and the gate so the two cannot drift. */
+/**
+ * SEO rules for solar-nusantara.id articles, as pure functions.
+ *
+ * Shared by two callers on purpose:
+ *   - scripts/generate-article.mjs runs them IN the generation loop, so a
+ *     failing article is regenerated with the failures fed back into the prompt
+ *     instead of being written to disk and found later.
+ *   - scripts/check-seo.mjs runs them across the whole content directory as a
+ *     gate, the way check-content.mjs does for structural rules.
+ *
+ * One definition, two callers. If these rules lived in both files they would
+ * drift, and the gate would start disagreeing with the generator about what a
+ * valid article is.
+ *
+ * Scope: these are the SEO-writing rules. Structural rules - slug shape,
+ * description length, duplicate metadata, unescaped `$`, `#` in body, image alt
+ * - belong to scripts/check-content.mjs and are NOT duplicated here.
+ *
+ * On matching. A focusKeyphrase like "biaya plts pabrik manufaktur" rarely
+ * appears verbatim in natural Indonesian prose, and forcing it to would produce
+ * exactly the robotic text this whole pipeline is trying to avoid. So:
+ *   - placement checks (title, intro, heading, conclusion) match LOOSELY: every
+ *     token of the keyphrase present in that region, order-free.
+ *   - density matches the EXACT phrase, because density is only meaningful
+ *     against a fixed string, and one verbatim occurrence somewhere in the body
+ *     is a reasonable ask.
+ */
 
 const INTRO_WORDS = 150;
 const DENSITY_MIN = 0.003; // 0.3%
@@ -8,16 +34,42 @@ const MIN_INTERNAL_LINKS = 2;
 const MIN_EXTERNAL_LINKS = 1;
 const MIN_CONVERSION_LINKS = 1;
 
-/** Length and structure per article kind: a pillar runs 1,800-2,500 words, its clusters do not. */
+/**
+ * Length and structure by article kind.
+ *
+ * A pillar and its seven children are not the same artifact. The B2B
+ * pillar-cluster model that this matrix implements puts the pillar at
+ * 1,800-2,500 words, structured for a featured snippet, with the clusters
+ * covering long-tail variants underneath it. Holding both to one 700-word floor
+ * produced 126 "pillars" that were the same size as the articles meant to hang
+ * off them, which is a cluster with no centre.
+ *
+ * Floors sit slightly under the target because the model does not hit a word
+ * count exactly and a 1,780-word pillar is not a defect.
+ */
 const KIND_RULES = {
 	pillar: { minWords: 1600, maxWords: 3000, minH2: 6 },
 	longtail: { minWords: 700, maxWords: 1800, minH2: 4 },
 };
 
-/** Internal-link prefixes that count as a commercial destination; /berita/ is deliberately absent. */
+/**
+ * Prefixes that represent a commercial destination rather than more reading.
+ *
+ * Linking articles to articles builds a crawlable graph and nothing else. The
+ * playbook is explicit that a cluster links back to its pillar AND out to a
+ * conversion page; without the second half the archive earns traffic that never
+ * reaches a service page. /berita/ is deliberately absent from this list.
+ */
 export const CONVERSION_PREFIXES = ['/layanan/', '/produk/', '/tentang/sonushub/', '/kontak/'];
 
-/** Domains worth citing from a technical B2B energy article; an open allowlist would admit content farms. */
+/**
+ * Domains that are worth citing from a technical B2B energy article.
+ *
+ * The reference article's advice was "link to trustworthy sources"; on a domain
+ * with no authority of its own, an outbound citation to the regulator whose
+ * rule you are explaining is what makes the explanation checkable. An open
+ * allowlist would let the model cite a content farm and still pass.
+ */
 export const TRUSTED_EXTERNAL = [
 	'esdm.go.id',
 	'ebtke.esdm.go.id',
@@ -87,7 +139,11 @@ function paragraphs(body) {
 		.filter(Boolean)
 		.filter((p) => !p.startsWith('#'))
 		.filter((p) => !/^[-*|>]/.test(p))
-		// Numbered lists too, or a five-step calculation trips the readability rule that the list rule requires.
+		// Numbered lists too. Without this a five-step calculation reads as one
+		// five-sentence paragraph and trips the readability rule - while the rule
+		// two checks down REQUIRES a list. The two rules fought each other and the
+		// list-bearing article lost, which is how a correct pillar draft was
+		// rejected three times for a paragraph that was never a paragraph.
 		.filter((p) => !/^\d+[.)]\s/.test(p))
 		.filter((p) => !/^</.test(p));
 }
@@ -95,12 +151,22 @@ function paragraphs(body) {
 function sentenceCount(paragraph) {
 	const plain = toPlainText(paragraph);
 	if (!plain) return 0;
-	// Guard Indonesian abbreviations so a trailing period does not inflate the sentence count.
+	// Indonesian abbreviations that end in a period would otherwise inflate the
+	// count and fail a perfectly readable paragraph.
 	const guarded = plain.replace(/\b(dll|dsb|dst|yg|tsb|No|Nomor|Rp|kWp|MWp)\./gi, '$1');
 	return guarded.split(/[.!?]+(?:\s|$)/).filter((s) => s.trim().length > 0).length;
 }
 
-/** Run every SEO rule against one article; kind defaults to longtail. */
+/**
+ * Run every SEO rule against one article.
+ *
+ * @param {object} a
+ * @param {string} a.title            frontmatter title
+ * @param {string} a.focusKeyphrase   frontmatter focusKeyphrase
+ * @param {string} a.body             markdown body, frontmatter already stripped
+ * @param {'pillar'|'longtail'} [a.kind] article kind; defaults to longtail
+ * @returns {{errors: string[], warnings: string[], stats: object}}
+ */
 export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 	const rules = KIND_RULES[kind] ?? KIND_RULES.longtail;
 	const errors = [];
@@ -133,7 +199,10 @@ export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 		errors.push('focusKeyphrase is not in any heading');
 	}
 
-	// The conclusion is the text after the last heading.
+	// The conclusion is the text after the last heading. Requiring the keyphrase
+	// here is the reference article's "place it in the conclusion" rule, and it
+	// doubles as a check that the article actually closes rather than trailing
+	// off after the last subheading.
 	const lastHeadingAt = body.lastIndexOf('\n## ');
 	const conclusion = lastHeadingAt === -1 ? plain.slice(-600) : toPlainText(body.slice(lastHeadingAt));
 	if (!containsLoose(conclusion, focusKeyphrase)) {
@@ -180,7 +249,13 @@ export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 	const hasList = /^\s*[-*]\s+\S/m.test(body) || /^\s*\d+\.\s+\S/m.test(body);
 	if (!hasList) errors.push('no bullet or numbered list - at least one is required for scannability');
 
-	// Name the offending paragraph - the generator feeds these errors straight back into a retry.
+	// --- readability -------------------------------------------------------
+	// The message names the offending paragraph. The generator feeds these errors
+	// straight back into a retry prompt, and "1 paragraph longer than 4
+	// sentences" gives the model nothing to act on - it rewrote the wrong parts
+	// three times in a row. Quoting the opening makes the fix obvious, and the
+	// usual cause has an obvious fix: an enumeration written as prose
+	// ("Pertama... Kedua... Ketiga...") should be a list.
 	const longParas = paragraphs(body)
 		.map((p) => ({ text: p, n: sentenceCount(p) }))
 		.filter((p) => p.n > MAX_SENTENCES_PER_PARAGRAPH)
@@ -195,7 +270,10 @@ export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 		errors.push(`dan ${longParas.length - 3} paragraf panjang lainnya`);
 	}
 
-	// Internal links need a trailing slash or GitHub Pages 301s them, and a link to a redirect is an audit finding.
+	// --- links -------------------------------------------------------------
+	// Internal links must be root-relative WITH a trailing slash: GitHub Pages
+	// 301s the slash-less form, and an internal link to a redirect is an audit
+	// finding. docs/CONTENT-PLAYBOOK.md section 5.
 	const links = [...body.matchAll(/\[([^\]]+)\]\(([^)\s]+)[^)]*\)/g)].map((m) => m[2]);
 	const internal = links.filter((h) => h.startsWith('/'));
 	const external = links.filter((h) => /^https?:\/\//i.test(h));
@@ -208,7 +286,10 @@ export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 		errors.push(`${internal.length} internal link(s); at least ${MIN_INTERNAL_LINKS} are required`);
 	}
 
-	// At least one internal link must reach a conversion page; article-to-article links earn traffic that never converts.
+	// At least one internal link has to leave the archive. Article-to-article
+	// links make the corpus crawlable; only a link to a service or product page
+	// turns a reader researching PLTS costs into an RFQ. An article that links
+	// exclusively to /berita/ has done half the job the playbook describes.
 	const conversion = internal.filter((h) => CONVERSION_PREFIXES.some((p) => h.startsWith(p)));
 	if (conversion.length < MIN_CONVERSION_LINKS) {
 		errors.push(
@@ -269,7 +350,19 @@ export function parseFrontmatter(fmText) {
 	return data;
 }
 
-/** Article kind, derived from the tags already in frontmatter so config.ts stays untouched. */
+/**
+ * Article kind, read from the tags already in the frontmatter.
+ *
+ * plan-topics.mjs tags every pillar `panduan` and every long-tail `teknis`, so
+ * the distinction is already on disk and schema-legal. Deriving it here rather
+ * than adding a `kind:` frontmatter field keeps src/content/config.ts untouched
+ * and means an article carries its own kind wherever it is read - the generator,
+ * both gates, the review sheet and the staleness report all agree without
+ * passing state between them.
+ *
+ * @param {string} rawTags the raw `tags:` line value from the frontmatter
+ * @returns {'pillar'|'longtail'}
+ */
 export function kindFromTags(rawTags) {
 	return /\bpanduan\b/.test(String(rawTags ?? '')) ? 'pillar' : 'longtail';
 }

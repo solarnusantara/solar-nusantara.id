@@ -1,5 +1,33 @@
 #!/usr/bin/env node
-/** Generate articles from data/topics.json using DeepSeek. The model writes only a description and a body - every frontmatter field was decided upstream. Needs DEEPSEEK_API_KEY. */
+/**
+ * Generate articles from data/topics.json using DeepSeek.
+ *
+ *   npm run generate -- --limit 1              # one article, wave 1
+ *   npm run generate -- --limit 10 --wave 1
+ *   npm run generate -- --dry-run --limit 1    # print, write nothing
+ *   npm run generate -- --id pabrik-manufaktur--biaya-roi--pilar
+ *
+ * Requires DEEPSEEK_API_KEY in the environment. Never read from the repo.
+ *
+ * Design decision that removes a whole class of failure: the model does NOT
+ * write frontmatter. title, slug, focusKeyphrase, tags and seoTitle were all
+ * decided by plan-topics.mjs and are written here deterministically. The model
+ * supplies exactly two things - a description and a body - so it cannot
+ * invent a duplicate keyphrase, a malformed slug, or a ninth tag.
+ *
+ * Two more failure classes are fixed mechanically rather than by retrying,
+ * because a retry costs a call and these have exactly one correct answer:
+ *   - `$` before a digit becomes `\$` (remark-math would otherwise pair two of
+ *     them into one formula and eat the text between - it shipped twice)
+ *   - a `# ` heading in the body is demoted to `## ` (the layout already
+ *     renders the title as the page's only h1)
+ *
+ * Everything else - keyword placement, density, paragraph length, links - is
+ * a judgement the model has to get right, so those failures are fed back into
+ * a retry prompt naming exactly what was wrong.
+ *
+ * Articles are always born `draft: true`. Publishing is publish-drip.mjs's job.
+ */
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSeo, TRUSTED_EXTERNAL } from './lib/seo-rules.mjs';
@@ -27,7 +55,8 @@ const onlyId = flag('id');
 const dryRun = has('dry-run');
 const modelOverride = flag('model');
 const concurrency = Math.max(1, Number(flag('concurrency', '2')));
-// Link checking needs egress; disable only for offline tests, since a fabricated URL must surface here rather than on the site.
+// Pemeriksaan tautan butuh egress. Dimatikan hanya untuk uji offline; pada
+// jalur normal sebuah URL karangan harus ketahuan di sini, bukan di situs.
 const skipLinkCheck = has('skip-link-check');
 
 const API_KEY = process.env.DEEPSEEK_API_KEY;
@@ -38,11 +67,34 @@ if (!API_KEY) {
 	process.exit(1);
 }
 
-/** deepseek-flash for everything, measured: pro took 159-214s against flash's 34-47 and returned an empty content on the full prompt. */
+/**
+ * deepseek-flash for everything, measured rather than assumed.
+ *
+ * The plan was pro for pillars and flash for long-tail. Benchmarked on this
+ * exact prompt, pro was the worse tool: 159-214s per call against flash's
+ * 34-37s, and on the full prompt it spent the entire 16k budget on
+ * `reasoning_content` and returned an empty `content`. Flash returned a
+ * correctly formatted 900-1200 word article on the first attempt.
+ *
+ * pro is still reachable with `--model deepseek-v4-pro` for a specific article
+ * worth 5x the wall clock, but it is not the default for a 1000-article run:
+ * 200s x 1000 is 55 hours of generation against flash's ~10.
+ */
 const modelFor = (topic) => modelOverride || 'deepseek-flash';
 
 // --- verified facts ---------------------------------------------------------
-/** Every number here came from Solar Nusantara's own material or the regulation itself; DB_PR.csv is never read, as it carries internal pricing. */
+/**
+ * Every number here came from Solar Nusantara's own published material (the
+ * Sonus ID YouTube channel) or from the regulation itself. This block is what
+ * separates the output from generic AI filler: an article that cites the real
+ * CAPEX band for a 1 MWp system in Indonesia is useful to a buyer, and one that
+ * says "solar is a great investment" is not.
+ *
+ * Deliberately NOT sourced from DB_PR.csv. That file carries `Pagu` and
+ * `Final Price` - internal procurement prices and margin. Publishing supplier
+ * pricing is a commercial loss that cannot be undone, so the generator never
+ * sees it.
+ */
 const FACTS = `
 FAKTA TERVERIFIKASI (gunakan yang relevan, jangan mengarang angka lain):
 - CAPEX PLTS 1 MWp di Indonesia: Rp 9-13 miliar (rentang 2024-2025).
@@ -103,7 +155,14 @@ const INTENT_SHAPE = {
 };
 
 // --- prompt -----------------------------------------------------------------
-/** Length and shape per article kind - a pillar is the hub its seven children link into. */
+/**
+ * Length and shape per article kind.
+ *
+ * A pillar is the hub its seven children link into, and the B2B pillar-cluster
+ * model puts it at 1,800-2,500 words structured for a featured snippet. Writing
+ * both kinds to one 900-1,400 spec produced pillars the same size as the
+ * articles meant to hang off them.
+ */
 const KIND_SPEC = {
 	pillar: {
 		words: '1800-2500',
@@ -114,7 +173,9 @@ const KIND_SPEC = {
 			'ringkasan 40-60 kata yang menjawab pertanyaan utama secara langsung dan mandiri ' +
 			'(ini yang diambil Google sebagai featured snippet). Tiap heading ## adalah subtopik ' +
 			'yang berdiri sendiri, karena artikel turunan akan menautkan balik ke sini. ' +
-			// A global word count is too abstract to steer: asked for 1800-2500 the model produced 1199, so the floor is per section.
+			// A global word count is too abstract to steer against: asked for
+			// 1800-2500 the model produced 1199 across 8 headings, which is 150
+			// words a section. A per-section floor is concrete and it hits.
 			'PENTING soal kedalaman: tiap bagian ## harus 250-350 kata. Jangan menulis ' +
 			'bagian sepanjang tiga kalimat lalu pindah heading - itu menghasilkan artikel ' +
 			'yang terlihat lengkap tapi tidak menjawab apa pun. Tiap bagian wajib memuat ' +
@@ -206,7 +267,18 @@ async function callModel(topic, previousErrors) {
 			model: modelFor(topic),
 			messages: [{ role: 'user', content: buildPrompt(topic, previousErrors) }],
 			temperature: 0.6,
-			// Kind-aware because reasoning tokens share this budget; a 2,000-word Indonesian pillar truncated on every attempt at 16k.
+			// Both DeepSeek models reason before answering, and reasoning tokens
+			// come out of this same budget. Measured on this prompt shape:
+			// deepseek-flash burns ~5.5k reasoning of ~7.3k total, deepseek-v4-pro
+			// ~6.2k of ~9.3k. At the old 4000 the article was truncated mid-sentence
+			// every time, which surfaced as three confusing validation errors
+			// (missing closing section, missing list, one internal link) instead of
+			// the one real cause.
+			//
+			// Kind-aware since pillars moved to 1800-2500 words: Indonesian runs
+			// roughly two tokens a word, so a 2,000-word pillar is ~4-5k output
+			// tokens on top of the same 6-8k of reasoning, and 16000 truncated it
+			// on every attempt. Long-tail articles are unchanged.
 			max_tokens: topic.kind === 'pillar' ? 32000 : 16000,
 		}),
 	});
@@ -219,7 +291,13 @@ async function callModel(topic, previousErrors) {
 	const choice = json?.choices?.[0];
 	const text = choice?.message?.content ?? '';
 
-	// Truncation is checked BEFORE emptiness, because on these models an empty content IS the truncation case.
+	// Truncation is checked BEFORE emptiness, because on these models the empty
+	// case IS a truncation case. Both DeepSeek models stream their chain of
+	// thought into `reasoning_content` and the answer into `content`, and both
+	// draw on the same max_tokens budget. deepseek-v4-pro given this prompt
+	// reasoned until the budget was gone and returned content: "" with
+	// finish_reason "length" - which the old order reported as the useless
+	// "DeepSeek returned no content" after 643 seconds of retries.
 	if (choice?.finish_reason === 'length') {
 		return { text, truncated: true };
 	}
@@ -228,11 +306,15 @@ async function callModel(topic, previousErrors) {
 }
 
 // --- mechanical fixes -------------------------------------------------------
-/** Fixes with exactly one correct answer, applied rather than retried. */
+/**
+ * Fixes with exactly one correct answer, applied rather than retried.
+ * Retrying these would spend a call to re-learn something deterministic.
+ */
 function applyMechanicalFixes(body) {
 	return (
 		body
-			// remark-math pairs two `$` into one formula and eats the text between - two articles shipped as "100perwatt" before the gate existed.
+			// remark-math reads `$100 ... $1` as one inline formula and swallows the
+			// text between. Two articles shipped as "100perwatt" before the gate.
 			.replace(/(?<!\\)\$(?=\d)/g, '\\$')
 			// The layout renders the title as the page's only h1.
 			.replace(/^# (?!#)/gm, '## ')
@@ -298,7 +380,10 @@ function validate(topic, description, body) {
 	const seo = checkSeo({ title: topic.title, focusKeyphrase: topic.focusKeyphrase, body, kind: topic.kind });
 	errors.push(...seo.errors);
 
-	// Fabricated facts are caught in the loop, where a wrong regulation number costs one retry instead of a regenerated article.
+	// Fabricated facts are caught here, in the loop, rather than only at publish
+	// time. A wrong regulation number is a writing mistake the model can fix when
+	// told about it, and fixing it costs one retry; catching it at publish costs
+	// an article that has to be regenerated anyway, later, with less context.
 	const facts = checkFacts({ body });
 	errors.push(...facts.errors);
 
@@ -335,7 +420,9 @@ async function generateOne(topic) {
 
 		const { errors, stats } = validate(topic, parsed.description, parsed.body);
 
-		// Only pay for the network check once the cheap checks pass.
+		// Only pay for the network check once the cheap checks pass. An article
+		// that already fails on keyword placement is getting regenerated anyway,
+		// and its links will change with it.
 		if (errors.length === 0 && !skipLinkCheck) {
 			const links = await verifyExternalLinks(parsed.body);
 			errors.push(...links.errors);
@@ -350,7 +437,10 @@ async function generateOne(topic) {
 
 		previousErrors = errors;
 		if (attempt === MAX_ATTEMPTS) {
-			// Keep the last rejected draft, or a three-attempt failure is error strings with no way to see what the model wrote.
+			// Keep the last rejected draft. Without it a three-attempt failure is a
+			// list of error strings with no way to see what the model actually
+			// wrote, and diagnosing a prompt problem means reproducing the call by
+			// hand. Written outside src/ so Astro never sees it.
 			try {
 				mkdirSync('data/failed', { recursive: true });
 				const header = [

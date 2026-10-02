@@ -1,11 +1,47 @@
-/** Catch fabricated facts before they ship; the structure and writing gates check form, not truth. */
+/**
+ * Catch fabricated facts before they reach the site.
+ *
+ * Why this exists.
+ *
+ * check-content.mjs validates structure. check-seo.mjs validates writing. Neither
+ * can tell the difference between "Permen ESDM No. 2 Tahun 2024" and "Permen ESDM
+ * No. 5 Tahun 2023" - both are well-formed, both sit in a correct sentence, and
+ * both pass every rule those gates have. One is the regulation that actually
+ * changed rooftop PLTS quotas; the other does not exist.
+ *
+ * With a human reading every batch, that gets caught on article 3. Without one,
+ * it gets caught on article 300 - by a customer, in an RFQ conversation, about a
+ * claim the company published under its own name.
+ *
+ * So the approach is an ALLOWLIST, not a plausibility check. The generator is
+ * given a fixed block of verified facts and told not to invent others. This file
+ * enforces exactly that: every citable number or regulation in the body must
+ * either match a known value or not look like a citation at all.
+ *
+ * Deliberately narrow. It checks the claim shapes that (a) a reader would act on
+ * and (b) have exactly one correct value. It does not attempt to fact-check prose
+ * in general, because a guard that flags everything gets switched off.
+ */
 
-/** Regulations the generator may cite - an allowlist, because a fabricated citation is perfectly well-formed. */
+/**
+ * Regulations the generator is allowed to cite, from the FACTS block it is given.
+ *
+ * An allowlist rather than a format check: "Permen ESDM No. 5 Tahun 2023" is
+ * perfectly well-formed and completely fabricated. Adding a regulation here is a
+ * deliberate act that should accompany adding it to FACTS in
+ * generate-article.mjs, so the two never drift apart.
+ */
 export const KNOWN_REGULATIONS = [
 	{ pattern: /permen\s*(?:en)?\s*esdm/i, nomor: '2', tahun: '2024', label: 'Permen ESDM No. 2 Tahun 2024' },
 ];
 
-/** Constants with exactly one correct value; `near` allows a writer's rounding, `exact` does not. */
+/**
+ * Constants with exactly one correct value, from the same FACTS block.
+ *
+ * `near` allows the rounding a writer legitimately does (0,87 -> 0,9); `exact`
+ * does not, because "TKDN minimal 35 persen" is not a rounding of 40, it is a
+ * different claim with contractual consequences.
+ */
 const CONSTANTS = [
 	{
 		name: 'TKDN minimum',
@@ -32,7 +68,12 @@ const CONSTANTS = [
 	},
 ];
 
-/** CAPEX band for a 1 MWp system, from the same FACTS block the generator is given. */
+/**
+ * CAPEX for a 1 MWp system. The FACTS block gives Rp 9-13 miliar, with a worked
+ * example at Rp 11 miliar. A number outside that band presented as the cost of a
+ * 1 MWp system is either a fabrication or a unit slip, and both mislead a buyer
+ * building a budget.
+ */
 const CAPEX_1MWP = { min: 9, max: 13, unit: 'miliar' };
 
 /** Entities the article may name. Anything else that looks like a client is invented. */
@@ -49,7 +90,8 @@ const KNOWN_ENTITIES = [
 	'esdm',
 	'kementerian esdm',
 	'indonesia terang',
-	// Real Indonesian SOEs - naming them in an industry piece is legitimate, inventing a client is not.
+	// BUMN dan lembaga nyata di lanskap PV Indonesia. Menyebut mereka dalam
+	// artikel industri itu sah; yang dilarang adalah mengarang klien.
 	'len industri',
 	'pertamina',
 	'pupuk indonesia',
@@ -65,13 +107,20 @@ function stripCode(body) {
 /** "9,5" and "9.5" both mean nine and a half in Indonesian prose. */
 const toNumber = (s) => Number(String(s).replace(',', '.'));
 
-/** Check one article body against the allowlists. */
+/**
+ * @param {object} a
+ * @param {string} a.body   markdown body, frontmatter already stripped
+ * @returns {{errors: string[], warnings: string[]}}
+ */
 export function checkFacts({ body }) {
 	const errors = [];
 	const warnings = [];
 	const text = stripCode(body);
 
-	// Regulation citations must match the allowlist on both number and year.
+	// --- regulations --------------------------------------------------------
+	// Any "<reg> No. X Tahun Y" must match the allowlisted number AND year.
+	// Both are checked: the right regulation cited with the wrong year is still a
+	// wrong citation, and a reader looking it up finds nothing.
 	const regCite = /((?:permen(?:en)?\s*esdm|peraturan\s+menteri[^.\n]{0,40}?))\s*(?:no\.?|nomor)\s*(\d+)\s*(?:\/|\s+tahun\s+)\s*(\d{4})/gi;
 	for (const m of text.matchAll(regCite)) {
 		const [full, name, nomor, tahun] = m;
@@ -85,7 +134,8 @@ export function checkFacts({ body }) {
 		}
 	}
 
-	// A bare "Permen ESDM" is fine; a wrong year attached to it is a wrong citation.
+	// A bare "Permen ESDM" with no number is fine; one with a year that is not
+	// 2024 is a citation with a wrong date attached to it.
 	for (const m of text.matchAll(/permen\s*(?:en)?\s*esdm[^.\n]{0,30}?tahun\s+(\d{4})/gi)) {
 		if (m[1] !== '2024') {
 			errors.push(`Permen ESDM dirujuk dengan tahun ${m[1]}; yang ada di fakta terverifikasi adalah 2024`);
@@ -105,7 +155,21 @@ export function checkFacts({ body }) {
 		}
 	}
 
-	// CAPEX must be anchored to both 1 MWp and a capital-cost word, with no savings term in between.
+	// --- CAPEX band ---------------------------------------------------------
+	// The number must be anchored to BOTH a 1 MWp system and a capital-cost word,
+	// with no "opex" between them.
+	//
+	// The first version of this only required "1 MWp" within 80 characters, and
+	// it failed on three real articles that say "PLTS 1 MWp dengan CAPEX Rp 11
+	// miliar dan OPEX Rp 220 juta per tahun" - flagging the OPEX figure, which is
+	// correct, as a CAPEX unit error. A guard that fires on correct articles gets
+	// switched off, so the anchor has to be precise.
+	// The exclusion list is the whole rule. Every term here appeared in a real
+	// article, attached to a rupiah figure, in the same clause as the word CAPEX:
+	//   "Dengan CAPEX Rp 11 miliar dibagi penghematan neto Rp 1,46 miliar"
+	//   "Pada rentang CAPEX itu dan penghematan neto Rp 1,46 miliar per tahun"
+	// Both are correct sentences. Without these exclusions the guard reads the
+	// savings figure as the system cost and rejects a good article.
 	const NOT_CAPEX = 'opex|pemeliharaan|penghematan|arus\\s+kas|tarif|pendapatan|hemat|saving';
 	const capexRe = new RegExp(
 		`(?:capex|belanja\\s+modal|biaya\\s+investasi|investasi\\s+awal)((?:(?!${NOT_CAPEX})[^.\\n]){0,70}?)` +
@@ -130,7 +194,16 @@ export function checkFacts({ body }) {
 		}
 	}
 
-	// An unknown company next to a success verb is a fabricated case study; a bare mention is only a warning.
+	// --- invented case studies ----------------------------------------------
+	// Naming a real company in an industry piece is legitimate - the existing
+	// articles name PT PLN and PT LEN Industri correctly, and an earlier version
+	// of this rule rejected both. What is NOT legitimate is an unnamed-source
+	// success story: "PT Sinar Abadi berhasil menghemat 40%" reads as a reference
+	// customer the sales team can be asked about and cannot produce.
+	//
+	// So the error fires only on the case-study SHAPE. A bare mention is a
+	// warning, which is enough to hold it back in unattended mode without
+	// rejecting an article for saying "PLN".
 	const CASE_VERB = /\b(berhasil|menghemat|memasang|mengurangi|meningkatkan|mencapai|melaporkan|membukukan)\b/i;
 	for (const m of text.matchAll(/\bPT\.?\s+([A-Z][A-Za-z]*(?:\s+[A-Z][A-Za-z]*){0,4})/g)) {
 		const bare = m[1].toLowerCase().trim();
@@ -148,7 +221,14 @@ export function checkFacts({ body }) {
 		}
 	}
 
-	// Every link target is checked, including a typo'd scheme that an https-only matcher would skip.
+	// --- malformed URLs -----------------------------------------------------
+	// Whether a URL resolves is answered by verifyExternalLinks(), which fetches
+	// it. Guessing from path depth flagged nrel.gov/docs/fy18osti/68696.pdf - a
+	// real document - so that guess is gone.
+	// Every link target is checked, not just the ones that already look like
+	// http(s). An earlier version matched /https?:\/\// and so "htp:/salah-url"
+	// - a typo'd scheme, exactly the kind of thing worth catching - was not even
+	// examined. A link the model mistyped is a dead link on a published page.
 	for (const m of text.matchAll(/\[([^\]]*)\]\(\s*([^)\s]+)/g)) {
 		const href = m[2];
 		if (href.startsWith('#')) continue;                       // in-page anchor
@@ -169,6 +249,7 @@ export function checkFacts({ body }) {
 		}
 	}
 
+	// --- unverifiable precision --------------------------------------------
 	// A study or survey citation the generator was never given cannot be real.
 	for (const m of text.matchAll(/\b(?:studi|riset|penelitian|survei|laporan)\s+(?:dari\s+)?([A-Z][A-Za-z]{2,})/g)) {
 		const src = m[1].toLowerCase();
@@ -181,7 +262,24 @@ export function checkFacts({ body }) {
 	return { errors, warnings };
 }
 
-/** Fetch every external link - a fabricated citation is absent, not deep, and only the server can tell. */
+/**
+ * Fetch every external link and report the ones that do not resolve.
+ *
+ * This replaces guessing from URL shape. A fabricated citation is not "deep",
+ * it is *absent* - and the only way to know the difference between
+ * `nrel.gov/docs/fy18osti/68696.pdf` (real) and a plausible-looking sibling the
+ * model invented is to ask the server.
+ *
+ * Runs in the generation loop, where a 404 becomes a retry with the failure fed
+ * back, and again before unattended publishing. Network failures are reported as
+ * warnings rather than errors: a timeout means the check did not run, not that
+ * the link is bad, and refusing to publish because a government site was slow
+ * would be a gate that punishes the wrong thing.
+ *
+ * @param {string} body markdown body
+ * @param {{timeoutMs?: number, concurrency?: number}} [opts]
+ * @returns {Promise<{errors: string[], warnings: string[], checked: number}>}
+ */
 export async function verifyExternalLinks(body, opts = {}) {
 	const timeoutMs = opts.timeoutMs ?? 12000;
 	const concurrency = opts.concurrency ?? 4;
@@ -201,7 +299,8 @@ export async function verifyExternalLinks(body, opts = {}) {
 		const ctl = new AbortController();
 		const timer = setTimeout(() => ctl.abort(), timeoutMs);
 		try {
-			// HEAD first, falling back to GET on a 405 from servers that refuse it.
+			// HEAD first - cheap, and enough for most servers. Some reject it with
+			// 405 while serving the page fine, so that falls through to GET.
 			let res = await fetch(url, { method: 'HEAD', redirect: 'follow', signal: ctl.signal });
 			if (res.status === 405 || res.status === 501) {
 				res = await fetch(url, { method: 'GET', redirect: 'follow', signal: ctl.signal });

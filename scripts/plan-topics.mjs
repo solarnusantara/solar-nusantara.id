@@ -1,5 +1,32 @@
 #!/usr/bin/env node
-/** Build the topic matrix: 14 B2B segments x 9 buyer intents = 126 pillars, each with 7 long-tail children. Run: npm run plan-topics [--dry-run] */
+/**
+ * Build the topic matrix for the ~1000-article B2B build-out.
+ *
+ *   npm run plan-topics              # write data/topics.json
+ *   npm run plan-topics -- --dry-run # validate and report, write nothing
+ *
+ * Why a matrix and not a list.
+ *
+ * check-content.mjs fails the build on a duplicate focusKeyphrase, and
+ * CONTENT-PLAYBOOK.md says the quiet part out loud: at 1000 articles,
+ * cannibalisation is the default outcome unless something counts. A
+ * hand-written list of 1000 topics collides with itself long before it reaches
+ * 1000. A matrix cannot: every keyphrase is `<modifier> <segment>`, the
+ * modifier is unique per (intent, child index), and the segment is unique, so
+ * uniqueness is structural rather than checked-after-the-fact. The check at the
+ * bottom of this file is a safety net, not the mechanism.
+ *
+ * Shape: 14 B2B segments x 9 buyer intents = 126 pillars, each with 7 long-tail
+ * children = 882. Total 1008.
+ *
+ * The matrix also solves internal linking for free. `tags` carry the segment
+ * and the intent, and getRelatedArticles() in src/utils/articles.ts already
+ * ranks by shared tags before recency - so every article lands in a cluster of
+ * siblings instead of in a flat 168-page-deep list.
+ *
+ * This file emits no prose. It decides WHAT gets written and under which URL;
+ * generate-article.mjs decides what the words are.
+ */
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 
@@ -12,7 +39,11 @@ const WAVE_1_SIZE = 100;
 
 const dryRun = process.argv.includes('--dry-run');
 
-/** Identical to new-article.mjs on purpose - that file must stay copyable into a fresh checkout. */
+/**
+ * Identical to scripts/new-article.mjs. Duplicated rather than shared because
+ * new-article.mjs is a standalone tool a human runs by hand, and one file that
+ * can be copied into a fresh checkout is worth more than one fewer function.
+ */
 function slugify(input) {
 	return input
 		.normalize('NFD')
@@ -25,7 +56,19 @@ function slugify(input) {
 		.replace(/-+$/g, '');
 }
 
-// Axis A: B2B segments. `link` is the commercial page the article must link to; every one returned 200 before being written here.
+// ---------------------------------------------------------------------------
+// Axis A: B2B segments.
+//
+// `label` goes in the <h1>, `short` in the <title> when the long form would
+// blow the 60-character SERP budget, `kw` into the focusKeyphrase. `link` is
+// the commercial page the article must link to in its body - every one of these
+// was fetched and returned 200 before being written here, because an internal
+// link to a 404 is an audit finding repeated 72 times per segment.
+//
+// `priority` decides what lands in wave 1. Higher = closer to an RFQ: a factory
+// roof is a bigger contract than a school roof, and a government building
+// carries the B2G angle the company's own YouTube pins in its comments.
+// ---------------------------------------------------------------------------
 const SEGMENTS = [
 	{ key: 'pabrik-manufaktur',  label: 'Pabrik Manufaktur',        short: 'Pabrik',        kw: 'pabrik manufaktur',   tag: 'manufaktur',      priority: 10 },
 	{ key: 'gudang',             label: 'Gudang dan Pergudangan',   short: 'Gudang',        kw: 'gudang',              tag: 'pergudangan',     priority: 8 },
@@ -43,7 +86,19 @@ const SEGMENTS = [
 	{ key: 'pelabuhan-logistik', label: 'Pelabuhan dan Logistik',   short: 'Logistik',      kw: 'pelabuhan logistik',  tag: 'logistik',        priority: 5 },
 ];
 
-// Axis B: buyer intent. This axis IS the search-intent step and carries `funnel`, which drives both the wave-1 quota and the article's shape.
+// ---------------------------------------------------------------------------
+// Axis B: buyer intent.
+//
+// This axis IS the search-intent step: `intent` is carried through to
+// generate-article.mjs, which uses it to choose the article's shape. A "biaya"
+// article opens with a number and a table; a "regulasi" article opens with the
+// rule and its date. Writing both the same way is what makes bulk content read
+// like bulk content.
+//
+// Each intent supplies exactly 7 children. `t` is the title stem, `s` the short
+// stem for seoTitle, `k` the keyphrase stem. Keyphrase = `${k} ${segment.kw}`,
+// which is what makes the whole matrix collision-free by construction.
+// ---------------------------------------------------------------------------
 const INTENTS = [
 	{
 		key: 'biaya-roi', tag: 'biaya-roi', priority: 10, funnel: 'bofu',
@@ -173,7 +228,10 @@ const INTENTS = [
 	},
 ];
 
+// ---------------------------------------------------------------------------
 // Read what is already published so the matrix never collides with it.
+// Same frontmatter-scraping approach new-article.mjs uses.
+// ---------------------------------------------------------------------------
 function readExisting() {
 	const keyphrases = new Set();
 	const slugs = new Set();
@@ -199,7 +257,9 @@ function readExisting() {
 	return { keyphrases, slugs, titles };
 }
 
+// ---------------------------------------------------------------------------
 // Build.
+// ---------------------------------------------------------------------------
 const existing = readExisting();
 const topics = [];
 const problems = [];
@@ -217,7 +277,10 @@ for (const seg of SEGMENTS) {
 			const focusKeyphrase = `${row.k} ${seg.kw}`;
 			const slug = slugify(title);
 
-			// Tags drive getRelatedArticles(); segment first so a factory buyer gets factory siblings, not hotel ROI.
+			// Tags drive getRelatedArticles(). Segment first so siblings in the
+			// same segment cluster before siblings sharing only an intent - a
+			// factory buyer reading about factory ROI wants factory sizing next,
+			// not hotel ROI.
 			const tags = [seg.tag, intent.tag, 'plts', row.kind === 'pillar' ? 'panduan' : 'teknis'];
 
 			topics.push({
@@ -230,7 +293,9 @@ for (const seg of SEGMENTS) {
 				intent: intent.key,
 				funnel: intent.funnel,
 				title,
-				// Only emit seoTitle when the real title would be truncated, or the ~40% that already fit lose descriptive characters.
+				// Only emit seoTitle when the real title would be truncated in the
+				// SERP. Setting it unconditionally would throw away descriptive
+				// title characters on the ~40% of rows that already fit.
 				seoTitle: title.length > SEO_TITLE_MAX ? seoTitle : undefined,
 				slug,
 				focusKeyphrase,
@@ -242,7 +307,15 @@ for (const seg of SEGMENTS) {
 	}
 }
 
-// Carry over generation status by id - without this a matrix tweak silently resets every generated row and wedges the queue.
+// --- preserve generation state ---------------------------------------------
+// Re-running this script after a matrix tweak must not forget which topics have
+// already been written. Without this, adjusting one intent's funnel label would
+// silently reset every `generated` row to `pending` and the next run would
+// regenerate articles that already exist - which generate-article.mjs then
+// refuses as "directory already exists", leaving the queue wedged.
+//
+// Keyed by id, and only the mutable run fields are carried over; everything
+// describing WHAT to write is rebuilt from the matrix on purpose.
 if (existsSync(OUT)) {
 	try {
 		const prev = JSON.parse(readFileSync(OUT, 'utf8'));
@@ -262,7 +335,20 @@ if (existsSync(OUT)) {
 	}
 }
 
-// Wave 1 composition is a quota, not a side effect of priority: 60-70% BOFU, because only 4.7% of B2B teams work BOFU at all.
+// --- wave assignment -------------------------------------------------------
+// Wave 1 is the 100 articles that prove the whole chain before the other ~900.
+//
+// Composition is a QUOTA, not a side effect of priority. Measured B2B guidance
+// puts 60-70% of production at bottom-of-funnel, and the reason is a gap rather
+// than a preference: only 4.7% of B2B content teams work BOFU at all, while the
+// other 95.3% publish top-of-funnel that earns traffic and closes nothing.
+// Sorting purely by priority would have filled wave 1 with whatever scored high,
+// which on this matrix skews informational - the same mistake at a larger scale.
+//
+// So the buckets are filled separately and explicitly, and the run prints the
+// resulting split. Pillars still outrank their own long-tail inside a bucket: a
+// pillar is the hub its 7 children link into, so shipping children first builds
+// a cluster with no centre.
 const FUNNEL_QUOTA = { bofu: 0.65, mofu: 0.25, tofu: 0.10 };
 
 const byPriority = (a, b) => {
@@ -286,7 +372,8 @@ for (const [funnel, share] of Object.entries(FUNNEL_QUOTA)) {
 	}
 }
 
-// Rounding can leave wave 1 short; fill from BOFU, the bucket the quota exists to protect.
+// Rounding can leave wave 1 a seat or two short. Fill from BOFU, because that is
+// the bucket the quota exists to protect.
 if (placed < WAVE_1_SIZE) {
 	for (const t of buckets.bofu) {
 		if (placed >= WAVE_1_SIZE) break;
@@ -296,7 +383,9 @@ if (placed < WAVE_1_SIZE) {
 	}
 }
 
-// The matrix should make collisions impossible - this proves it rather than assuming it.
+// --- validation ------------------------------------------------------------
+// The matrix should make collisions impossible. This proves it rather than
+// assuming it, and catches a typo in a stem that silently duplicates another.
 const seen = { slug: new Map(), keyphrase: new Map(), title: new Map() };
 
 for (const t of topics) {
@@ -312,7 +401,10 @@ for (const t of topics) {
 		}
 	}
 
-	// Live-site collisions only matter for pending topics; otherwise a plan reports its own output as foreign and deadlocks every re-run.
+	// Collisions against the live site only matter for topics this plan has not
+	// written yet. Once a topic has been generated, its own article is sitting in
+	// src/content/berita and would otherwise be reported as a foreign collision -
+	// which deadlocks every re-run after the first generation batch.
 	if (t.status === 'pending') {
 		if (existing.slugs.has(t.slug)) problems.push(`${t.id}: slug "${t.slug}" already exists on the site`);
 		if (existing.keyphrases.has(t.focusKeyphrase.toLowerCase())) problems.push(`${t.id}: focusKeyphrase "${t.focusKeyphrase}" already used by a published article`);

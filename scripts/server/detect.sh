@@ -1,5 +1,15 @@
 #!/bin/sh
-# Report what this server can actually run, before anything is installed. Read-only: reads versions and checks outbound connectivity, installs nothing, writes nothing, never prints a secret. Usage: ssh user@server 'sh -s' < scripts/server/detect.sh
+# Report what this server can actually run, before anything is installed on it.
+#
+# Read-only: reads versions and checks outbound connectivity. Installs nothing,
+# writes nothing, and never prints the value of a secret.
+#
+# Usage, from your laptop:
+#   ssh user@server 'sh -s' < scripts/server/detect.sh
+#
+# The generation pipeline needs Node >= 20 (Astro 5 requires it), git, outbound
+# HTTPS to api.deepseek.com, and outbound SSH to github.com. Everything else in
+# this report is context for choosing systemd vs cron.
 
 say() { printf '%s\n' "$*"; }
 hr()  { say "------------------------------------------------------------"; }
@@ -37,7 +47,9 @@ check "Arsitektur" "$(uname -m)" "PASS"
 check "Hostname" "$(hostname 2>/dev/null || echo unknown)" "PASS"
 check "User" "$(id -un 2>/dev/null || echo unknown)" "PASS"
 
-# The single hard requirement: Astro 5 needs Node >= 20, and node:sqlite lands in 22.
+# --- node -------------------------------------------------------------------
+# The single hard requirement. Astro 5 needs Node >= 20; the pipeline scripts
+# use node:sqlite, which lands in 22. Below 20 nothing else matters.
 say ""
 say "NODE.JS  (wajib >= 20)"
 if command -v node >/dev/null 2>&1; then
@@ -67,7 +79,9 @@ command -v ssh >/dev/null 2>&1 \
 	&& check "ssh client" "ada" "PASS" \
 	|| check "ssh client" "tidak ada" "FAIL" "wajib untuk deploy key"
 
-# systemd timers are preferred - they log to the journal, survive reboot, and carry EnvironmentFile so the key never sits in a crontab line.
+# --- scheduler --------------------------------------------------------------
+# systemd timers are preferred: they log to the journal, survive reboot, and
+# carry EnvironmentFile so the API key never sits in a crontab line.
 say ""
 say "PENJADWAL"
 if command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
@@ -92,7 +106,9 @@ else
 	check "sudo/root" "tidak ada sudo" "WARN" "pakai systemd --user atau cron user"
 fi
 
-# Generation is network-bound, not CPU-bound; the floor that matters is disk for node_modules plus a full build.
+# --- resources --------------------------------------------------------------
+# Generation is network-bound, not CPU-bound. The floor that matters is disk:
+# node_modules plus a full Astro build of ~1000 articles.
 say ""
 say "SUMBER DAYA"
 if [ -r /proc/meminfo ]; then
@@ -109,7 +125,9 @@ if [ -n "$availmb" ]; then
 		|| check "Disk bebas" "${availmb} MB" "WARN" "sediakan >= 3 GB"
 fi
 
-# Both are mandatory - a server behind an egress firewall fails here rather than halfway through the first run.
+# --- connectivity -----------------------------------------------------------
+# Both are mandatory. A server behind an egress firewall fails here rather than
+# halfway through the first generation run.
 say ""
 say "KONEKTIVITAS KELUAR"
 if command -v curl >/dev/null 2>&1; then
@@ -131,7 +149,8 @@ else
 	check "curl" "tidak terpasang" "FAIL" "wajib untuk panggil API"
 fi
 
-# GitHub always refuses the shell, so exit 1 with "successfully authenticated" is the expected success shape.
+# git push uses SSH on port 22. Exit status 1 with "successfully authenticated"
+# is the expected success shape; GitHub always refuses the shell.
 if command -v ssh >/dev/null 2>&1; then
 	out=$(ssh -o StrictHostKeyChecking=accept-new -o ConnectTimeout=15 -T git@github.com 2>&1)
 	case "$out" in
