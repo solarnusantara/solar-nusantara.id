@@ -1,24 +1,5 @@
 #!/bin/sh
-# Install the article generation factory on the server.
-#
-#   sh scripts/server/setup.sh
-#
-# Run scripts/server/detect.sh FIRST and fix anything it marks [FAIL].
-#
-# What this does:
-#   1. creates a deploy key, and stops so you can register it on GitHub
-#   2. clones the repo over SSH once the key is registered
-#   3. writes /etc/solar-nusantara/env for the API key, mode 600
-#   4. installs systemd timers (or prints crontab lines if systemd is absent)
-#
-# What it deliberately does NOT do:
-#   - it never writes the API key itself. You paste it into the env file with
-#     your own editor, so the value never appears in shell history, in this
-#     script, or in a process listing.
-#   - it never force-pushes, never touches main's history, and never publishes.
-#     Publishing is publish-drip.mjs, gated on both content checks.
-#
-# Safe to re-run. Every step checks whether it has already been done.
+# Install the article generation factory. Run detect.sh first and fix anything it marks [FAIL]. Stops twice on purpose: once for deploy-key registration, once for the API key - which it never writes itself, so the value stays out of shell history and ps. Safe to re-run.
 
 set -eu
 
@@ -32,13 +13,32 @@ say() { printf '%s\n' "$*"; }
 hr() { say "------------------------------------------------------------"; }
 die() { say "ERROR: $*" >&2; exit 1; }
 
+# Privilege mode is chosen from what the account can actually do, not from a flag: system mode (root or passwordless sudo) uses /opt, /etc and systemd; user mode needs no privilege and puts everything under $HOME with cron. SOLAR_NUSANTARA_FORCE_USER_MODE=1 forces the latter.
 SUDO=""
-if [ "$(id -u)" != "0" ]; then
-	command -v sudo >/dev/null 2>&1 && SUDO="sudo"
+PRIV_MODE="user"
+if [ "${SOLAR_NUSANTARA_FORCE_USER_MODE:-0}" = "1" ]; then
+	PRIV_MODE="user"
+elif [ "$(id -u)" = "0" ]; then
+	PRIV_MODE="system"
+elif command -v sudo >/dev/null 2>&1 && sudo -n true 2>/dev/null; then
+	SUDO="sudo"
+	PRIV_MODE="system"
+fi
+
+if [ "$PRIV_MODE" = "user" ]; then
+	# An explicit SOLAR_NUSANTARA_DIR under /opt cannot be created without sudo, so user mode pins its own paths.
+	CLONE="$HOME/solar-nusantara.id"
+	ENV_DIR="$HOME/.config/solar-nusantara"
+	ENV_FILE="$ENV_DIR/env"
 fi
 
 hr
 say "solar-nusantara.id  -  server setup"
+say "mode: $PRIV_MODE   (clone: $CLONE)"
+if [ "$PRIV_MODE" = "user" ]; then
+	say "  tanpa hak istimewa: sudo meminta password, semuanya di bawah \$HOME"
+	say "  penjadwalan lewat crontab user, bukan systemd timer"
+fi
 hr
 
 # --- 1. deploy key ----------------------------------------------------------
@@ -69,8 +69,7 @@ else
 	say "  ~/.ssh/config sudah mengarah ke key ini"
 fi
 
-# Authentication is the gate for everything after this, so stop here until the
-# public key is actually registered rather than failing later inside git clone.
+# Authentication gates everything after this, so stop here rather than failing inside git clone.
 if ! ssh -o StrictHostKeyChecking=accept-new -T git@github.com 2>&1 | grep -q "successfully authenticated"; then
 	hr
 	say "BERHENTI: deploy key belum terdaftar di GitHub."
@@ -122,15 +121,14 @@ $SUDO mkdir -p "$ENV_DIR"
 if [ -f "$ENV_FILE" ]; then
 	say "  sudah ada: $ENV_FILE (tidak ditimpa)"
 else
-	# Written WITHOUT the value. The operator pastes it in with an editor, so the
-	# key never enters shell history or a process listing.
+	# Written WITHOUT the value - the operator pastes it in with an editor, so the key never enters shell history or a process listing.
 	$SUDO tee "$ENV_FILE" >/dev/null <<'EOF'
 # Diisi manual. Jangan pernah commit file ini.
 # Ambil key di https://platform.deepseek.com
 DEEPSEEK_API_KEY=
 
 # Tahan publikasi sampai tanggal tertentu (YYYY-MM-DD). Generate tetap jalan.
-# Hapus baris ini untuk melepas tahanan - tidak perlu menyentuh systemd unit.
+# Hapus baris ini untuk melepas tahanan - tidak perlu menyentuh penjadwal.
 # Berguna saat ada rollout spam update Google yang sedang berjalan.
 # PUBLISH_NOT_BEFORE=2026-10-08
 EOF
@@ -147,12 +145,10 @@ fi
 say ""
 say "[4/4] Penjadwal"
 
-if command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ] && [ -n "$SUDO$( [ "$(id -u)" = 0 ] && echo root )" ]; then
+if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
-	# Generation: hourly, small batches. Small batches on a short interval beat
-	# one nightly bulk run - a bad prompt shows up within the hour instead of
-	# after 200 articles, and a transient API failure costs one batch.
+	# Hourly small batches beat one nightly run: a bad prompt shows up within the hour, and a transient API failure costs one batch.
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - generate article drafts
@@ -217,12 +213,30 @@ EOF
 	say ""
 	$SUDO systemctl list-timers 'solar-nusantara-*' --no-pager 2>/dev/null || true
 else
-	say "  systemd tidak tersedia (atau tanpa akses root). Tambahkan ke crontab:"
+	# Install the schedule rather than printing it - a printed crontab is a step somebody has to remember, and a pipeline whose schedule was never installed looks identical to one that is quiet. Tagged lines make a re-run idempotent.
+	MARKER="# solar-nusantara-pipeline"
+	NODE_BIN="$(command -v node || echo /usr/bin/node)"
+
+	GEN_LINE="7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	PUB_LINE="23 9 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1 $MARKER"
+
+	CRON_TMP="$(mktemp)"
+	crontab -l 2>/dev/null | grep -vF "$MARKER" > "$CRON_TMP" || true
+	printf '%s
+%s
+' "$GEN_LINE" "$PUB_LINE" >> "$CRON_TMP"
+	if crontab "$CRON_TMP"; then
+		say "  crontab user terpasang (generate tiap jam menit :07, publish 09:23)"
+		say ""
+		crontab -l | grep -F "$MARKER" | sed 's/^/    /' | cut -c1-110
+	else
+		say "  PERINGATAN: gagal memasang crontab. Pasang manual:"
+		say "    crontab -e   lalu tambahkan dua baris dari $CRON_TMP"
+	fi
+	rm -f "$CRON_TMP"
 	say ""
-	say "    crontab -e"
-	say ""
-	say "  7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && node scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1"
-	say " 23 9 * * * cd $CLONE && git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && node scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1"
+	say "  Log: \$HOME/sn-generate.log dan \$HOME/sn-publish.log"
+	say "  (mode user tidak punya journald, jadi log ke file)"
 fi
 
 hr

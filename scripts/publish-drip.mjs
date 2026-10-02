@@ -1,28 +1,5 @@
 #!/usr/bin/env node
-/**
- * Publish approved drafts, a few per day, and push.
- *
- *   npm run publish -- --dry-run     # show what would go live, change nothing
- *   npm run publish                  # publish the daily batch and push
- *   npm run publish -- --limit 5
- *   npm run publish -- --no-push     # commit locally, do not push
- *
- * Why a drip and not a bulk flip.
- *
- * A thousand articles appearing on a domain that had eighteen is the shape
- * Google's scaled-content-abuse policy looks for, and the penalty lands on the
- * whole domain - including the product and service pages that actually produce
- * RFQs. Publishing 10-15 a day is the same thousand articles arriving as a
- * publishing schedule instead of as a dump.
- *
- * Approval is a separate human step, in data/approved.txt. An article that was
- * generated is not thereby fit to publish, and nothing here decides otherwise.
- *
- * Safety: the batch is written, then BOTH gates run. If either fails, every
- * file in the batch is restored from memory and nothing is committed or pushed.
- * A failing gate must never reach the remote, because the remote is wired to
- * deploy on push.
- */
+/** Publish approved drafts, a few per day, and push. Flags: --auto (unattended), --dry-run, --limit N, --no-push, --not-before YYYY-MM-DD. */
 import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
@@ -34,18 +11,7 @@ const APPROVED = 'data/approved.txt';
 const SPOTCHECK = 'data/spotcheck.log';
 const DEFAULT_BATCH = 12;
 
-/**
- * Circuit breaker for --auto.
- *
- * With a human approving each batch, a systemic failure - the model drifting,
- * the prompt rotting, DeepSeek changing behaviour - shows up as "these all read
- * wrong" on the first batch. With nobody reading, the same failure publishes
- * every day until someone notices in Search Console weeks later.
- *
- * So: if fewer than this share of the drafts examined are clean, publish
- * nothing and say so. A bad day costs a day of publishing; a bad month costs
- * the domain.
- */
+/** Circuit breaker for --auto: below this clean rate a systemic failure would otherwise publish every day until someone noticed weeks later. */
 const AUTO_MIN_PASS_RATE = 0.6;
 const AUTO_MIN_EXAMINED = 5;
 
@@ -67,28 +33,10 @@ const limit = Number(flag('limit', String(DEFAULT_BATCH)));
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: 'pipe' });
 
 // --- publication hold -------------------------------------------------------
-/**
- * Hold publishing until a date. Generation is unaffected: drafts keep
- * accumulating, only the step that makes them public waits.
- *
- * Exists because the window you publish into is a real variable. Google's
- * September 2026 spam update began rolling out on 2026-09-24, took up to two
- * weeks, and targeted scaled content abuse specifically - which is the exact
- * pattern a first wave of AI-assisted articles presents. Launching into an
- * active rollout of the policy aimed at you is a choice, so it should be one
- * you can make explicitly rather than by accident.
- *
- * Accepted as a flag OR as PUBLISH_NOT_BEFORE in the environment. The env var
- * is the one that matters on the server: /etc/solar-nusantara/env is already
- * read by the systemd unit, so a hold can be set and lifted by editing one line
- * in a file nobody has to remember to revert, instead of editing the unit and
- * reloading the daemon.
- */
+/** Hold publishing until a date without holding generation - the window you publish into is a real variable, and a spam-update rollout is a bad one. */
 const notBeforeRaw = flag('not-before', process.env.PUBLISH_NOT_BEFORE || null);
 if (notBeforeRaw) {
-	// Fail closed on an unparseable date. Treating a malformed hold as "no hold"
-	// would publish on exactly the day somebody fat-fingered the value they were
-	// relying on to stop it.
+	// Fail closed on an unparseable date, or a fat-fingered hold publishes on the day it was meant to stop.
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(notBeforeRaw.trim())) {
 		console.error(`--not-before / PUBLISH_NOT_BEFORE must be YYYY-MM-DD, got "${notBeforeRaw}".`);
 		console.error('Refusing to publish rather than ignoring a hold that may have been intended.');
@@ -98,9 +46,12 @@ if (notBeforeRaw) {
 	if (today < notBeforeRaw.trim()) {
 		console.log(`\npublish-drip: ditahan sampai ${notBeforeRaw.trim()} (hari ini ${today}).`);
 		console.log('  Generate tetap jalan; draft terus bertambah dan tidak ada yang terbit.');
-		console.log('  Lepas tahanan: hapus PUBLISH_NOT_BEFORE dari /etc/solar-nusantara/env\n');
-		// Exit 0, not 1. A hold is the intended outcome, and a systemd oneshot
-		// that exits non-zero every day for a week reads as a broken timer.
+		// Name both env paths - a user-mode install keeps its secret under $HOME, not /etc.
+		console.log('  Lepas tahanan: hapus baris PUBLISH_NOT_BEFORE dari file env Anda');
+		console.log('    sistem: /etc/solar-nusantara/env');
+		console.log('    user:   ~/.config/solar-nusantara/env');
+		console.log('');
+		// Exit 0, not 1: a hold is the intended outcome, and a daily non-zero oneshot reads as a broken timer.
 		process.exit(0);
 	}
 }
@@ -143,10 +94,7 @@ function inspect(slug) {
 let candidates = [];
 
 if (auto) {
-	// --- unattended selection ----------------------------------------------
-	// Stricter than the attended path on purpose. With a human in the loop, a
-	// warning is a judgement call they make; with nobody reading, a warning is
-	// the only signal left that something is off, so it holds the article back.
+	// Unattended selection is stricter on purpose - without a human, a warning is the only signal left that something is off.
 	const examined = dirs.map(inspect).filter(Boolean);
 
 	if (examined.length === 0) {
@@ -159,8 +107,7 @@ if (auto) {
 
 	console.log(`\npublish-drip --auto: ${examined.length} draft(s) examined, ${clean.length} clean (${Math.round(rate * 100)}%)`);
 
-	// Circuit breaker. Only meaningful once there is a sample worth judging -
-	// two bad drafts out of two is noise, not a trend.
+	// Only judge the rate once there is a sample worth judging; two bad drafts out of two is noise.
 	if (examined.length >= AUTO_MIN_EXAMINED && rate < AUTO_MIN_PASS_RATE) {
 		console.error(`\nHALTED: only ${Math.round(rate * 100)}% of drafts are clean (floor ${Math.round(AUTO_MIN_PASS_RATE * 100)}%).`);
 		console.error('That is a systemic failure, not a few bad articles. Nothing published.\n');
@@ -222,11 +169,7 @@ if (candidates.length === 0) {
 const batch = candidates.slice(0, limit);
 const today = new Date().toISOString().slice(0, 10);
 
-/**
- * How many articles are already live. Used only to keep the spot-check sample
- * spread evenly as the archive grows, rather than always landing on the first
- * article of whichever batch happens to run.
- */
+/** How many articles are already live, used only to spread the spot-check sample as the archive grows. */
 const publishedCount = dirs.filter((d) => {
 	try {
 		return !/^draft:\s*true\s*$/m.test(readFileSync(join(CONTENT_DIR, d, 'index.md'), 'utf8'));
@@ -243,12 +186,7 @@ if (dryRun) {
 	process.exit(0);
 }
 
-// --- flip the flag ----------------------------------------------------------
-// pubDate is set to the publish date, not the generation date. The sitemap's
-// lastmod and the BlogPosting datePublished both read it, and claiming an
-// article was published weeks before it was reachable is a contradiction.
-// updatedDate is deliberately NOT touched - it means "materially revised", and
-// setting it here would claim a revision that did not happen.
+// pubDate is the publish date, not the generation date; updatedDate is deliberately untouched since it means a real revision.
 for (const a of batch) {
 	const next = a.raw
 		.replace(/^draft:\s*true\s*$/m, 'draft: false')
@@ -260,14 +198,7 @@ const restore = () => {
 	for (const a of batch) writeFileSync(a.file, a.raw, 'utf8');
 };
 
-// --- gates ------------------------------------------------------------------
-// check-content runs site-wide: duplicate title, description and keyphrase can
-// only be detected across every article, so scoping it would defeat it.
-//
-// check-seo runs on THIS BATCH only. Its rules postdate the site's original 18
-// articles, which fail them; gating on the whole site would mean no article can
-// ever be published until that backlog is rewritten. New articles are held to
-// the new standard, old ones stay visible in a bare `npm run check-seo`.
+// check-content runs site-wide because duplicate metadata is cross-article; check-seo is scoped to this batch so the legacy backlog cannot block new work.
 let failed = null;
 const batchSlugs = batch.map((a) => a.slug);
 for (const [label, args] of [
@@ -299,10 +230,7 @@ try {
 	run('git', ['commit', '-m', subject, '-m', bodyLines]);
 	console.log(`\n  committed: ${subject}`);
 
-	// Sampling, not gating. Unattended publishing still benefits from a human
-	// reading SOMETHING occasionally - the gates cannot judge whether an article
-	// is worth sending to a prospect. This records a slice to read whenever
-	// there is time, and never holds anything back waiting for that.
+	// Sampling, not gating - no machine can judge whether an article is worth sending to a prospect.
 	try {
 		if (!existsSync('data')) mkdirSync('data', { recursive: true });
 		const sample = batch.filter((_, i) => (publishedCount + i) % SPOTCHECK_EVERY === 0);
