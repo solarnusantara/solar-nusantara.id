@@ -98,7 +98,14 @@ if (notBeforeRaw) {
 	if (today < notBeforeRaw.trim()) {
 		console.log(`\npublish-drip: ditahan sampai ${notBeforeRaw.trim()} (hari ini ${today}).`);
 		console.log('  Generate tetap jalan; draft terus bertambah dan tidak ada yang terbit.');
-		console.log('  Lepas tahanan: hapus PUBLISH_NOT_BEFORE dari /etc/solar-nusantara/env\n');
+		// Both install modes exist, so the message cannot name one path. A
+		// system-mode install keeps the secret in /etc; a user-mode install keeps
+		// it under $HOME. Naming the wrong one sends the operator to a file that
+		// is not there, at the moment they are trying to lift a hold.
+		console.log('  Lepas tahanan: hapus baris PUBLISH_NOT_BEFORE dari file env Anda');
+		console.log('    sistem: /etc/solar-nusantara/env');
+		console.log('    user:   ~/.config/solar-nusantara/env');
+		console.log('');
 		// Exit 0, not 1. A hold is the intended outcome, and a systemd oneshot
 		// that exits non-zero every day for a week reads as a broken timer.
 		process.exit(0);
