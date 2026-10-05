@@ -16,6 +16,7 @@
     "review": "node scripts/review-batch.mjs",
     "publish": "node scripts/publish-drip.mjs",
     "refresh": "node scripts/refresh-stale.mjs",
+    "dns": "node scripts/dns.mjs",
     "preview": "astro preview",
     "astro": "astro"
   },
