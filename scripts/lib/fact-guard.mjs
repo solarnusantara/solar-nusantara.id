@@ -32,7 +32,15 @@
  * generate-article.mjs, so the two never drift apart.
  */
 export const KNOWN_REGULATIONS = [
-	{ pattern: /permen\s*(?:en)?\s*esdm/i, nomor: '2', tahun: '2024', label: 'Permen ESDM No. 2 Tahun 2024' },
+	// One regulation, three spellings a writer legitimately uses. Matching only
+	// "Permen ESDM" rejected the long official form as a fabrication, which is
+	// how the regulasi articles kept failing.
+	{
+		pattern: /(?:permen\s*(?:en)?\s*esdm|peraturan\s+menteri\s+esdm|peraturan\s+menteri\s+energi\s+dan\s+sumber\s+daya\s+mineral)/i,
+		nomor: '2',
+		tahun: '2024',
+		label: 'Permen ESDM No. 2 Tahun 2024',
+	},
 ];
 
 /**
