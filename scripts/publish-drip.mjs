@@ -5,6 +5,7 @@ import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 import { checkFacts } from './lib/fact-guard.mjs';
+import { spreadBatch } from './lib/batch-order.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 const APPROVED = 'data/approved.txt';
@@ -85,6 +86,7 @@ function inspect(slug) {
 		slug,
 		file,
 		raw,
+		tags: data.tags,
 		errors: [...seo.errors, ...facts.errors],
 		warnings: [...seo.warnings, ...facts.warnings],
 		stats: seo.stats,
@@ -166,7 +168,8 @@ if (candidates.length === 0) {
 	process.exit(0);
 }
 
-const batch = candidates.slice(0, limit);
+// Spread by intent and segment: alphabetical order ships four URLs off one template on the same day, which is the pattern that reads as bulk.
+const batch = spreadBatch(candidates, limit);
 const today = new Date().toISOString().slice(0, 10);
 
 /** How many articles are already live, used only to spread the spot-check sample as the archive grows. */
