@@ -29,6 +29,7 @@
  */
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
+import { containsLoose } from './lib/seo-rules.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 const OUT = 'data/topics.json';
@@ -38,6 +39,8 @@ const SEO_TITLE_MAX = 60;
 const WAVE_1_SIZE = 100;
 
 const dryRun = process.argv.includes('--dry-run');
+/** Send `failed` rows back to the queue. Use after fixing whatever rejected them; without it a failure is permanent. */
+const retryFailed = process.argv.includes('--retry-failed');
 
 /**
  * Identical to scripts/new-article.mjs. Duplicated rather than shared because
@@ -125,7 +128,7 @@ const INTENTS = [
 			{ t: 'Menentukan Rasio DC AC Inverter untuk',          s: 'Rasio DC AC Inverter',    k: 'rasio dc ac inverter' },
 			{ t: 'Simulasi Produksi Energi Tahunan PLTS di',       s: 'Simulasi Produksi PLTS',  k: 'simulasi produksi plts' },
 			{ t: 'Desain PLTS Hybrid dengan Baterai untuk',        s: 'PLTS Hybrid Baterai',     k: 'plts hybrid baterai' },
-			{ t: 'Tata Letak String dan Analisis Shading di',      s: 'Tata Letak String PLTS',  k: 'tata letak string plts' },
+			{ t: 'Tata Letak String PLTS dan Analisis Shading di', s: 'Tata Letak String PLTS',  k: 'tata letak string plts' },
 		],
 	},
 	{
@@ -135,7 +138,7 @@ const INTENTS = [
 		children: [
 			{ t: 'Permen ESDM 2 Tahun 2024 dan Dampaknya bagi', s: 'Permen ESDM 2/2024',      k: 'permen esdm 2 2024' },
 			{ t: 'Prosedur Pengajuan Kuota PLTS Atap PLN untuk', s: 'Kuota PLTS Atap PLN',    k: 'kuota plts atap' },
-			{ t: 'Sertifikat Laik Operasi PLTS untuk',           s: 'SLO PLTS',               k: 'slo plts' },
+			{ t: 'Sertifikat Laik Operasi (SLO) PLTS untuk',     s: 'SLO PLTS',               k: 'slo plts' },
 			{ t: 'Izin Usaha Penyediaan Tenaga Listrik untuk',   s: 'Izin Tenaga Listrik',    k: 'izin usaha tenaga listrik' },
 			{ t: 'Persyaratan Interkoneksi Jaringan PLN di',     s: 'Interkoneksi PLN',       k: 'interkoneksi jaringan pln' },
 			{ t: 'Ketentuan Ekspor Impor Energi Listrik di',     s: 'Ekspor Impor Energi',    k: 'ekspor impor energi listrik' },
@@ -165,7 +168,7 @@ const INTENTS = [
 			{ t: 'Survei Lokasi dan Uji Kekuatan Struktur Atap di',  s: 'Uji Struktur Atap',       k: 'uji struktur atap' },
 			{ t: 'Manajemen Proyek EPC PLTS di',                     s: 'Manajemen Proyek EPC',    k: 'manajemen proyek epc' },
 			{ t: 'Commissioning dan Uji Fungsi PLTS di',             s: 'Commissioning PLTS',      k: 'commissioning plts' },
-			{ t: 'Instalasi PLTS Tanpa Menghentikan Operasional di', s: 'Instalasi Tanpa Henti',   k: 'instalasi tanpa henti operasional' },
+			{ t: 'Instalasi PLTS Tanpa Henti Operasional di',    s: 'Instalasi Tanpa Henti',   k: 'instalasi tanpa henti operasional' },
 			{ t: 'Keselamatan Kerja di Ketinggian pada Proyek',      s: 'K3 Kerja Ketinggian',     k: 'keselamatan kerja ketinggian' },
 			{ t: 'Serah Terima dan Dokumentasi As-Built PLTS di',    s: 'Dokumentasi As-Built',    k: 'dokumentasi as built' },
 		],
@@ -178,7 +181,7 @@ const INTENTS = [
 			{ t: 'Jadwal Pembersihan Modul Surya di',              s: 'Pembersihan Modul Surya', k: 'pembersihan modul surya' },
 			{ t: 'Mendeteksi Degradasi Performa Modul PLTS di',    s: 'Degradasi Modul PLTS',    k: 'degradasi modul plts' },
 			{ t: 'Inspeksi Termografi Rutin PLTS di',              s: 'Termografi PLTS',         k: 'termografi plts' },
-			{ t: 'Menyusun Kontrak O&M dan SLA PLTS untuk',        s: 'Kontrak O&M PLTS',        k: 'kontrak om plts' },
+			{ t: 'Menyusun Kontrak O&M dan SLA PLTS untuk',        s: 'Kontrak O&M PLTS',        k: 'kontrak o&m plts' },
 			{ t: 'Penanganan Gangguan Inverter PLTS di',           s: 'Gangguan Inverter',       k: 'gangguan inverter plts' },
 			{ t: 'Analisis Performance Ratio PLTS di',             s: 'Performance Ratio PLTS',  k: 'performance ratio plts' },
 			{ t: 'Penggantian Komponen dan Klaim Garansi PLTS di', s: 'Garansi Komponen PLTS',   k: 'garansi komponen plts' },
@@ -189,10 +192,10 @@ const INTENTS = [
 		pillar: { t: 'Skema Pembiayaan PLTS untuk', s: 'Pembiayaan PLTS', k: 'pembiayaan plts' },
 		link: '/layanan/epc/segmen-ci/',
 		children: [
-			{ t: 'Skema BOO Build Own Operate untuk',            s: 'Skema BOO PLTS',        k: 'skema boo plts' },
-			{ t: 'Skema BOT Build Operate Transfer untuk',       s: 'Skema BOT PLTS',        k: 'skema bot plts' },
-			{ t: 'Perbandingan CAPEX Mandiri dan Sewa PLTS di',  s: 'CAPEX vs Sewa PLTS',    k: 'capex mandiri vs sewa' },
-			{ t: 'Power Purchase Agreement PLTS untuk',          s: 'PPA PLTS',              k: 'ppa plts' },
+			{ t: 'Skema BOO (Build Own Operate) PLTS untuk',     s: 'Skema BOO PLTS',        k: 'skema boo plts' },
+			{ t: 'Skema BOT (Build Operate Transfer) PLTS untuk', s: 'Skema BOT PLTS',       k: 'skema bot plts' },
+			{ t: 'Perbandingan CAPEX Mandiri vs Sewa PLTS di',   s: 'CAPEX vs Sewa PLTS',    k: 'capex mandiri vs sewa' },
+			{ t: 'Power Purchase Agreement (PPA) PLTS untuk',    s: 'PPA PLTS',              k: 'ppa plts' },
 			{ t: 'Green Financing dan Kredit Bank untuk PLTS di', s: 'Green Financing PLTS', k: 'green financing plts' },
 			{ t: 'Skema Leasing Peralatan PLTS untuk',           s: 'Leasing PLTS',          k: 'leasing peralatan plts' },
 			{ t: 'Struktur Kontrak dan Pembagian Risiko PLTS di', s: 'Kontrak dan Risiko',   k: 'struktur kontrak plts' },
@@ -321,15 +324,21 @@ if (existsSync(OUT)) {
 		const prev = JSON.parse(readFileSync(OUT, 'utf8'));
 		const byId = new Map((prev.topics ?? []).map((t) => [t.id, t]));
 		let carried = 0;
+		let retried = 0;
 		for (const t of topics) {
 			const old = byId.get(t.id);
 			if (!old || old.status === 'pending') continue;
+			if (retryFailed && old.status === 'failed') {
+				retried += 1;
+				continue; // stays pending, and drops the stale lastError with it
+			}
 			t.status = old.status;
 			if (old.generatedAt) t.generatedAt = old.generatedAt;
 			if (old.lastError) t.lastError = old.lastError;
 			carried += 1;
 		}
 		if (carried) console.log(`  carried over ${carried} non-pending status row(s) from the previous plan`);
+		if (retried) console.log(`  --retry-failed: ${retried} failed row(s) sent back to the queue`);
 	} catch {
 		console.log('  previous topics.json was unreadable; starting from a clean state');
 	}
@@ -409,6 +418,13 @@ for (const t of topics) {
 		if (existing.slugs.has(t.slug)) problems.push(`${t.id}: slug "${t.slug}" already exists on the site`);
 		if (existing.keyphrases.has(t.focusKeyphrase.toLowerCase())) problems.push(`${t.id}: focusKeyphrase "${t.focusKeyphrase}" already used by a published article`);
 		if (existing.titles.has(t.title.toLowerCase())) problems.push(`${t.id}: title already used by a published article`);
+	}
+
+	// Title and keyphrase are both decided here, so a mismatch is not a bad article but an unwritable topic - it burned three DeepSeek calls each on 112 of 1008 rows.
+	if (!containsLoose(t.title, t.focusKeyphrase)) {
+		const have = new Set(t.title.toLowerCase().split(/[^a-z0-9]+/));
+		const missing = t.focusKeyphrase.split(/\s+/).filter((w) => !have.has(w.toLowerCase()));
+		problems.push(`${t.id}: title is missing keyphrase token(s) ${missing.map((w) => `"${w}"`).join(', ')} - unwritable by construction`);
 	}
 
 	if (t.title.length > TITLE_MAX) problems.push(`${t.id}: title is ${t.title.length} chars (max ${TITLE_MAX})`);
