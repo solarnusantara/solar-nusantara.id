@@ -165,9 +165,10 @@ including required Article fields.
 
 - `rekrutmen.solar-nusantara.id` is **NXDOMAIN**. It is the primary CTA on
   `/tentang/karir/`. Needs one DNS record; the link is dead until then.
-- Search Console property `sc-domain:solar-nusantara.id` exists but is
-  **unverified**. Add the TXT record Google issues, or no performance data will
-  ever be collected.
+- Search Console property `sc-domain:solar-nusantara.id`: the DNS side is done.
+  The verification TXT is live on the apex (`npm run dns -- get TXT @`, checked
+  2026-10-05), so there is nothing left to add. Whether the property reads
+  *Verified* is only visible inside the console itself.
 - `produk/ekosistem-ev/spkl.md` and `produk/sistem-panel-surya/sistem-baterai.md`
   share the same body text on two URLs. Duplicate content; needs a rewrite of
   one of them.
