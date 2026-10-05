@@ -32,9 +32,7 @@
  * generate-article.mjs, so the two never drift apart.
  */
 export const KNOWN_REGULATIONS = [
-	// One regulation, three spellings a writer legitimately uses. Matching only
-	// "Permen ESDM" rejected the long official form as a fabrication, which is
-	// how the regulasi articles kept failing.
+	// One regulation, three spellings: matching only "Permen ESDM" rejected its own long official form as a fabrication.
 	{
 		pattern: /(?:permen\s*(?:en)?\s*esdm|peraturan\s+menteri\s+esdm|peraturan\s+menteri\s+energi\s+dan\s+sumber\s+daya\s+mineral)/i,
 		nomor: '2',

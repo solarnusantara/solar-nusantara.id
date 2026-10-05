@@ -420,10 +420,7 @@ for (const t of topics) {
 		if (existing.titles.has(t.title.toLowerCase())) problems.push(`${t.id}: title already used by a published article`);
 	}
 
-	// The gate requires every keyphrase token in the title, and both strings are
-	// decided here - so a mismatch is not a bad article, it is a topic that no
-	// model can ever write. Left unchecked it burns three DeepSeek calls per
-	// topic before failing, and it did: 112 of 1008 rows were unwritable.
+	// Title and keyphrase are both decided here, so a mismatch is not a bad article but an unwritable topic - it burned three DeepSeek calls each on 112 of 1008 rows.
 	if (!containsLoose(t.title, t.focusKeyphrase)) {
 		const have = new Set(t.title.toLowerCase().split(/[^a-z0-9]+/));
 		const missing = t.focusKeyphrase.split(/\s+/).filter((w) => !have.has(w.toLowerCase()));
