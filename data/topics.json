@@ -1,5 +1,5 @@
 {
-  "generatedAt": "2026-09-25T07:06:57.213Z",
+  "generatedAt": "2026-10-05T06:32:28.453Z",
   "counts": {
     "total": 1008,
     "wave1": 100,
@@ -98,7 +98,7 @@
     {
       "id": "pabrik-manufaktur--biaya-roi--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -114,12 +114,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T08:31:31.276Z"
     },
     {
       "id": "pabrik-manufaktur--biaya-roi--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -135,12 +136,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T08:50:59.124Z"
     },
     {
       "id": "pabrik-manufaktur--biaya-roi--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -156,12 +158,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T08:51:17.882Z"
     },
     {
       "id": "pabrik-manufaktur--biaya-roi--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -177,12 +180,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T08:51:58.915Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -198,12 +202,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T17:09:58.497Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -220,12 +225,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T17:07:50.325Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -241,12 +247,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T17:10:40.341Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -262,12 +269,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T17:09:24.458Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -283,12 +291,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T18:08:35.565Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -304,12 +313,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T18:08:36.913Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -325,19 +335,21 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T18:11:08.950Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Pabrik Manufaktur",
-      "slug": "tata-letak-string-dan-analisis-shading-di-pabrik-manufaktur",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Pabrik Manufaktur",
+      "seoTitle": "Tata Letak String PLTS untuk Pabrik",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-pabrik-manufaktur",
       "focusKeyphrase": "tata letak string plts pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -346,12 +358,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-05T06:34:27.340Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -367,12 +380,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-05T06:33:40.581Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -389,12 +403,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T11:07:50.458Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -411,19 +426,20 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T11:07:42.872Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Pabrik Manufaktur",
-      "slug": "sertifikat-laik-operasi-plts-untuk-pabrik-manufaktur",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Pabrik Manufaktur",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-pabrik-manufaktur",
       "focusKeyphrase": "slo plts pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -432,12 +448,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-05T06:33:44.003Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -453,12 +470,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T11:08:31.594Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -474,12 +492,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T12:07:48.420Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -495,12 +514,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T12:07:38.086Z"
     },
     {
       "id": "pabrik-manufaktur--regulasi--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -516,7 +536,8 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T12:08:38.933Z"
     },
     {
       "id": "pabrik-manufaktur--komponen--pilar",
@@ -801,9 +822,8 @@
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Pabrik Manufaktur",
-      "seoTitle": "Instalasi Tanpa Henti untuk Pabrik",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-pabrik-manufaktur",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Pabrik Manufaktur",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-pabrik-manufaktur",
       "focusKeyphrase": "instalasi tanpa henti operasional pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -954,7 +974,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Pabrik Manufaktur",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-pabrik-manufaktur",
-      "focusKeyphrase": "kontrak om plts pabrik manufaktur",
+      "focusKeyphrase": "kontrak o&m plts pabrik manufaktur",
       "tags": [
         "manufaktur",
         "operasi-pemeliharaan",
@@ -1031,7 +1051,7 @@
     {
       "id": "pabrik-manufaktur--pembiayaan--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1047,19 +1067,20 @@
         "panduan"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T19:09:25.222Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Pabrik Manufaktur",
-      "slug": "skema-boo-build-own-operate-untuk-pabrik-manufaktur",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Pabrik Manufaktur",
+      "slug": "skema-boo-build-own-operate-plts-untuk-pabrik-manufaktur",
       "focusKeyphrase": "skema boo plts pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -1068,19 +1089,21 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-05T06:34:20.803Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Pabrik Manufaktur",
-      "slug": "skema-bot-build-operate-transfer-untuk-pabrik-manufaktur",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Pabrik Manufaktur",
+      "seoTitle": "Skema BOT PLTS untuk Pabrik",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-pabrik-manufaktur",
       "focusKeyphrase": "skema bot plts pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -1089,20 +1112,20 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-05T07:08:02.951Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Pabrik Manufaktur",
-      "seoTitle": "CAPEX vs Sewa PLTS untuk Pabrik",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-pabrik-manufaktur",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Pabrik Manufaktur",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-pabrik-manufaktur",
       "focusKeyphrase": "capex mandiri vs sewa pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -1111,19 +1134,20 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-05T07:07:49.644Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Pabrik Manufaktur",
-      "slug": "power-purchase-agreement-plts-untuk-pabrik-manufaktur",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Pabrik Manufaktur",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-pabrik-manufaktur",
       "focusKeyphrase": "ppa plts pabrik manufaktur",
       "tags": [
         "manufaktur",
@@ -1132,12 +1156,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-05T07:08:55.266Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1154,12 +1179,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T20:07:44.394Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1175,12 +1201,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T20:10:54.916Z"
     },
     {
       "id": "pabrik-manufaktur--pembiayaan--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1197,7 +1224,8 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T20:08:43.485Z"
     },
     {
       "id": "pabrik-manufaktur--esg--pilar",
@@ -1372,7 +1400,7 @@
     {
       "id": "pabrik-manufaktur--pengadaan--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1388,12 +1416,13 @@
         "panduan"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T08:52:35.498Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1409,12 +1438,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T09:07:40.087Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1430,12 +1460,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T09:07:43.013Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1451,12 +1482,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T09:08:26.185Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1472,12 +1504,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T09:08:37.517Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1494,12 +1527,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T10:07:46.670Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1515,12 +1549,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T10:07:48.786Z"
     },
     {
       "id": "pabrik-manufaktur--pengadaan--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -1536,7 +1571,8 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-02T10:08:24.481Z"
     },
     {
       "id": "gudang--biaya-roi--pilar",
@@ -1870,9 +1906,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Gudang dan Pergudangan",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Gudang dan Pergudangan",
       "seoTitle": "Tata Letak String PLTS untuk Gudang",
-      "slug": "tata-letak-string-dan-analisis-shading-di-gudang-dan-pergudangan",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-gudang-dan-pergudangan",
       "focusKeyphrase": "tata letak string plts gudang",
       "tags": [
         "pergudangan",
@@ -1957,8 +1993,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Gudang dan Pergudangan",
-      "slug": "sertifikat-laik-operasi-plts-untuk-gudang-dan-pergudangan",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Gudang dan Pergudangan",
+      "seoTitle": "SLO PLTS untuk Gudang",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-gudang-dan-pergudangan",
       "focusKeyphrase": "slo plts gudang",
       "tags": [
         "pergudangan",
@@ -2344,9 +2381,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Gudang dan Pergudangan",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Gudang dan Pergudangan",
       "seoTitle": "Instalasi Tanpa Henti untuk Gudang",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-gudang-dan-pergudangan",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-gudang-dan-pergudangan",
       "focusKeyphrase": "instalasi tanpa henti operasional gudang",
       "tags": [
         "pergudangan",
@@ -2498,7 +2535,7 @@
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Gudang dan Pergudangan",
       "seoTitle": "Kontrak O&M PLTS untuk Gudang",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-gudang-dan-pergudangan",
-      "focusKeyphrase": "kontrak om plts gudang",
+      "focusKeyphrase": "kontrak o&m plts gudang",
       "tags": [
         "pergudangan",
         "operasi-pemeliharaan",
@@ -2602,8 +2639,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Gudang dan Pergudangan",
-      "slug": "skema-boo-build-own-operate-untuk-gudang-dan-pergudangan",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Gudang dan Pergudangan",
+      "seoTitle": "Skema BOO PLTS untuk Gudang",
+      "slug": "skema-boo-build-own-operate-plts-untuk-gudang-dan-pergudangan",
       "focusKeyphrase": "skema boo plts gudang",
       "tags": [
         "pergudangan",
@@ -2623,9 +2661,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Gudang dan Pergudangan",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Gudang dan Pergudangan",
       "seoTitle": "Skema BOT PLTS untuk Gudang",
-      "slug": "skema-bot-build-operate-transfer-untuk-gudang-dan-pergudangan",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-gudang-dan-pergudangan",
       "focusKeyphrase": "skema bot plts gudang",
       "tags": [
         "pergudangan",
@@ -2645,9 +2683,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Gudang dan Pergudangan",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Gudang dan Pergudangan",
       "seoTitle": "CAPEX vs Sewa PLTS untuk Gudang",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-gudang-dan-pergudangan",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-gudang-dan-pergudangan",
       "focusKeyphrase": "capex mandiri vs sewa gudang",
       "tags": [
         "pergudangan",
@@ -2667,8 +2705,9 @@
       "segmentLabel": "Gudang dan Pergudangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Gudang dan Pergudangan",
-      "slug": "power-purchase-agreement-plts-untuk-gudang-dan-pergudangan",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Gudang dan Pergudangan",
+      "seoTitle": "PPA PLTS untuk Gudang",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-gudang-dan-pergudangan",
       "focusKeyphrase": "ppa plts gudang",
       "tags": [
         "pergudangan",
@@ -3414,8 +3453,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Cold Storage",
-      "slug": "tata-letak-string-dan-analisis-shading-di-cold-storage",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Cold Storage",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-cold-storage",
       "focusKeyphrase": "tata letak string plts cold storage",
       "tags": [
         "cold-storage",
@@ -3498,8 +3537,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Cold Storage",
-      "slug": "sertifikat-laik-operasi-plts-untuk-cold-storage",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Cold Storage",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-cold-storage",
       "focusKeyphrase": "slo plts cold storage",
       "tags": [
         "cold-storage",
@@ -3876,9 +3915,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Cold Storage",
-      "seoTitle": "Instalasi Tanpa Henti untuk Cold Storage",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-cold-storage",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Cold Storage",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-cold-storage",
       "focusKeyphrase": "instalasi tanpa henti operasional cold storage",
       "tags": [
         "cold-storage",
@@ -4026,7 +4064,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Cold Storage",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-cold-storage",
-      "focusKeyphrase": "kontrak om plts cold storage",
+      "focusKeyphrase": "kontrak o&m plts cold storage",
       "tags": [
         "cold-storage",
         "operasi-pemeliharaan",
@@ -4129,8 +4167,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Cold Storage",
-      "slug": "skema-boo-build-own-operate-untuk-cold-storage",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Cold Storage",
+      "slug": "skema-boo-build-own-operate-plts-untuk-cold-storage",
       "focusKeyphrase": "skema boo plts cold storage",
       "tags": [
         "cold-storage",
@@ -4150,8 +4188,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Cold Storage",
-      "slug": "skema-bot-build-operate-transfer-untuk-cold-storage",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Cold Storage",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-cold-storage",
       "focusKeyphrase": "skema bot plts cold storage",
       "tags": [
         "cold-storage",
@@ -4171,8 +4209,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Cold Storage",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-cold-storage",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Cold Storage",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-cold-storage",
       "focusKeyphrase": "capex mandiri vs sewa cold storage",
       "tags": [
         "cold-storage",
@@ -4192,8 +4230,8 @@
       "segmentLabel": "Cold Storage",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Cold Storage",
-      "slug": "power-purchase-agreement-plts-untuk-cold-storage",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Cold Storage",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-cold-storage",
       "focusKeyphrase": "ppa plts cold storage",
       "tags": [
         "cold-storage",
@@ -4928,8 +4966,9 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Hotel dan Resor",
-      "slug": "tata-letak-string-dan-analisis-shading-di-hotel-dan-resor",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Hotel dan Resor",
+      "seoTitle": "Tata Letak String PLTS untuk Hotel",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-hotel-dan-resor",
       "focusKeyphrase": "tata letak string plts hotel",
       "tags": [
         "hotel",
@@ -5012,8 +5051,8 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Hotel dan Resor",
-      "slug": "sertifikat-laik-operasi-plts-untuk-hotel-dan-resor",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Hotel dan Resor",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-hotel-dan-resor",
       "focusKeyphrase": "slo plts hotel",
       "tags": [
         "hotel",
@@ -5391,9 +5430,8 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Hotel dan Resor",
-      "seoTitle": "Instalasi Tanpa Henti untuk Hotel",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-hotel-dan-resor",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Hotel dan Resor",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-hotel-dan-resor",
       "focusKeyphrase": "instalasi tanpa henti operasional hotel",
       "tags": [
         "hotel",
@@ -5542,7 +5580,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Hotel dan Resor",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-hotel-dan-resor",
-      "focusKeyphrase": "kontrak om plts hotel",
+      "focusKeyphrase": "kontrak o&m plts hotel",
       "tags": [
         "hotel",
         "operasi-pemeliharaan",
@@ -5646,8 +5684,8 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Hotel dan Resor",
-      "slug": "skema-boo-build-own-operate-untuk-hotel-dan-resor",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Hotel dan Resor",
+      "slug": "skema-boo-build-own-operate-plts-untuk-hotel-dan-resor",
       "focusKeyphrase": "skema boo plts hotel",
       "tags": [
         "hotel",
@@ -5667,8 +5705,9 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Hotel dan Resor",
-      "slug": "skema-bot-build-operate-transfer-untuk-hotel-dan-resor",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Hotel dan Resor",
+      "seoTitle": "Skema BOT PLTS untuk Hotel",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-hotel-dan-resor",
       "focusKeyphrase": "skema bot plts hotel",
       "tags": [
         "hotel",
@@ -5688,8 +5727,8 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Hotel dan Resor",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-hotel-dan-resor",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Hotel dan Resor",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-hotel-dan-resor",
       "focusKeyphrase": "capex mandiri vs sewa hotel",
       "tags": [
         "hotel",
@@ -5709,8 +5748,8 @@
       "segmentLabel": "Hotel dan Resor",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Hotel dan Resor",
-      "slug": "power-purchase-agreement-plts-untuk-hotel-dan-resor",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Hotel dan Resor",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-hotel-dan-resor",
       "focusKeyphrase": "ppa plts hotel",
       "tags": [
         "hotel",
@@ -6448,8 +6487,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Rumah Sakit",
-      "slug": "tata-letak-string-dan-analisis-shading-di-rumah-sakit",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Rumah Sakit",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-rumah-sakit",
       "focusKeyphrase": "tata letak string plts rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -6532,8 +6571,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Rumah Sakit",
-      "slug": "sertifikat-laik-operasi-plts-untuk-rumah-sakit",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Rumah Sakit",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-rumah-sakit",
       "focusKeyphrase": "slo plts rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -6910,8 +6949,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Rumah Sakit",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-rumah-sakit",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Rumah Sakit",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-rumah-sakit",
       "focusKeyphrase": "instalasi tanpa henti operasional rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -7059,7 +7098,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Rumah Sakit",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-rumah-sakit",
-      "focusKeyphrase": "kontrak om plts rumah sakit",
+      "focusKeyphrase": "kontrak o&m plts rumah sakit",
       "tags": [
         "rumah-sakit",
         "operasi-pemeliharaan",
@@ -7162,8 +7201,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Rumah Sakit",
-      "slug": "skema-boo-build-own-operate-untuk-rumah-sakit",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Rumah Sakit",
+      "slug": "skema-boo-build-own-operate-plts-untuk-rumah-sakit",
       "focusKeyphrase": "skema boo plts rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -7183,8 +7222,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Rumah Sakit",
-      "slug": "skema-bot-build-operate-transfer-untuk-rumah-sakit",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Rumah Sakit",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-rumah-sakit",
       "focusKeyphrase": "skema bot plts rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -7204,8 +7243,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Rumah Sakit",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-rumah-sakit",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Rumah Sakit",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-rumah-sakit",
       "focusKeyphrase": "capex mandiri vs sewa rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -7225,8 +7264,8 @@
       "segmentLabel": "Rumah Sakit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Rumah Sakit",
-      "slug": "power-purchase-agreement-plts-untuk-rumah-sakit",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Rumah Sakit",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-rumah-sakit",
       "focusKeyphrase": "ppa plts rumah sakit",
       "tags": [
         "rumah-sakit",
@@ -7961,8 +8000,9 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Mall dan Retail",
-      "slug": "tata-letak-string-dan-analisis-shading-di-mall-dan-retail",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Mall dan Retail",
+      "seoTitle": "Tata Letak String PLTS untuk Retail",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-mall-dan-retail",
       "focusKeyphrase": "tata letak string plts mall retail",
       "tags": [
         "retail",
@@ -8045,8 +8085,8 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Mall dan Retail",
-      "slug": "sertifikat-laik-operasi-plts-untuk-mall-dan-retail",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Mall dan Retail",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-mall-dan-retail",
       "focusKeyphrase": "slo plts mall retail",
       "tags": [
         "retail",
@@ -8424,9 +8464,8 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Mall dan Retail",
-      "seoTitle": "Instalasi Tanpa Henti untuk Retail",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-mall-dan-retail",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Mall dan Retail",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-mall-dan-retail",
       "focusKeyphrase": "instalasi tanpa henti operasional mall retail",
       "tags": [
         "retail",
@@ -8575,7 +8614,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Mall dan Retail",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-mall-dan-retail",
-      "focusKeyphrase": "kontrak om plts mall retail",
+      "focusKeyphrase": "kontrak o&m plts mall retail",
       "tags": [
         "retail",
         "operasi-pemeliharaan",
@@ -8679,8 +8718,8 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Mall dan Retail",
-      "slug": "skema-boo-build-own-operate-untuk-mall-dan-retail",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Mall dan Retail",
+      "slug": "skema-boo-build-own-operate-plts-untuk-mall-dan-retail",
       "focusKeyphrase": "skema boo plts mall retail",
       "tags": [
         "retail",
@@ -8700,8 +8739,9 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Mall dan Retail",
-      "slug": "skema-bot-build-operate-transfer-untuk-mall-dan-retail",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Mall dan Retail",
+      "seoTitle": "Skema BOT PLTS untuk Retail",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-mall-dan-retail",
       "focusKeyphrase": "skema bot plts mall retail",
       "tags": [
         "retail",
@@ -8721,8 +8761,8 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Mall dan Retail",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-mall-dan-retail",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Mall dan Retail",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-mall-dan-retail",
       "focusKeyphrase": "capex mandiri vs sewa mall retail",
       "tags": [
         "retail",
@@ -8742,8 +8782,8 @@
       "segmentLabel": "Mall dan Retail",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Mall dan Retail",
-      "slug": "power-purchase-agreement-plts-untuk-mall-dan-retail",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Mall dan Retail",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-mall-dan-retail",
       "focusKeyphrase": "ppa plts mall retail",
       "tags": [
         "retail",
@@ -9483,8 +9523,9 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Gedung Perkantoran",
-      "slug": "tata-letak-string-dan-analisis-shading-di-gedung-perkantoran",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Gedung Perkantoran",
+      "seoTitle": "Tata Letak String PLTS untuk Perkantoran",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-gedung-perkantoran",
       "focusKeyphrase": "tata letak string plts gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -9569,8 +9610,8 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Gedung Perkantoran",
-      "slug": "sertifikat-laik-operasi-plts-untuk-gedung-perkantoran",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Gedung Perkantoran",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-gedung-perkantoran",
       "focusKeyphrase": "slo plts gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -9949,9 +9990,8 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Gedung Perkantoran",
-      "seoTitle": "Instalasi Tanpa Henti untuk Perkantoran",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-gedung-perkantoran",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Gedung Perkantoran",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-gedung-perkantoran",
       "focusKeyphrase": "instalasi tanpa henti operasional gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -10102,7 +10142,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Gedung Perkantoran",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-gedung-perkantoran",
-      "focusKeyphrase": "kontrak om plts gedung perkantoran",
+      "focusKeyphrase": "kontrak o&m plts gedung perkantoran",
       "tags": [
         "perkantoran",
         "operasi-pemeliharaan",
@@ -10206,8 +10246,8 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Gedung Perkantoran",
-      "slug": "skema-boo-build-own-operate-untuk-gedung-perkantoran",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Gedung Perkantoran",
+      "slug": "skema-boo-build-own-operate-plts-untuk-gedung-perkantoran",
       "focusKeyphrase": "skema boo plts gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -10227,8 +10267,9 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Gedung Perkantoran",
-      "slug": "skema-bot-build-operate-transfer-untuk-gedung-perkantoran",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Gedung Perkantoran",
+      "seoTitle": "Skema BOT PLTS untuk Perkantoran",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-gedung-perkantoran",
       "focusKeyphrase": "skema bot plts gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -10248,9 +10289,9 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Gedung Perkantoran",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Gedung Perkantoran",
       "seoTitle": "CAPEX vs Sewa PLTS untuk Perkantoran",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-gedung-perkantoran",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-gedung-perkantoran",
       "focusKeyphrase": "capex mandiri vs sewa gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -10270,8 +10311,8 @@
       "segmentLabel": "Gedung Perkantoran",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Gedung Perkantoran",
-      "slug": "power-purchase-agreement-plts-untuk-gedung-perkantoran",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Gedung Perkantoran",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-gedung-perkantoran",
       "focusKeyphrase": "ppa plts gedung perkantoran",
       "tags": [
         "perkantoran",
@@ -11013,8 +11054,9 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Sekolah dan Kampus",
-      "slug": "tata-letak-string-dan-analisis-shading-di-sekolah-dan-kampus",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Sekolah dan Kampus",
+      "seoTitle": "Tata Letak String PLTS untuk Kampus",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-sekolah-dan-kampus",
       "focusKeyphrase": "tata letak string plts sekolah kampus",
       "tags": [
         "pendidikan",
@@ -11099,8 +11141,8 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Sekolah dan Kampus",
-      "slug": "sertifikat-laik-operasi-plts-untuk-sekolah-dan-kampus",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Sekolah dan Kampus",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-sekolah-dan-kampus",
       "focusKeyphrase": "slo plts sekolah kampus",
       "tags": [
         "pendidikan",
@@ -11479,9 +11521,8 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Sekolah dan Kampus",
-      "seoTitle": "Instalasi Tanpa Henti untuk Kampus",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-sekolah-dan-kampus",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Sekolah dan Kampus",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-sekolah-dan-kampus",
       "focusKeyphrase": "instalasi tanpa henti operasional sekolah kampus",
       "tags": [
         "pendidikan",
@@ -11632,7 +11673,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Sekolah dan Kampus",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-sekolah-dan-kampus",
-      "focusKeyphrase": "kontrak om plts sekolah kampus",
+      "focusKeyphrase": "kontrak o&m plts sekolah kampus",
       "tags": [
         "pendidikan",
         "operasi-pemeliharaan",
@@ -11736,8 +11777,8 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Sekolah dan Kampus",
-      "slug": "skema-boo-build-own-operate-untuk-sekolah-dan-kampus",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Sekolah dan Kampus",
+      "slug": "skema-boo-build-own-operate-plts-untuk-sekolah-dan-kampus",
       "focusKeyphrase": "skema boo plts sekolah kampus",
       "tags": [
         "pendidikan",
@@ -11757,8 +11798,9 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Sekolah dan Kampus",
-      "slug": "skema-bot-build-operate-transfer-untuk-sekolah-dan-kampus",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Sekolah dan Kampus",
+      "seoTitle": "Skema BOT PLTS untuk Kampus",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-sekolah-dan-kampus",
       "focusKeyphrase": "skema bot plts sekolah kampus",
       "tags": [
         "pendidikan",
@@ -11778,9 +11820,9 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Sekolah dan Kampus",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Sekolah dan Kampus",
       "seoTitle": "CAPEX vs Sewa PLTS untuk Kampus",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-sekolah-dan-kampus",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-sekolah-dan-kampus",
       "focusKeyphrase": "capex mandiri vs sewa sekolah kampus",
       "tags": [
         "pendidikan",
@@ -11800,8 +11842,8 @@
       "segmentLabel": "Sekolah dan Kampus",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Sekolah dan Kampus",
-      "slug": "power-purchase-agreement-plts-untuk-sekolah-dan-kampus",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Sekolah dan Kampus",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-sekolah-dan-kampus",
       "focusKeyphrase": "ppa plts sekolah kampus",
       "tags": [
         "pendidikan",
@@ -12220,7 +12262,7 @@
     {
       "id": "pabrik-sawit--biaya-roi--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12236,12 +12278,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T21:07:58.532Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12257,12 +12300,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T21:07:52.261Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12278,12 +12322,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T21:08:53.017Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12299,12 +12344,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T21:08:44.655Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12321,12 +12367,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T22:07:39.077Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12343,12 +12390,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T22:07:45.892Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12364,12 +12412,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T22:08:24.282Z"
     },
     {
       "id": "pabrik-sawit--biaya-roi--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12385,12 +12434,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T22:08:30.415Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12406,12 +12456,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T05:09:13.325Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12428,12 +12479,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T05:10:13.929Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12449,12 +12501,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T06:07:44.800Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12470,12 +12523,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T06:07:51.040Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12491,12 +12545,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T06:09:29.292Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12512,12 +12567,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T06:08:34.048Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12533,20 +12589,21 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T07:09:05.956Z"
     },
     {
       "id": "pabrik-sawit--desain-sizing--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Pabrik Kelapa Sawit",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Pabrik Kelapa Sawit",
       "seoTitle": "Tata Letak String PLTS untuk Pabrik Sawit",
-      "slug": "tata-letak-string-dan-analisis-shading-di-pabrik-kelapa-sawit",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-pabrik-kelapa-sawit",
       "focusKeyphrase": "tata letak string plts pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -12555,12 +12612,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-05T08:08:00.454Z"
     },
     {
       "id": "pabrik-sawit--regulasi--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -12576,7 +12634,8 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T01:09:02.647Z"
     },
     {
       "id": "pabrik-sawit--regulasi--t1",
@@ -12631,8 +12690,8 @@
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Pabrik Kelapa Sawit",
-      "slug": "sertifikat-laik-operasi-plts-untuk-pabrik-kelapa-sawit",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Pabrik Kelapa Sawit",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-pabrik-kelapa-sawit",
       "focusKeyphrase": "slo plts pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -13014,9 +13073,9 @@
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Pabrik Kelapa Sawit",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Pabrik Kelapa Sawit",
       "seoTitle": "Instalasi Tanpa Henti untuk Pabrik Sawit",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-pabrik-kelapa-sawit",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-pabrik-kelapa-sawit",
       "focusKeyphrase": "instalasi tanpa henti operasional pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -13167,7 +13226,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Pabrik Kelapa Sawit",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-pabrik-kelapa-sawit",
-      "focusKeyphrase": "kontrak om plts pabrik kelapa sawit",
+      "focusKeyphrase": "kontrak o&m plts pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
         "operasi-pemeliharaan",
@@ -13271,8 +13330,8 @@
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Pabrik Kelapa Sawit",
-      "slug": "skema-boo-build-own-operate-untuk-pabrik-kelapa-sawit",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Pabrik Kelapa Sawit",
+      "slug": "skema-boo-build-own-operate-plts-untuk-pabrik-kelapa-sawit",
       "focusKeyphrase": "skema boo plts pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -13292,8 +13351,9 @@
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Pabrik Kelapa Sawit",
-      "slug": "skema-bot-build-operate-transfer-untuk-pabrik-kelapa-sawit",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Pabrik Kelapa Sawit",
+      "seoTitle": "Skema BOT PLTS untuk Pabrik Sawit",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-pabrik-kelapa-sawit",
       "focusKeyphrase": "skema bot plts pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -13313,9 +13373,9 @@
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Pabrik Kelapa Sawit",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Pabrik Kelapa Sawit",
       "seoTitle": "CAPEX vs Sewa PLTS untuk Pabrik Sawit",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-pabrik-kelapa-sawit",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-pabrik-kelapa-sawit",
       "focusKeyphrase": "capex mandiri vs sewa pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -13335,8 +13395,9 @@
       "segmentLabel": "Pabrik Kelapa Sawit",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Pabrik Kelapa Sawit",
-      "slug": "power-purchase-agreement-plts-untuk-pabrik-kelapa-sawit",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Pabrik Kelapa Sawit",
+      "seoTitle": "PPA PLTS untuk Pabrik Sawit",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-pabrik-kelapa-sawit",
       "focusKeyphrase": "ppa plts pabrik kelapa sawit",
       "tags": [
         "kelapa-sawit",
@@ -13585,7 +13646,7 @@
     {
       "id": "pabrik-sawit--pengadaan--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13601,12 +13662,13 @@
         "panduan"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T23:08:22.789Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13622,12 +13684,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T23:07:40.002Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13643,12 +13706,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T23:09:08.624Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13665,12 +13729,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T23:08:17.981Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13686,12 +13751,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T00:07:44.284Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13708,12 +13774,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T00:07:35.147Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13729,12 +13796,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T00:08:52.425Z"
     },
     {
       "id": "pabrik-sawit--pengadaan--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-sawit",
       "segmentLabel": "Pabrik Kelapa Sawit",
@@ -13750,12 +13818,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T00:08:06.923Z"
     },
     {
       "id": "pertambangan--biaya-roi--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13771,12 +13840,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T01:08:06.935Z"
     },
     {
       "id": "pertambangan--biaya-roi--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13792,12 +13862,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T01:10:37.297Z"
     },
     {
       "id": "pertambangan--biaya-roi--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13813,12 +13884,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T01:08:47.195Z"
     },
     {
       "id": "pertambangan--biaya-roi--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13834,12 +13906,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T02:07:36.965Z"
     },
     {
       "id": "pertambangan--biaya-roi--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13856,12 +13929,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T02:08:06.765Z"
     },
     {
       "id": "pertambangan--biaya-roi--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13878,12 +13952,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T02:08:14.942Z"
     },
     {
       "id": "pertambangan--biaya-roi--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13899,12 +13974,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T02:09:38.523Z"
     },
     {
       "id": "pertambangan--biaya-roi--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13920,12 +13996,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T03:07:53.564Z"
     },
     {
       "id": "pertambangan--desain-sizing--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -13941,7 +14018,8 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T07:10:11.299Z"
     },
     {
       "id": "pertambangan--desain-sizing--t1",
@@ -14079,9 +14157,9 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Sektor Pertambangan",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Sektor Pertambangan",
       "seoTitle": "Tata Letak String PLTS untuk Tambang",
-      "slug": "tata-letak-string-dan-analisis-shading-di-sektor-pertambangan",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-sektor-pertambangan",
       "focusKeyphrase": "tata letak string plts pertambangan",
       "tags": [
         "pertambangan",
@@ -14166,8 +14244,8 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Sektor Pertambangan",
-      "slug": "sertifikat-laik-operasi-plts-untuk-sektor-pertambangan",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Sektor Pertambangan",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-sektor-pertambangan",
       "focusKeyphrase": "slo plts pertambangan",
       "tags": [
         "pertambangan",
@@ -14549,9 +14627,9 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Sektor Pertambangan",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Sektor Pertambangan",
       "seoTitle": "Instalasi Tanpa Henti untuk Tambang",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-sektor-pertambangan",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-sektor-pertambangan",
       "focusKeyphrase": "instalasi tanpa henti operasional pertambangan",
       "tags": [
         "pertambangan",
@@ -14702,7 +14780,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Sektor Pertambangan",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-sektor-pertambangan",
-      "focusKeyphrase": "kontrak om plts pertambangan",
+      "focusKeyphrase": "kontrak o&m plts pertambangan",
       "tags": [
         "pertambangan",
         "operasi-pemeliharaan",
@@ -14806,8 +14884,8 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Sektor Pertambangan",
-      "slug": "skema-boo-build-own-operate-untuk-sektor-pertambangan",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Sektor Pertambangan",
+      "slug": "skema-boo-build-own-operate-plts-untuk-sektor-pertambangan",
       "focusKeyphrase": "skema boo plts pertambangan",
       "tags": [
         "pertambangan",
@@ -14827,8 +14905,9 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Sektor Pertambangan",
-      "slug": "skema-bot-build-operate-transfer-untuk-sektor-pertambangan",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Sektor Pertambangan",
+      "seoTitle": "Skema BOT PLTS untuk Tambang",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-sektor-pertambangan",
       "focusKeyphrase": "skema bot plts pertambangan",
       "tags": [
         "pertambangan",
@@ -14848,9 +14927,9 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Sektor Pertambangan",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Sektor Pertambangan",
       "seoTitle": "CAPEX vs Sewa PLTS untuk Tambang",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-sektor-pertambangan",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-sektor-pertambangan",
       "focusKeyphrase": "capex mandiri vs sewa pertambangan",
       "tags": [
         "pertambangan",
@@ -14870,8 +14949,9 @@
       "segmentLabel": "Sektor Pertambangan",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Sektor Pertambangan",
-      "slug": "power-purchase-agreement-plts-untuk-sektor-pertambangan",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Sektor Pertambangan",
+      "seoTitle": "PPA PLTS untuk Tambang",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-sektor-pertambangan",
       "focusKeyphrase": "ppa plts pertambangan",
       "tags": [
         "pertambangan",
@@ -15120,7 +15200,7 @@
     {
       "id": "pertambangan--pengadaan--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "pertambangan",
       "segmentLabel": "Sektor Pertambangan",
@@ -15136,7 +15216,8 @@
         "panduan"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-03T03:08:25.089Z"
     },
     {
       "id": "pertambangan--pengadaan--t1",
@@ -15611,8 +15692,8 @@
       "segmentLabel": "Data Center",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Data Center",
-      "slug": "tata-letak-string-dan-analisis-shading-di-data-center",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Data Center",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-data-center",
       "focusKeyphrase": "tata letak string plts data center",
       "tags": [
         "data-center",
@@ -15695,8 +15776,8 @@
       "segmentLabel": "Data Center",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Data Center",
-      "slug": "sertifikat-laik-operasi-plts-untuk-data-center",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Data Center",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-data-center",
       "focusKeyphrase": "slo plts data center",
       "tags": [
         "data-center",
@@ -16073,8 +16154,8 @@
       "segmentLabel": "Data Center",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Data Center",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-data-center",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Data Center",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-data-center",
       "focusKeyphrase": "instalasi tanpa henti operasional data center",
       "tags": [
         "data-center",
@@ -16222,7 +16303,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Data Center",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-data-center",
-      "focusKeyphrase": "kontrak om plts data center",
+      "focusKeyphrase": "kontrak o&m plts data center",
       "tags": [
         "data-center",
         "operasi-pemeliharaan",
@@ -16325,8 +16406,8 @@
       "segmentLabel": "Data Center",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Data Center",
-      "slug": "skema-boo-build-own-operate-untuk-data-center",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Data Center",
+      "slug": "skema-boo-build-own-operate-plts-untuk-data-center",
       "focusKeyphrase": "skema boo plts data center",
       "tags": [
         "data-center",
@@ -16346,8 +16427,8 @@
       "segmentLabel": "Data Center",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Data Center",
-      "slug": "skema-bot-build-operate-transfer-untuk-data-center",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Data Center",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-data-center",
       "focusKeyphrase": "skema bot plts data center",
       "tags": [
         "data-center",
@@ -16367,8 +16448,8 @@
       "segmentLabel": "Data Center",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Data Center",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-data-center",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Data Center",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-data-center",
       "focusKeyphrase": "capex mandiri vs sewa data center",
       "tags": [
         "data-center",
@@ -16388,8 +16469,8 @@
       "segmentLabel": "Data Center",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Data Center",
-      "slug": "power-purchase-agreement-plts-untuk-data-center",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Data Center",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-data-center",
       "focusKeyphrase": "ppa plts data center",
       "tags": [
         "data-center",
@@ -17125,8 +17206,9 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di SPBU dan Rest Area",
-      "slug": "tata-letak-string-dan-analisis-shading-di-spbu-dan-rest-area",
+      "title": "Tata Letak String PLTS dan Analisis Shading di SPBU dan Rest Area",
+      "seoTitle": "Tata Letak String PLTS untuk SPBU",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-spbu-dan-rest-area",
       "focusKeyphrase": "tata letak string plts spbu",
       "tags": [
         "spbu",
@@ -17211,8 +17293,8 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk SPBU dan Rest Area",
-      "slug": "sertifikat-laik-operasi-plts-untuk-spbu-dan-rest-area",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk SPBU dan Rest Area",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-spbu-dan-rest-area",
       "focusKeyphrase": "slo plts spbu",
       "tags": [
         "spbu",
@@ -17591,9 +17673,8 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di SPBU dan Rest Area",
-      "seoTitle": "Instalasi Tanpa Henti untuk SPBU",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-spbu-dan-rest-area",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di SPBU dan Rest Area",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-spbu-dan-rest-area",
       "focusKeyphrase": "instalasi tanpa henti operasional spbu",
       "tags": [
         "spbu",
@@ -17744,7 +17825,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk SPBU dan Rest Area",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-spbu-dan-rest-area",
-      "focusKeyphrase": "kontrak om plts spbu",
+      "focusKeyphrase": "kontrak o&m plts spbu",
       "tags": [
         "spbu",
         "operasi-pemeliharaan",
@@ -17848,8 +17929,8 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk SPBU dan Rest Area",
-      "slug": "skema-boo-build-own-operate-untuk-spbu-dan-rest-area",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk SPBU dan Rest Area",
+      "slug": "skema-boo-build-own-operate-plts-untuk-spbu-dan-rest-area",
       "focusKeyphrase": "skema boo plts spbu",
       "tags": [
         "spbu",
@@ -17869,8 +17950,9 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk SPBU dan Rest Area",
-      "slug": "skema-bot-build-operate-transfer-untuk-spbu-dan-rest-area",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk SPBU dan Rest Area",
+      "seoTitle": "Skema BOT PLTS untuk SPBU",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-spbu-dan-rest-area",
       "focusKeyphrase": "skema bot plts spbu",
       "tags": [
         "spbu",
@@ -17890,9 +17972,9 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di SPBU dan Rest Area",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di SPBU dan Rest Area",
       "seoTitle": "CAPEX vs Sewa PLTS untuk SPBU",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-spbu-dan-rest-area",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-spbu-dan-rest-area",
       "focusKeyphrase": "capex mandiri vs sewa spbu",
       "tags": [
         "spbu",
@@ -17912,8 +17994,8 @@
       "segmentLabel": "SPBU dan Rest Area",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk SPBU dan Rest Area",
-      "slug": "power-purchase-agreement-plts-untuk-spbu-dan-rest-area",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk SPBU dan Rest Area",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-spbu-dan-rest-area",
       "focusKeyphrase": "ppa plts spbu",
       "tags": [
         "spbu",
@@ -18332,7 +18414,7 @@
     {
       "id": "gedung-pemerintah--biaya-roi--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18348,12 +18430,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T12:10:23.589Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18369,12 +18452,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T13:07:46.029Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18390,12 +18474,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T13:07:53.449Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18411,12 +18496,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T13:08:40.880Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18432,12 +18518,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T13:08:35.912Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18453,12 +18540,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T14:07:51.876Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18474,12 +18562,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T14:07:54.572Z"
     },
     {
       "id": "gedung-pemerintah--biaya-roi--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18495,12 +18584,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/epc/segmen-ci/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T14:08:37.263Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18516,12 +18606,13 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T03:08:53.024Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18538,12 +18629,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T03:09:13.398Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18559,12 +18651,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T04:07:49.521Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18580,12 +18673,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T04:07:46.740Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18601,12 +18695,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T04:08:34.030Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18622,12 +18717,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T04:09:26.130Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18643,19 +18739,21 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-03T05:08:00.252Z"
     },
     {
       "id": "gedung-pemerintah--desain-sizing--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Gedung Pemerintah",
-      "slug": "tata-letak-string-dan-analisis-shading-di-gedung-pemerintah",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Gedung Pemerintah",
+      "seoTitle": "Tata Letak String PLTS untuk Gedung Negara",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-gedung-pemerintah",
       "focusKeyphrase": "tata letak string plts gedung pemerintah",
       "tags": [
         "b2g",
@@ -18664,12 +18762,13 @@
         "teknis"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 81
+      "priority": 81,
+      "generatedAt": "2026-10-05T07:08:34.144Z"
     },
     {
       "id": "gedung-pemerintah--regulasi--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -18685,7 +18784,8 @@
         "panduan"
       ],
       "internalLink": "/layanan/sistem-tenaga-surya-epc/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T16:09:30.981Z"
     },
     {
       "id": "gedung-pemerintah--regulasi--t1",
@@ -18740,8 +18840,8 @@
       "segmentLabel": "Gedung Pemerintah",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Gedung Pemerintah",
-      "slug": "sertifikat-laik-operasi-plts-untuk-gedung-pemerintah",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Gedung Pemerintah",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-gedung-pemerintah",
       "focusKeyphrase": "slo plts gedung pemerintah",
       "tags": [
         "b2g",
@@ -19119,9 +19219,8 @@
       "segmentLabel": "Gedung Pemerintah",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Gedung Pemerintah",
-      "seoTitle": "Instalasi Tanpa Henti untuk Gedung Negara",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-gedung-pemerintah",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Gedung Pemerintah",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-gedung-pemerintah",
       "focusKeyphrase": "instalasi tanpa henti operasional gedung pemerintah",
       "tags": [
         "b2g",
@@ -19272,7 +19371,7 @@
       "funnel": "mofu",
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Gedung Pemerintah",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-gedung-pemerintah",
-      "focusKeyphrase": "kontrak om plts gedung pemerintah",
+      "focusKeyphrase": "kontrak o&m plts gedung pemerintah",
       "tags": [
         "b2g",
         "operasi-pemeliharaan",
@@ -19376,8 +19475,8 @@
       "segmentLabel": "Gedung Pemerintah",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Gedung Pemerintah",
-      "slug": "skema-boo-build-own-operate-untuk-gedung-pemerintah",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Gedung Pemerintah",
+      "slug": "skema-boo-build-own-operate-plts-untuk-gedung-pemerintah",
       "focusKeyphrase": "skema boo plts gedung pemerintah",
       "tags": [
         "b2g",
@@ -19397,8 +19496,9 @@
       "segmentLabel": "Gedung Pemerintah",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Gedung Pemerintah",
-      "slug": "skema-bot-build-operate-transfer-untuk-gedung-pemerintah",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Gedung Pemerintah",
+      "seoTitle": "Skema BOT PLTS untuk Gedung Negara",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-gedung-pemerintah",
       "focusKeyphrase": "skema bot plts gedung pemerintah",
       "tags": [
         "b2g",
@@ -19418,9 +19518,8 @@
       "segmentLabel": "Gedung Pemerintah",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Gedung Pemerintah",
-      "seoTitle": "CAPEX vs Sewa PLTS untuk Gedung Negara",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-gedung-pemerintah",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Gedung Pemerintah",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-gedung-pemerintah",
       "focusKeyphrase": "capex mandiri vs sewa gedung pemerintah",
       "tags": [
         "b2g",
@@ -19440,8 +19539,8 @@
       "segmentLabel": "Gedung Pemerintah",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Gedung Pemerintah",
-      "slug": "power-purchase-agreement-plts-untuk-gedung-pemerintah",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Gedung Pemerintah",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-gedung-pemerintah",
       "focusKeyphrase": "ppa plts gedung pemerintah",
       "tags": [
         "b2g",
@@ -19690,7 +19789,7 @@
     {
       "id": "gedung-pemerintah--pengadaan--pilar",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19706,12 +19805,13 @@
         "panduan"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T14:11:57.516Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t1",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19727,12 +19827,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T15:07:40.206Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t2",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19748,12 +19849,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T15:07:39.767Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t3",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19769,12 +19871,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T15:08:17.685Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t4",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19790,12 +19893,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T15:08:28.080Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t5",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19812,12 +19916,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T16:07:52.782Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t6",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19833,12 +19938,13 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T16:08:21.647Z"
     },
     {
       "id": "gedung-pemerintah--pengadaan--t7",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "wave": 1,
       "segment": "gedung-pemerintah",
       "segmentLabel": "Gedung Pemerintah",
@@ -19854,7 +19960,8 @@
         "teknis"
       ],
       "internalLink": "/tentang/sonushub/",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-02T16:08:22.929Z"
     },
     {
       "id": "pelabuhan-logistik--biaya-roi--pilar",
@@ -20188,9 +20295,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "desain-sizing",
       "funnel": "mofu",
-      "title": "Tata Letak String dan Analisis Shading di Pelabuhan dan Logistik",
+      "title": "Tata Letak String PLTS dan Analisis Shading di Pelabuhan dan Logistik",
       "seoTitle": "Tata Letak String PLTS untuk Logistik",
-      "slug": "tata-letak-string-dan-analisis-shading-di-pelabuhan-dan-logistik",
+      "slug": "tata-letak-string-plts-dan-analisis-shading-di-pelabuhan-dan-logistik",
       "focusKeyphrase": "tata letak string plts pelabuhan logistik",
       "tags": [
         "logistik",
@@ -20275,8 +20382,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "regulasi",
       "funnel": "tofu",
-      "title": "Sertifikat Laik Operasi PLTS untuk Pelabuhan dan Logistik",
-      "slug": "sertifikat-laik-operasi-plts-untuk-pelabuhan-dan-logistik",
+      "title": "Sertifikat Laik Operasi (SLO) PLTS untuk Pelabuhan dan Logistik",
+      "seoTitle": "SLO PLTS untuk Logistik",
+      "slug": "sertifikat-laik-operasi-slo-plts-untuk-pelabuhan-dan-logistik",
       "focusKeyphrase": "slo plts pelabuhan logistik",
       "tags": [
         "logistik",
@@ -20662,9 +20770,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "instalasi",
       "funnel": "mofu",
-      "title": "Instalasi PLTS Tanpa Menghentikan Operasional di Pelabuhan dan Logistik",
+      "title": "Instalasi PLTS Tanpa Henti Operasional di Pelabuhan dan Logistik",
       "seoTitle": "Instalasi Tanpa Henti untuk Logistik",
-      "slug": "instalasi-plts-tanpa-menghentikan-operasional-di-pelabuhan-dan-logistik",
+      "slug": "instalasi-plts-tanpa-henti-operasional-di-pelabuhan-dan-logistik",
       "focusKeyphrase": "instalasi tanpa henti operasional pelabuhan logistik",
       "tags": [
         "logistik",
@@ -20816,7 +20924,7 @@
       "title": "Menyusun Kontrak O&M dan SLA PLTS untuk Pelabuhan dan Logistik",
       "seoTitle": "Kontrak O&M PLTS untuk Logistik",
       "slug": "menyusun-kontrak-o-m-dan-sla-plts-untuk-pelabuhan-dan-logistik",
-      "focusKeyphrase": "kontrak om plts pelabuhan logistik",
+      "focusKeyphrase": "kontrak o&m plts pelabuhan logistik",
       "tags": [
         "logistik",
         "operasi-pemeliharaan",
@@ -20920,8 +21028,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOO Build Own Operate untuk Pelabuhan dan Logistik",
-      "slug": "skema-boo-build-own-operate-untuk-pelabuhan-dan-logistik",
+      "title": "Skema BOO (Build Own Operate) PLTS untuk Pelabuhan dan Logistik",
+      "seoTitle": "Skema BOO PLTS untuk Logistik",
+      "slug": "skema-boo-build-own-operate-plts-untuk-pelabuhan-dan-logistik",
       "focusKeyphrase": "skema boo plts pelabuhan logistik",
       "tags": [
         "logistik",
@@ -20941,9 +21050,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Skema BOT Build Operate Transfer untuk Pelabuhan dan Logistik",
+      "title": "Skema BOT (Build Operate Transfer) PLTS untuk Pelabuhan dan Logistik",
       "seoTitle": "Skema BOT PLTS untuk Logistik",
-      "slug": "skema-bot-build-operate-transfer-untuk-pelabuhan-dan-logistik",
+      "slug": "skema-bot-build-operate-transfer-plts-untuk-pelabuhan-dan-logistik",
       "focusKeyphrase": "skema bot plts pelabuhan logistik",
       "tags": [
         "logistik",
@@ -20963,9 +21072,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Perbandingan CAPEX Mandiri dan Sewa PLTS di Pelabuhan dan Logistik",
+      "title": "Perbandingan CAPEX Mandiri vs Sewa PLTS di Pelabuhan dan Logistik",
       "seoTitle": "CAPEX vs Sewa PLTS untuk Logistik",
-      "slug": "perbandingan-capex-mandiri-dan-sewa-plts-di-pelabuhan-dan-logistik",
+      "slug": "perbandingan-capex-mandiri-vs-sewa-plts-di-pelabuhan-dan-logistik",
       "focusKeyphrase": "capex mandiri vs sewa pelabuhan logistik",
       "tags": [
         "logistik",
@@ -20985,8 +21094,9 @@
       "segmentLabel": "Pelabuhan dan Logistik",
       "intent": "pembiayaan",
       "funnel": "bofu",
-      "title": "Power Purchase Agreement PLTS untuk Pelabuhan dan Logistik",
-      "slug": "power-purchase-agreement-plts-untuk-pelabuhan-dan-logistik",
+      "title": "Power Purchase Agreement (PPA) PLTS untuk Pelabuhan dan Logistik",
+      "seoTitle": "PPA PLTS untuk Logistik",
+      "slug": "power-purchase-agreement-ppa-plts-untuk-pelabuhan-dan-logistik",
       "focusKeyphrase": "ppa plts pelabuhan logistik",
       "tags": [
         "logistik",
