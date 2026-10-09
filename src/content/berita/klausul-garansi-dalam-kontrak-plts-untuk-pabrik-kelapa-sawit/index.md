@@ -2,9 +2,9 @@
 title: "Klausul Garansi dalam Kontrak PLTS untuk Pabrik Kelapa Sawit"
 description: "Panduan klausul garansi PLTS pabrik kelapa sawit: poin wajib dalam kontrak, jaminan performa, dan cara memverifikasi klaim vendor."
 focusKeyphrase: "klausul garansi plts pabrik kelapa sawit"
-pubDate: "2026-10-03"
+pubDate: "2026-10-09"
 tags: ["kelapa-sawit", "pengadaan", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Banyak pabrik kelapa sawit menandatangani kontrak PLTS dengan perhatian penuh pada harga per kWp, lalu mengabaikan klausul garansi PLTS pabrik kelapa sawit. Kesalahan pengadaan ini biasanya baru terasa pada tahun ketiga hingga kelima, ketika produksi listrik menurun di bawah proyeksi dan tidak ada dasar kontraktual yang bisa dipakai untuk menuntut perbaikan. Skalanya tidak kecil: CAPEX PLTS 1 MWp di Indonesia berkisar Rp 9-13 miliar, dan modul surya menyumbang sekitar 40% dari total CAPEX sistem tersebut. Tanpa klausul yang tegas, pemilik pabrik menanggung sendiri biaya degradasi, penggantian inverter, dan kehilangan produksi.

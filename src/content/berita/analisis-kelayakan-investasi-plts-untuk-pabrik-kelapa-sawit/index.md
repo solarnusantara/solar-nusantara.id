@@ -2,9 +2,9 @@
 title: "Analisis Kelayakan Investasi PLTS untuk Pabrik Kelapa Sawit"
 description: "Analisis kelayakan investasi PLTS pabrik kelapa sawit: CAPEX Rp 9–13 miliar per MWp, rincian payback, dan faktor yang mengubah angkanya."
 focusKeyphrase: "kelayakan investasi plts pabrik kelapa sawit"
-pubDate: "2026-10-02"
+pubDate: "2026-10-09"
 tags: ["kelapa-sawit", "biaya-roi", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 PLTS berkapasitas 1 MWp di Indonesia kini menelan CAPEX Rp 9–13 miliar, dan sekitar 40% di antaranya tersedot ke modul surya saja. Sebagai rujukan nyata, sebuah perusahaan industri memasang PLTS 1 MWp dengan CAPEX Rp 11 miliar dan estimasi OPEX Rp 220 juta per tahun. Dua angka itu menjadi titik berangkat analisis kelayakan investasi PLTS pabrik kelapa sawit. Pertanyaan bagi kepala teknik dan manajer energi bukan lagi "apakah PLTS layak", melainkan "pada tarif, skema, dan konfigurasi seperti apa angkanya masuk".

@@ -2,9 +2,9 @@
 title: "Estimasi CAPEX PLTS 100 kWp untuk Pabrik Manufaktur"
 description: "Estimasi CAPEX PLTS 100 kWp pabrik manufaktur: rincian biaya, skema kepemilikan, payback period, dan faktor yang mengubah rentang investasi."
 focusKeyphrase: "capex plts 100 kwp pabrik manufaktur"
-pubDate: "2026-09-22"
+pubDate: "2026-10-09"
 tags: ["manufaktur", "biaya-roi", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Untuk pabrik manufaktur dengan beban listrik siang hari yang stabil, estimasi CAPEX PLTS 100 kWp pabrik manufaktur berada di kisaran Rp 900 juta sampai Rp 1,3 miliar. Angka tersebut diturunkan secara proporsional dari CAPEX PLTS 1 MWp di Indonesia yang berada di rentang Rp 9–13 miliar pada 2024–2025. Artinya, setiap 1 kWp daya terpasang membutuhkan investasi sekitar Rp 9 juta hingga Rp 13 juta. Rentang ini berlaku untuk sistem on-grid skala industri tanpa baterai penyimpanan.

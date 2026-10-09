@@ -2,9 +2,9 @@
 title: "Biaya dan ROI PLTS untuk Sektor Pertambangan"
 description: "Rincian biaya PLTS pertambangan per MWp, simulasi payback, skema BOO/BOT, dan faktor yang mengubah ROI sistem surya di lokasi tambang."
 focusKeyphrase: "biaya plts pertambangan"
-pubDate: "2026-10-03"
+pubDate: "2026-10-09"
 tags: ["pertambangan", "biaya-roi", "plts", "panduan"]
-draft: true
+draft: false
 ---
 
 Untuk lokasi tambang di Indonesia, pengadaan PLTS berkapasitas 1 MWp menuntut dana Rp 9-13 miliar pada rentang harga 2024-2025, dengan titik tengah sekitar Rp 11 miliar. Angka itu sudah mencakup modul, inverter, struktur penyangga, kabel, pekerjaan sipil, hingga commissioning. Di sisi operasional, biaya PLTS pertambangan untuk pemeliharaan tahunan berada di kisaran Rp 220 juta. Karena itu, pertanyaan yang paling sering muncul di rapat direksi bukan lagi "berapa investasinya", melainkan "kapan modal itu kembali".

@@ -3,9 +3,9 @@ title: "Kriteria Penilaian Teknis dan Harga pada Tender Gedung Pemerintah"
 seoTitle: "Kriteria Penilaian Tender untuk Gedung Negara"
 description: "Panduan praktis menyusun kriteria penilaian tender gedung pemerintah agar bobot teknis, harga, TKDN, dan skema kontrak PLTS tidak salah hitung."
 focusKeyphrase: "kriteria penilaian tender gedung pemerintah"
-pubDate: "2026-10-02"
+pubDate: "2026-10-09"
 tags: ["b2g", "pengadaan", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan paling mahal dalam pengadaan PLTS gedung pemerintah jarang muncul di rapat anggaran. Kesalahan itu muncul ketika panitia menetapkan pemenang hanya dari angka penawaran terendah, lalu dua tahun kemudian mendapati produksi listrik jauh di bawah janji proposal. Selisihnya ditanggung anggaran daerah atau pusat, sementara gedung tetap bergantung pada listrik PLN. Akar masalahnya biasanya sederhana: dokumen kriteria penilaian tender gedung pemerintah tidak pernah menetapkan cara mengukur mutu teknis secara terukur.

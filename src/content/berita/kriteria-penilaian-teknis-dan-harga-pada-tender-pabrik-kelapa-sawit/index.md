@@ -3,9 +3,9 @@ title: "Kriteria Penilaian Teknis dan Harga pada Tender Pabrik Kelapa Sawit"
 seoTitle: "Kriteria Penilaian Tender untuk Pabrik Sawit"
 description: "Kriteria penilaian tender pabrik kelapa sawit: bobot teknis, daftar poin wajib, dan cara memverifikasi klaim vendor."
 focusKeyphrase: "kriteria penilaian tender pabrik kelapa sawit"
-pubDate: "2026-10-03"
+pubDate: "2026-10-09"
 tags: ["kelapa-sawit", "pengadaan", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan paling mahal di pabrik kelapa sawit jarang berupa salah memilih vendor; biasanya berupa penilaian yang berhenti di angka penawaran terendah. Ketika panitia menetapkan pemenang tanpa bobot teknis yang terukur, sistem yang terpasang berisiko beroperasi di bawah spesifikasi selama belasan tahun. Di titik itu, kriteria penilaian tender pabrik kelapa sawit berubah dari formalitas administrasi menjadi dokumen paling menentukan. Ulasan berikut fokus pada cara menyusun bobot, daftar poin wajib, dan verifikasi klaim vendor.

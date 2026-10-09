@@ -3,9 +3,9 @@ title: "Kriteria Penilaian Teknis dan Harga pada Tender Pabrik Manufaktur"
 seoTitle: "Kriteria Penilaian Tender untuk Pabrik"
 description: "Panduan menyusun kriteria penilaian tender pabrik manufaktur untuk PLTS: bobot teknis, harga, TKDN, hingga verifikasi klaim vendor."
 focusKeyphrase: "kriteria penilaian tender pabrik manufaktur"
-pubDate: "2026-10-02"
+pubDate: "2026-10-09"
 tags: ["manufaktur", "pengadaan", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan PLTS paling mahal di pabrik manufaktur jarang berasal dari salah memilih merek modul, melainkan dari cara menyusun kriteria penilaian tender pabrik manufaktur sebagai lelang harga murni. Bobot harga dibuat dominan, sementara aspek teknis hanya menjadi pelengkap dokumen. Vendor termurah lalu menang, dan biaya sebenarnya baru terlihat setelah sistem beroperasi beberapa tahun. Karena itu, dokumen tender perlu memisahkan penilaian teknis, komersial, dan komitmen pasca-pemasangan sejak halaman pertama.

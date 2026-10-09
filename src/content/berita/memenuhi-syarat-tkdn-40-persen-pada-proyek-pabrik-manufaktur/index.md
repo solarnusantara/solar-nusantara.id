@@ -2,9 +2,9 @@
 title: "Memenuhi Syarat TKDN 40 Persen pada Proyek Pabrik Manufaktur"
 description: "Panduan memenuhi TKDN 40 persen pabrik manufaktur: dokumen wajib, verifikasi klaim vendor, dan langkah mengamankan pengadaan PLTS."
 focusKeyphrase: "tkdn 40 persen pabrik manufaktur"
-pubDate: "2026-10-02"
+pubDate: "2026-10-09"
 tags: ["manufaktur", "pengadaan", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan termahal pada proyek PLTS jarang terjadi di meja negosiasi harga, melainkan di tahap verifikasi dokumen yang sering dilewati. Sebuah pabrik manufaktur menandatangani kontrak PLTS 1 MWp senilai Rp 11 miliar dengan asumsi bahwa syarat TKDN 40 persen pabrik manufaktur otomatis terpenuhi karena modulnya dirakit di dalam negeri. Saat audit internal, sertifikat yang diserahkan vendor hanya mencakup struktur mounting dan kabel, sementara komponen inti masih berasal dari impor. Bobot TKDN akhirnya jatuh di bawah ambang, dan nilai kontrak tidak dapat dihitung sebagai belanja produk dalam negeri.

@@ -2,9 +2,9 @@
 title: "Analisis Profil Beban Listrik Harian di Gedung Pemerintah"
 description: "Panduan menganalisis profil beban listrik gedung pemerintah untuk menentukan kapasitas PLTS, CAPEX, dan skema pengadaan yang tepat"
 focusKeyphrase: "profil beban listrik gedung pemerintah"
-pubDate: "2026-10-03"
+pubDate: "2026-10-09"
 tags: ["b2g", "desain-sistem", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Setiap keputusan ukuran sistem PLTS dimulai dari satu pertanyaan sederhana: berapa besar beban listrik yang harus dilayani, dan kapan beban itu muncul? Pada gedung pemerintah, jawabannya tidak bisa ditebak dari luas atap atau nilai tagihan bulanan. Analisis profil beban listrik gedung pemerintah menuntut data interval yang menunjukkan pola per jam, sehingga kapasitas PLTS, kebutuhan penyimpanan, dan skema pembiayaan dapat ditetapkan secara terukur.

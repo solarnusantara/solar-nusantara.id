@@ -2,9 +2,9 @@
 title: "Desain dan Sizing PLTS untuk Gedung Pemerintah"
 description: "Panduan lengkap desain PLTS gedung pemerintah: variabel sizing, contoh perhitungan, regulasi kuota PLN, skema pembiayaan, dan checklist data."
 focusKeyphrase: "desain plts gedung pemerintah"
-pubDate: "2026-10-03"
+pubDate: "2026-10-09"
 tags: ["b2g", "desain-sistem", "plts", "panduan"]
-draft: true
+draft: false
 ---
 
 Ukuran sistem PLTS atap untuk gedung pemerintah tidak ditentukan oleh luas atap semata. Ada variabel yang saling mengunci: profil beban harian, daya terpasang PLN, kuota PLTS atap yang tersedia, serta anggaran CAPEX dan OPEX yang disetujui. Memahami keterkaitan variabel ini adalah fondasi desain PLTS gedung pemerintah yang dapat dipertanggungjawabkan secara teknis sekaligus lolos audit pengadaan.

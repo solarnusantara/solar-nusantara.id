@@ -2,9 +2,9 @@
 title: "Evaluasi Vendor dan Kontraktor EPC untuk Pabrik Kelapa Sawit"
 description: "Panduan evaluasi vendor EPC pabrik kelapa sawit: daftar dokumen wajib, struktur biaya PLTS, kuota PLN, dan cara memverifikasi klaim produksi energi."
 focusKeyphrase: "evaluasi vendor epc pabrik kelapa sawit"
-pubDate: "2026-10-03"
+pubDate: "2026-10-09"
 tags: ["kelapa-sawit", "pengadaan", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan yang paling mahal di pabrik kelapa sawit jarang berupa harga beli yang terlalu tinggi. Yang lebih sering terjadi adalah sistem yang dipasang tidak pernah mencapai produksi energi yang dijanjikan, sementara biaya perawatan sudah berjalan sejak tahun pertama. Karena itu, evaluasi vendor EPC pabrik kelapa sawit sebaiknya diperlakukan sebagai proses teknis, bukan sekadar perbandingan penawaran harga. Pabrik kelapa sawit punya profil beban yang khas, dengan pompa, digester, dan stasiun klarifikasi yang berjalan hampir sepanjang hari.

@@ -2,9 +2,9 @@
 title: "Desain PLTS Hybrid dengan Baterai untuk Pabrik Manufaktur"
 description: "Panduan desain PLTS hybrid baterai pabrik manufaktur: variabel penentu ukuran, contoh perhitungan bertahap, skema BOO/BOT, dan checklist data."
 focusKeyphrase: "plts hybrid baterai pabrik manufaktur"
-pubDate: "2026-10-02"
+pubDate: "2026-10-09"
 tags: ["manufaktur", "desain-sistem", "plts", "teknis"]
-draft: true
+draft: false
 ---
 
 Desain PLTS hybrid baterai pabrik manufaktur ditentukan oleh profil beban, bukan sekadar luas atap yang tersedia. Beban siang, beban kritis saat malam, daya terpasang PLN, kuota PV yang tersedia, dan target penghematan adalah lima variabel yang paling dulu dipatok. Tanpa kelima data itu, ukuran modul dan baterai hanya menjadi taksiran. Artikel ini langsung masuk ke cara menghitungnya sampai angka investasi.
