@@ -1,0 +1,205 @@
+{
+  "_note": "key = '<product>--<angle>': 8 products x 5 angles. subject is the English prompt body; alt is the Indonesian description of what the picture shows (it becomes heroImageAlt). The 50 illustrations of the earlier building-owner matrix are archived outside the repo.",
+  "items": [
+    {
+      "key": "mounting-rel--panduan",
+      "subject": "aluminium mounting rails and roof brackets for solar panels, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi rel mounting aluminium dan braket atap dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "mounting-rel--spesifikasi",
+      "subject": "aluminium mounting rails and roof brackets for solar panels with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi rel mounting aluminium dan braket atap dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "mounting-rel--perbandingan",
+      "subject": "two different variants of aluminium mounting rails and roof brackets for solar panels placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian rel mounting aluminium dan braket atap berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "mounting-rel--pengadaan",
+      "subject": "aluminium mounting rails and roof brackets for solar panels packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi rel mounting aluminium dan braket atap dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "mounting-rel--mutu",
+      "subject": "aluminium mounting rails and roof brackets for solar panels with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi rel mounting aluminium dan braket atap dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "pv-modul--panduan",
+      "subject": "a framed solar PV module, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi modul surya dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "pv-modul--spesifikasi",
+      "subject": "a framed solar PV module with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi modul surya dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "pv-modul--perbandingan",
+      "subject": "two different variants of a framed solar PV module placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian modul surya berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "pv-modul--pengadaan",
+      "subject": "a framed solar PV module packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi modul surya dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "pv-modul--mutu",
+      "subject": "a framed solar PV module with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi modul surya dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "walkway-tray--panduan",
+      "subject": "a perforated metal cable tray and a rooftop walkway grating, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi cable tray logam dan walkway atap dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "walkway-tray--spesifikasi",
+      "subject": "a perforated metal cable tray and a rooftop walkway grating with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi cable tray logam dan walkway atap dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "walkway-tray--perbandingan",
+      "subject": "two different variants of a perforated metal cable tray and a rooftop walkway grating placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian cable tray logam dan walkway atap berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "walkway-tray--pengadaan",
+      "subject": "a perforated metal cable tray and a rooftop walkway grating packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi cable tray logam dan walkway atap dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "walkway-tray--mutu",
+      "subject": "a perforated metal cable tray and a rooftop walkway grating with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi cable tray logam dan walkway atap dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "inverter--panduan",
+      "subject": "a wall-mounted solar string inverter, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "inverter--spesifikasi",
+      "subject": "a wall-mounted solar string inverter with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi inverter surya dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "inverter--perbandingan",
+      "subject": "two different variants of a wall-mounted solar string inverter placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian inverter surya berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "inverter--pengadaan",
+      "subject": "a wall-mounted solar string inverter packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi inverter surya dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "inverter--mutu",
+      "subject": "a wall-mounted solar string inverter with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi inverter surya dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "perawatan--panduan",
+      "subject": "a solar panel being cleaned with a brush and a water spray, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi panel surya yang dibersihkan dengan sikat dan semprotan air dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "perawatan--spesifikasi",
+      "subject": "a solar panel being cleaned with a brush and a water spray with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi panel surya yang dibersihkan dengan sikat dan semprotan air dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "perawatan--perbandingan",
+      "subject": "two different variants of a solar panel being cleaned with a brush and a water spray placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian panel surya yang dibersihkan dengan sikat dan semprotan air berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "perawatan--pengadaan",
+      "subject": "a solar panel being cleaned with a brush and a water spray packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi panel surya yang dibersihkan dengan sikat dan semprotan air dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "perawatan--mutu",
+      "subject": "a solar panel being cleaned with a brush and a water spray with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi panel surya yang dibersihkan dengan sikat dan semprotan air dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "proyek--panduan",
+      "subject": "a rooftop solar installation project with a crane lifting materials, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi proyek pemasangan PLTS atap dengan derek dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "proyek--spesifikasi",
+      "subject": "a rooftop solar installation project with a crane lifting materials with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi proyek pemasangan PLTS atap dengan derek dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "proyek--perbandingan",
+      "subject": "two different variants of a rooftop solar installation project with a crane lifting materials placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian proyek pemasangan PLTS atap dengan derek berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "proyek--pengadaan",
+      "subject": "a rooftop solar installation project with a crane lifting materials packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi proyek pemasangan PLTS atap dengan derek dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "proyek--mutu",
+      "subject": "a rooftop solar installation project with a crane lifting materials with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi proyek pemasangan PLTS atap dengan derek dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "kabel-dc--panduan",
+      "subject": "coiled red and black solar DC cables with MC4 connectors, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi gulungan kabel solar DC dengan konektor MC4 dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "kabel-dc--spesifikasi",
+      "subject": "coiled red and black solar DC cables with MC4 connectors with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi gulungan kabel solar DC dengan konektor MC4 dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "kabel-dc--perbandingan",
+      "subject": "two different variants of coiled red and black solar DC cables with MC4 connectors placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian gulungan kabel solar DC dengan konektor MC4 berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "kabel-dc--pengadaan",
+      "subject": "coiled red and black solar DC cables with MC4 connectors packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi gulungan kabel solar DC dengan konektor MC4 dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "kabel-dc--mutu",
+      "subject": "coiled red and black solar DC cables with MC4 connectors with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi gulungan kabel solar DC dengan konektor MC4 dengan stempel sertifikasi dan kaca pembesar"
+    },
+    {
+      "key": "kabel-ac--panduan",
+      "subject": "a coil of thick multicore AC power cable with a copper lug terminal, shown as the clear main subject, with a closed handbook beside it",
+      "alt": "Ilustrasi gulungan kabel daya AC berinti banyak dengan sepatu kabel dengan buku panduan tertutup di sampingnya"
+    },
+    {
+      "key": "kabel-ac--spesifikasi",
+      "subject": "a coil of thick multicore AC power cable with a copper lug terminal with a ruler, a measuring caliper and a technical drawing sheet with no writing on it",
+      "alt": "Ilustrasi gulungan kabel daya AC berinti banyak dengan sepatu kabel dengan penggaris, jangka sorong, dan lembar gambar teknis"
+    },
+    {
+      "key": "kabel-ac--perbandingan",
+      "subject": "two different variants of a coil of thick multicore AC power cable with a copper lug terminal placed side by side with a balance scale between them",
+      "alt": "Ilustrasi dua varian gulungan kabel daya AC berinti banyak dengan sepatu kabel berdampingan dengan timbangan di antaranya"
+    },
+    {
+      "key": "kabel-ac--pengadaan",
+      "subject": "a coil of thick multicore AC power cable with a copper lug terminal packed in wooden crates on a pallet, beside a clipboard with a checklist of ticked boxes",
+      "alt": "Ilustrasi gulungan kabel daya AC berinti banyak dengan sepatu kabel dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
+    },
+    {
+      "key": "kabel-ac--mutu",
+      "subject": "a coil of thick multicore AC power cable with a copper lug terminal with a certification ribbon seal and a magnifying glass",
+      "alt": "Ilustrasi gulungan kabel daya AC berinti banyak dengan sepatu kabel dengan stempel sertifikasi dan kaca pembesar"
+    }
+  ]
+}

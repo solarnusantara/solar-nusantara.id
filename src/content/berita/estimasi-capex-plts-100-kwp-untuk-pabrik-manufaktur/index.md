@@ -1,6 +1,8 @@
 ---
 title: "Estimasi CAPEX PLTS 100 kWp untuk Pabrik Manufaktur"
 description: "Estimasi CAPEX PLTS 100 kWp pabrik manufaktur: rincian biaya, skema kepemilikan, payback period, dan faktor yang mengubah rentang investasi."
+heroImage: "./hero.webp"
+heroImageAlt: "Ilustrasi grafik batang yang naik, tumpukan koin, dan satu panel surya"
 focusKeyphrase: "capex plts 100 kwp pabrik manufaktur"
 pubDate: "2026-10-09"
 tags: ["manufaktur", "biaya-roi", "plts", "teknis"]
