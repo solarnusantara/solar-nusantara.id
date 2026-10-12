@@ -1,11 +1,16 @@
 #!/usr/bin/env node
 /**
- * Generate articles from data/topics.json using DeepSeek.
+ * Generate ONE review batch of articles from data/topics.json using DeepSeek.
  *
- *   npm run generate -- --limit 1              # one article, wave 1
- *   npm run generate -- --limit 10 --wave 1
- *   npm run generate -- --dry-run --limit 1    # print, write nothing
- *   npm run generate -- --id pabrik-manufaktur--biaya-roi--pilar
+ *   npm run generate                           # the weekly run: next batch of 4, then commit + push for review
+ *   npm run generate -- --dry-run              # print, write nothing, push nothing
+ *   npm run generate -- --id epc--mounting-rel--panduan    # one topic, ignores the review lock
+ *   npm run generate -- --no-push              # write and commit locally
+ *
+ * The batch is the unit of human review. A run first applies the decisions in
+ * data/review.txt, then refuses to start a new batch while any earlier article is
+ * still waiting for one - so review is a gate, not a suggestion, and an unreviewed
+ * backlog cannot pile up. Each new draft is born with its hero image.
  *
  * Requires DEEPSEEK_API_KEY in the environment. Never read from the repo.
  *
@@ -31,9 +36,15 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { checkSeo, TRUSTED_EXTERNAL } from './lib/seo-rules.mjs';
+import { SONUSHUB_GENERAL, tagSonushubLinks } from './lib/sonushub.mjs';
 import { checkFacts, verifyExternalLinks } from './lib/fact-guard.mjs';
+import { execFileSync } from 'node:child_process';
+import { writeHero } from './lib/thumbnail.mjs';
+import { awaitingReview, loadStore, saveStore, applyDecisions } from './lib/review-state.mjs';
 
-const TOPICS = 'data/topics.json';
+const BATCH_SIZE = 4;
+/** A topic can fail its gates three times and be marked failed; extra topics keep one bad one from shrinking the week's batch. */
+const MAX_EXTRA_ATTEMPTS = 4;
 const CONTENT_DIR = 'src/content/berita';
 const CTA_SOURCE = 'drafts/cta-block.md';
 const API_BASE = process.env.DEEPSEEK_BASE_URL || 'https://api.deepseek.com';
@@ -49,10 +60,10 @@ const flag = (name, fallback = null) => {
 };
 const has = (name) => argv.includes(`--${name}`);
 
-const limit = Number(flag('limit', '1'));
-const wave = Number(flag('wave', '1'));
+const batchSize = Number(flag('limit', String(BATCH_SIZE)));
 const onlyId = flag('id');
 const dryRun = has('dry-run');
+const noPush = has('no-push');
 const modelOverride = flag('model');
 const concurrency = Math.max(1, Number(flag('concurrency', '2')));
 // Pemeriksaan tautan butuh egress. Dimatikan hanya untuk uji offline; pada
@@ -121,37 +132,37 @@ KONTEKS PERUSAHAAN:
 - Penerbit artikel: PT Tripower Solar Nusantara (merek "Solar Nusantara"),
   Gandaria Office 8 Tower lantai 8, Jl. Sultan Iskandar Muda No.8, Jakarta Selatan.
 - Lini bisnis: EPC PLTS, manajemen energi, PJUTS, ekosistem EV (SPKL), biomassa.
-- SonusHUB (sonushub.id): marketplace B2B/B2G material kelistrikan dan energi
-  terbarukan milik perusahaan, terintegrasi ke fitur ListriQu di aplikasi PLN Mobile.
+- SonusHUB (sonushub.id): platform B2B dan B2G untuk material listrik dan energi terbarukan
+  milik perusahaan. Katalognya punya kategori rel dan mounting PV, cable tray dan walkway,
+  kabel DC dan AC, modul surya, serta inverter string dan hybrid. Pembeli mengirim inquiry
+  lewat keranjang inquiry atau Chat Sales, dan ada kalkulator panel surya tanpa daftar.
+  Terintegrasi ke fitur ListriQu di aplikasi PLN Mobile.
 - Sonus EPC (sonus-epc.id): lini layanan EPC untuk pemasangan sistem panel surya.
-- Pembaca sasaran: pengambil keputusan B2B - manajer fasilitas, manajer energi,
-  kepala teknik, bagian pengadaan, dan direksi yang mengejar target ESG.
+- Pembaca sasaran: pembeli material B2B - bagian pengadaan, project manager, dan
+  direksi di kontraktor EPC, developer energi terbarukan, kontraktor MEP, industri
+  manufaktur, pengelola kawasan industri, dan proyek pemerintah. Mereka membandingkan
+  spesifikasi dan pemasok untuk sebuah proyek, bukan memutuskan apakah akan memasang PLTS.
 `.trim();
 
 /** Verified 200 on the live site. An internal link to a 404 is an audit finding. */
 const INTERNAL_TARGETS = [
-	'/layanan/epc/segmen-ci/',
 	'/layanan/sistem-tenaga-surya-epc/',
 	'/layanan/manajemen-energi/',
 	'/produk/sistem-panel-surya/panel-surya/panel-tkdn/',
-	'/produk/sistem-panel-surya/sistem-baterai/',
+	'/produk/sistem-panel-surya/sistem-pemasangan/',
+	'/produk/sistem-panel-surya/sistem-pengkabelan/',
 	'/produk/sistem-panel-surya/inverter/on-grid/',
 	'/tentang/sonushub/',
 	'/berita/',
-	'/kontak/',
 ];
 
-/** Article shape per intent. Writing all nine the same way is what makes bulk content read as bulk. */
-const INTENT_SHAPE = {
-	'biaya-roi': 'Buka dengan angka biaya konkret. Wajib memuat satu tabel rincian biaya atau perhitungan payback. Tutup dengan rentang investasi dan faktor yang mengubahnya.',
-	'desain-sizing': 'Buka dengan variabel yang menentukan ukuran sistem. Wajib memuat satu contoh perhitungan bertahap dengan angka. Tutup dengan checklist data yang perlu disiapkan sebelum desain.',
-	regulasi: 'Buka dengan nama dan tahun regulasinya. Jelaskan apa yang berubah dan konsekuensi praktisnya. Wajib memuat daftar dokumen atau tahapan. Tutup dengan risiko jika tidak dipatuhi.',
-	komponen: 'Buka dengan kriteria pemilihan, bukan definisi. Wajib memuat tabel perbandingan spesifikasi. Tutup dengan rekomendasi sesuai karakter beban segmen ini.',
-	instalasi: 'Buka dengan tantangan lapangan khas segmen ini. Wajib memuat urutan tahapan bernomor. Tutup dengan hal yang paling sering menyebabkan keterlambatan.',
-	om: 'Buka dengan konsekuensi jika pemeliharaan diabaikan. Wajib memuat jadwal atau interval konkret. Tutup dengan indikator yang harus dipantau rutin.',
-	pembiayaan: 'Buka dengan pertanyaan kepemilikan aset. Wajib memuat perbandingan skema berdampingan. Tutup dengan skema yang cocok untuk profil arus kas segmen ini.',
-	esg: 'Buka dengan kewajiban pelaporan yang dihadapi segmen ini. Wajib memuat satu contoh perhitungan emisi dengan angka. Tutup dengan cara mendokumentasikan klaim agar dapat diaudit.',
-	pengadaan: 'Buka dengan kesalahan pengadaan yang mahal. Wajib memuat daftar poin yang harus ada di dokumen. Tutup dengan cara memverifikasi klaim vendor.',
+/** Article shape per angle. Writing every angle the same way is what makes bulk content read as bulk. */
+const ANGLE_SHAPE = {
+	panduan: 'Buka dengan keputusan pengadaan yang harus diambil pembaca. Wajib memuat satu tabel kriteria pemilihan. Tutup dengan langkah memulai permintaan penawaran.',
+	spesifikasi: 'Buka dengan parameter teknis yang paling sering salah dibaca. Wajib memuat satu tabel parameter beserta cara membacanya di datasheet. Tutup dengan daftar pertanyaan untuk pemasok.',
+	perbandingan: 'Buka dengan keputusan yang harus dipilih pembaca. Wajib memuat satu tabel perbandingan berdampingan dan kondisi kapan masing-masing lebih tepat. Tutup dengan rekomendasi sesuai kebutuhan pembeli ini.',
+	pengadaan: 'Buka dengan kesalahan pengadaan yang mahal. Wajib memuat checklist bernomor yang bisa dipakai langsung. Tutup dengan dokumen yang harus diminta dari pemasok sebelum PO diterbitkan.',
+	mutu: 'Buka dengan standar atau persyaratan yang berlaku. Wajib memuat daftar uji atau sertifikat yang harus diminta. Tutup dengan cara memverifikasi klaim pemasok.',
 };
 
 // --- prompt -----------------------------------------------------------------
@@ -192,8 +203,17 @@ const KIND_SPEC = {
 };
 
 function buildPrompt(topic, previousErrors) {
-	const others = INTERNAL_TARGETS.filter((t) => t !== topic.internalLink).slice(0, 4);
+	// The second SonusHUB link must be a different page from the product's own.
+	const sonushubOthers = SONUSHUB_GENERAL.filter((u) => u !== topic.sonushubLink);
 	const spec = KIND_SPEC[topic.kind] ?? KIND_SPEC.longtail;
+
+	// A reviewer's note from a "redo" decision: guidance for the rewrite, not a rule the gates check.
+	const reviewer = topic.reviewNote
+		? `
+CATATAN REVIEWER DARI VERSI SEBELUMNYA - perhatikan saat menulis ulang:
+- ${topic.reviewNote}
+`
+		: '';
 
 	const retry = previousErrors?.length
 		? `
@@ -207,9 +227,9 @@ Tulis dalam Bahasa Indonesia yang lugas dan profesional untuk pembaca bisnis.
 
 JUDUL ARTIKEL (sudah final, jangan diubah): ${topic.title}
 KATA KUNCI FOKUS: "${topic.focusKeyphrase}"
-SEGMEN PEMBACA: ${topic.segmentLabel}
+PEMBELI YANG MEMBACA: ${topic.buyerLabel}
 
-BENTUK ARTIKEL: ${INTENT_SHAPE[topic.intent]}
+BENTUK ARTIKEL: ${ANGLE_SHAPE[topic.angle]}
 
 JENIS ARTIKEL: ${spec.shape}
 
@@ -231,23 +251,30 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
 3. Minimal ${spec.headings} heading tingkat "## ". DILARANG memakai heading "# ".
 4. Setiap paragraf maksimal 4 kalimat. Paragraf pendek lebih mudah dibaca.
 5. Minimal satu daftar berpoin atau bernomor.
-6. Minimal 2 tautan internal, dan MINIMAL SATU di antaranya harus menuju halaman
-   layanan atau produk - bukan ke artikel lain. Wajib memakai: ${topic.internalLink}
-   Boleh ditambah dari: ${others.join(', ')}
-   Format: [teks deskriptif](${topic.internalLink}) - harus diakhiri garis miring.
-   Tautan ke /berita/ tidak dihitung sebagai tautan konversi. Artikel yang hanya
-   menautkan ke artikel lain membangun trafik tanpa pernah mengantar pembaca ke
-   halaman yang menghasilkan permintaan penawaran.
-7. Minimal 1 tautan ke sumber otoritatif eksternal. Hanya boleh dari domain:
-   ${TRUSTED_EXTERNAL.slice(0, 8).join(', ')}
-   Gunakan URL beranda domain tersebut jika Anda tidak yakin URL halaman spesifiknya.
-   JANGAN mengarang URL halaman yang belum tentu ada.
+6. Tujuan artikel ini adalah mengantar pembaca ke katalog SonusHUB (https://sonushub.id).
+   Wajib ada MINIMAL 2 tautan ke sonushub.id, dua alamat yang berbeda:
+   a. Persis alamat ini: [teks deskriptif](${topic.sonushubLink}). Sisipkan di bagian yang
+      membahas pemilihan atau pengadaan, dengan kalimat yang wajar, bukan sebagai slogan.
+   b. Satu lagi ke salah satu: ${sonushubOthers.join(", ")}
+      Letakkan di bagian penutup sebagai ajakan: lihat katalog, bandingkan, lalu kirim
+      inquiry atau hubungi Chat Sales SonusHUB.
+   Untuk sonushub.id HANYA alamat di atas yang boleh dipakai. JANGAN mengarang alamat
+   kategori atau produk, dan jangan menyebut produk atau merek tertentu di sana.
+7. Minimal 2 tautan internal ke halaman situs ini (bukan SonusHUB), format
+   [teks](/path/) dan harus diakhiri garis miring. Pilih dari: ${INTERNAL_TARGETS.join(", ")}
+   Tautan eksternal otoritatif (regulator, lembaga standar) BOLEH ditambahkan hanya bila
+   menjelaskan sebuah aturan, dan hanya dari domain: ${TRUSTED_EXTERNAL.slice(0, 8).join(", ")}
+   Gunakan URL beranda domain itu bila tidak yakin URL halamannya. JANGAN mengarang URL.
 8. Jangan menulis heading bernama "Pendahuluan" atau "Kesimpulan" - langsung ke isi.
 9. Jangan mengarang angka, nama klien, atau studi kasus. Pakai hanya fakta di atas.
    Jika butuh angka lain, sebutkan sebagai asumsi dan jelaskan cara menghitungnya.
 10. Nilai rupiah ditulis "Rp 11 miliar". Jika menulis dolar, tulis "\\$100" dengan
     garis miring terbalik di depannya.
-${retry}
+11. Jangan menyebut merek produk tertentu, harga satuan, nama calon klien, atau syarat
+    pembayaran perusahaan. Bandingkan kategori dan spesifikasi, bukan merek.
+12. Sebut nomor standar (IEC, SNI, EN) hanya jika Anda yakin nomornya benar. Jika ragu,
+    sebut jenis standarnya tanpa nomor dan arahkan pembaca memeriksa dokumen aslinya.
+${reviewer}${retry}
 FORMAT KELUARAN - ikuti persis, tanpa teks pembuka atau penutup:
 
 DESCRIPTION: <satu kalimat meta description, WAJIB antara ${DESC_MIN} dan ${DESC_MAX} karakter, memuat kata kunci fokus, tanpa tanda kutip>
@@ -346,6 +373,9 @@ const CTA = readCta();
 
 function buildFile(topic, description, body) {
 	const esc = (s) => s.replace(/"/g, "'");
+	// UTM goes on at assembly, after the gates have judged the model's own links: the model never writes it, and what was validated is what was written minus the query string.
+	const utm = { campaign: topic.product, content: topic.slug };
+	body = tagSonushubLinks(body, { ...utm, term: 'isi' });
 	const lines = [
 		'---',
 		`title: "${esc(topic.title)}"`,
@@ -359,7 +389,7 @@ function buildFile(topic, description, body) {
 		'',
 		body,
 	];
-	if (CTA) lines.push('', '---', '', CTA);
+	if (CTA) lines.push('', '---', '', tagSonushubLinks(CTA, { ...utm, term: 'cta' }));
 	return `${lines.join('\n')}\n`;
 }
 
@@ -377,7 +407,7 @@ function validate(topic, description, body) {
 		if (!m[1].trim()) errors.push(`markdown image with empty alt: ${m[2]}`);
 	}
 
-	const seo = checkSeo({ title: topic.title, focusKeyphrase: topic.focusKeyphrase, body, kind: topic.kind });
+	const seo = checkSeo({ title: topic.title, focusKeyphrase: topic.focusKeyphrase, body, kind: topic.kind, requiredLink: topic.sonushubLink });
 	errors.push(...seo.errors);
 
 	// Fabricated facts are caught here, in the loop, rather than only at publish
@@ -462,88 +492,134 @@ async function generateOne(topic) {
 }
 
 // --- driver -----------------------------------------------------------------
-const store = JSON.parse(readFileSync(TOPICS, 'utf8'));
+const store = loadStore();
 
-const queue = store.topics
-	.filter((t) => (onlyId ? t.id === onlyId : t.status === 'pending' && t.wave === wave))
-	.sort((a, b) => b.priority - a.priority || a.id.localeCompare(b.id))
-	.slice(0, onlyId ? 1 : limit);
+/** Persist after every article so an interrupted run resumes cleanly. */
+function persist() {
+	if (!dryRun) saveStore(store);
+}
 
-if (queue.length === 0) {
-	console.log(onlyId ? `no topic with id "${onlyId}"` : `no pending topics in wave ${wave}`);
+if (!onlyId) {
+	// Decisions first: they may be exactly what unlocks this run. Skipped on --dry-run because a "redo" deletes its draft.
+	if (!dryRun) {
+		const d = applyDecisions(store);
+		if (d.approved.length + d.rejected.length + d.redo.length) {
+			persist();
+			console.log(`\nreview applied: ${d.approved.length} approved, ${d.redo.length} sent back for a rewrite, ${d.rejected.length} rejected`);
+		}
+	}
+
+	const waiting = awaitingReview(store);
+	if (waiting.length) {
+		console.log(`\ngenerate: ${waiting.length} article(s) still waiting for review - no new batch until they are decided:`);
+		for (const t of waiting) console.log(`  - ${t.slug}`);
+		console.log('  Decide them (npm run review), push data/review.txt, and this runs again.\n');
+		process.exit(0);
+	}
+}
+
+const pool = onlyId
+	? store.topics.filter((t) => t.id === onlyId)
+	: store.topics.filter((t) => !t.legacy && t.status === 'pending').sort((a, b) => a.rank - b.rank);
+
+if (pool.length === 0) {
+	console.log(onlyId ? `no topic with id "${onlyId}"` : 'no pending topics left in the plan');
 	process.exit(0);
 }
 
-console.log(`\ngenerate: ${queue.length} article(s), wave ${wave}, concurrency ${concurrency}`);
+const target = onlyId ? 1 : batchSize;
+console.log(`\ngenerate: batch of ${target}, concurrency ${concurrency}`);
 console.log(`  model: ${modelOverride || 'deepseek-flash'}`);
 if (dryRun) console.log('  --dry-run: nothing will be written\n');
 
 let done = 0;
 let failed = 0;
+const written = [];
 
-/** Persist after every article so an interrupted run resumes cleanly. */
-function persist() {
-	if (!dryRun) writeFileSync(TOPICS, JSON.stringify(store, null, 2), 'utf8');
-}
+async function processTopic(topic) {
+	const started = Date.now();
+	const result = await generateOne(topic);
+	const secs = ((Date.now() - started) / 1000).toFixed(0);
 
-async function worker(items) {
-	for (const topic of items) {
-		const started = Date.now();
-		const result = await generateOne(topic);
-		const secs = ((Date.now() - started) / 1000).toFixed(0);
-
-		if (!result.ok) {
-			failed += 1;
-			topic.status = 'failed';
-			topic.lastError = result.reason;
-			console.log(`\n  FAIL  ${topic.slug}  (${secs}s)  ${result.reason}`);
-			for (const e of (result.errors || []).slice(0, 6)) console.log(`          x ${e}`);
-			persist();
-			continue;
-		}
-
-		const dir = join(CONTENT_DIR, topic.slug);
-		if (existsSync(dir) && !dryRun) {
-			failed += 1;
-			topic.status = 'skipped';
-			topic.lastError = 'directory already exists';
-			console.log(`\n  SKIP  ${topic.slug}  already exists`);
-			persist();
-			continue;
-		}
-
-		if (!dryRun) {
-			mkdirSync(dir, { recursive: true });
-			writeFileSync(join(dir, 'index.md'), buildFile(topic, result.description, result.body), 'utf8');
-			topic.status = 'generated';
-			topic.generatedAt = new Date().toISOString();
-			delete topic.lastError;
-		}
-
-		done += 1;
-		const s = result.stats;
-		console.log(
-			`\n  OK    ${topic.slug}  (${secs}s, ${result.attempts} attempt${result.attempts > 1 ? 's' : ''})`,
-		);
-		console.log(
-			`          ${s.wordCount} words | ${s.h2s} h2 | kw x${s.occurrences} (${s.density}%) | ` +
-				`${s.internalLinks} internal | ${s.externalTrusted} external`,
-		);
-		if (dryRun) {
-			console.log(`          desc (${result.description.length}): ${result.description}`);
-		}
+	if (!result.ok) {
+		failed += 1;
+		topic.status = 'failed';
+		topic.lastError = result.reason;
+		console.log(`\n  FAIL  ${topic.slug}  (${secs}s)  ${result.reason}`);
+		for (const e of (result.errors || []).slice(0, 6)) console.log(`          x ${e}`);
 		persist();
+		return;
 	}
+
+	const dir = join(CONTENT_DIR, topic.slug);
+	if (existsSync(dir) && !dryRun) {
+		failed += 1;
+		topic.status = 'skipped';
+		topic.lastError = 'directory already exists';
+		console.log(`\n  SKIP  ${topic.slug}  already exists`);
+		persist();
+		return;
+	}
+
+	if (!dryRun) {
+		mkdirSync(dir, { recursive: true });
+		writeFileSync(join(dir, 'index.md'), buildFile(topic, result.description, result.body), 'utf8');
+		topic.status = 'generated';
+		topic.generatedAt = new Date().toISOString();
+		delete topic.lastError;
+		delete topic.reviewNote;
+	}
+
+	// A draft is born with its hero, so the reviewer sees what readers will see. A failure here does not lose the article; publish-drip refuses to publish one without a hero.
+	let hero = '';
+	if (!dryRun) {
+		try {
+			await writeHero(topic);
+			hero = ' + hero';
+		} catch (e) {
+			hero = `  (HERO FAILED: ${e.message})`;
+		}
+	}
+
+	done += 1;
+	written.push(topic.slug);
+	const s = result.stats;
+	console.log(`\n  OK    ${topic.slug}  (${secs}s, ${result.attempts} attempt${result.attempts > 1 ? 's' : ''})${hero}`);
+	console.log(
+		`          ${s.wordCount} words | ${s.h2s} h2 | kw x${s.occurrences} (${s.density}%) | ` +
+			`${s.internalLinks} internal | ${s.sonushubLinks} sonushub | ${s.externalTrusted} external`,
+	);
+	if (dryRun) console.log(`          desc (${result.description.length}): ${result.description}`);
+	persist();
 }
 
-// Round-robin the queue across workers so pillars (slower model) spread out.
-const lanes = Array.from({ length: Math.min(concurrency, queue.length) }, () => []);
-queue.forEach((t, i) => lanes[i % lanes.length].push(t));
-await Promise.all(lanes.map(worker));
+// Fill the batch, not just attempt it: a topic that fails its gates must not shrink the week's four, so keep drawing from the queue until four are written or the extra-attempt allowance is spent.
+let drawn = 0;
+const allowance = target + (onlyId ? 0 : MAX_EXTRA_ATTEMPTS);
+while (done < target && drawn < allowance && drawn < pool.length) {
+	const take = Math.min(target - done, allowance - drawn, pool.length - drawn);
+	const round = pool.slice(drawn, drawn + take);
+	drawn += take;
 
-console.log(`\ngenerate: ${done} written, ${failed} failed`);
-if (done && !dryRun) {
-	console.log('  All born as draft: true - they are not on the site yet.');
-	console.log('  Next: npm run check && npm run check-seo, then review before publishing.\n');
+	// Round-robin across workers so pillars (the slower ones) spread out.
+	const lanes = Array.from({ length: Math.min(concurrency, round.length) }, () => []);
+	round.forEach((t, i) => lanes[i % lanes.length].push(t));
+	await Promise.all(lanes.map(async (items) => { for (const t of items) await processTopic(t); }));
+}
+
+console.log(`\ngenerate: ${done} written, ${failed} failed${done < target && !onlyId ? `  (wanted ${target})` : ''}`);
+
+// Push the batch so a reviewer can pull it. Drafts are invisible on the site (draft: true), so this publishes nothing.
+if (done && !dryRun && !onlyId) {
+	try {
+		const git = (args) => execFileSync('git', args, { encoding: 'utf8', stdio: 'pipe' });
+		git(['add', CONTENT_DIR, 'data']);
+		git(['commit', '-m', `content: draft batch for review (${done})`, '-m', written.map((s) => `- ${s}`).join('\n')]);
+		if (!noPush) git(['push']);
+		console.log(noPush ? '  committed locally (--no-push).' : '  pushed. Review it: git pull && npm run review');
+	} catch (e) {
+		console.error(`\ncould not commit/push the batch:\n${e.stdout || ''}${e.stderr || ''}`);
+		process.exit(1);
+	}
 }
 process.exit(failed && !done ? 1 : 0);

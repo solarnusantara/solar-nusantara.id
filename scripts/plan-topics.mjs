@@ -1,52 +1,53 @@
 #!/usr/bin/env node
 /**
- * Build the topic matrix for the ~1000-article B2B build-out.
+ * Build the topic matrix for the B2B material-buyer articles.
  *
  *   npm run plan-topics              # write data/topics.json
  *   npm run plan-topics -- --dry-run # validate and report, write nothing
+ *   npm run plan-topics -- --retry-failed
  *
- * Why a matrix and not a list.
+ * What the articles are for. They live on solar-nusantara.id and exist to send buyers to
+ * https://sonushub.id/. The 8 products below are exactly what SonusHUB sells (mounting rail,
+ * walkway and tray, DC cable, AC cable, PV, inverter, maintenance and cleaning, project), and
+ * each topic carries the SonusHUB page its article must link to (lib/sonushub.mjs).
  *
- * check-content.mjs fails the build on a duplicate focusKeyphrase, and
- * CONTENT-PLAYBOOK.md says the quiet part out loud: at 1000 articles,
- * cannibalisation is the default outcome unless something counts. A
- * hand-written list of 1000 topics collides with itself long before it reaches
- * 1000. A matrix cannot: every keyphrase is `<modifier> <segment>`, the
- * modifier is unique per (intent, child index), and the segment is unique, so
- * uniqueness is structural rather than checked-after-the-fact. The check at the
- * bottom of this file is a safety net, not the mechanism.
+ * Who the articles are for. SonusHUB sells MATERIAL (mounting rails, PV modules,
+ * walkway and cable tray, inverters, cables) to businesses that buy it for a
+ * project or a plant: EPC contractors, renewable developers, MEP contractors,
+ * manufacturers, industrial estates, government projects. The reader is a
+ * procurement lead, project manager or C-level, not a building owner asking
+ * "should my hotel go solar". The previous matrix (14 building types x 9 intents)
+ * wrote for the second reader; this one writes for the first.
  *
- * Shape: 14 B2B segments x 9 buyer intents = 126 pillars, each with 7 long-tail
- * children = 882. Total 1008.
+ * Shape: 8 products x 7 buyers = 56 pillars, each with 4 long-tail children = 280.
+ * That is deliberate. Publishing is 4 a week, so 280 topics is ~70 weeks of
+ * content; a 1000-topic plan would be four years of queue and a promise nobody
+ * can keep. Add products or buyers here when the first batches show what works.
  *
- * The matrix also solves internal linking for free. `tags` carry the segment
- * and the intent, and getRelatedArticles() in src/utils/articles.ts already
- * ranks by shared tags before recency - so every article lands in a cluster of
- * siblings instead of in a flat 168-page-deep list.
+ * Uniqueness is structural: keyphrase = `<stem> <buyer.kw>`, and a stem is unique
+ * per (product, angle). The check near the bottom is the safety net.
  *
- * This file emits no prose. It decides WHAT gets written and under which URL;
- * generate-article.mjs decides what the words are.
+ * What stays OUT of this file on purpose: prospect names, target values per
+ * segment and payment terms. They sit in an internal spreadsheet and describe
+ * how the company sells, not what the reader is searching for. Only the shape of
+ * the market (who buys, what they buy, in what proportion) shaped the weights.
  */
 import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { containsLoose } from './lib/seo-rules.mjs';
+import { SONUSHUB_PRODUCT } from './lib/sonushub.mjs';
 
 const CONTENT_DIR = 'src/content/berita';
 const OUT = 'data/topics.json';
 const SLUG_MAX = 75;
 const TITLE_MAX = 110;
 const SEO_TITLE_MAX = 60;
-const WAVE_1_SIZE = 100;
+const GROUP = 4; // one weekly review batch
 
 const dryRun = process.argv.includes('--dry-run');
-/** Send `failed` rows back to the queue. Use after fixing whatever rejected them; without it a failure is permanent. */
 const retryFailed = process.argv.includes('--retry-failed');
 
-/**
- * Identical to scripts/new-article.mjs. Duplicated rather than shared because
- * new-article.mjs is a standalone tool a human runs by hand, and one file that
- * can be copied into a fresh checkout is worth more than one fewer function.
- */
+/** Same as scripts/new-article.mjs (kept apart so that file stays standalone) except the cap: it cuts at a word, because `...-untuk-kontraktor-ep` is a URL someone has to read. */
 function slugify(input) {
 	return input
 		.normalize('NFD')
@@ -55,185 +56,124 @@ function slugify(input) {
 		.toLowerCase()
 		.replace(/[^a-z0-9]+/g, '-')
 		.replace(/^-+|-+$/g, '')
-		.slice(0, SLUG_MAX)
-		.replace(/-+$/g, '');
+		.replace(new RegExp(`^(.{1,${SLUG_MAX}})(?:-.*)?$`), '$1');
 }
 
 // ---------------------------------------------------------------------------
-// Axis A: B2B segments.
-//
-// `label` goes in the <h1>, `short` in the <title> when the long form would
-// blow the 60-character SERP budget, `kw` into the focusKeyphrase. `link` is
-// the commercial page the article must link to in its body - every one of these
-// was fetched and returned 200 before being written here, because an internal
-// link to a 404 is an audit finding repeated 72 times per segment.
-//
-// `priority` decides what lands in wave 1. Higher = closer to an RFQ: a factory
-// roof is a bigger contract than a school roof, and a government building
-// carries the B2G angle the company's own YouTube pins in its comments.
+// Axis A: who is buying. `priority` follows how much of the sales plan the group
+// carries and how close it is to a purchase order: EPC contractors and developers
+// are the largest and the closest, manufacturers next, then estates, government,
+// MEP, and commercial property.
 // ---------------------------------------------------------------------------
-const SEGMENTS = [
-	{ key: 'pabrik-manufaktur',  label: 'Pabrik Manufaktur',        short: 'Pabrik',        kw: 'pabrik manufaktur',   tag: 'manufaktur',      priority: 10 },
-	{ key: 'gudang',             label: 'Gudang dan Pergudangan',   short: 'Gudang',        kw: 'gudang',              tag: 'pergudangan',     priority: 8 },
-	{ key: 'cold-storage',       label: 'Cold Storage',             short: 'Cold Storage',  kw: 'cold storage',        tag: 'cold-storage',    priority: 7 },
-	{ key: 'hotel',              label: 'Hotel dan Resor',          short: 'Hotel',         kw: 'hotel',               tag: 'hotel',           priority: 7 },
-	{ key: 'rumah-sakit',        label: 'Rumah Sakit',              short: 'Rumah Sakit',   kw: 'rumah sakit',         tag: 'rumah-sakit',     priority: 7 },
-	{ key: 'mall-retail',        label: 'Mall dan Retail',          short: 'Retail',        kw: 'mall retail',         tag: 'retail',          priority: 6 },
-	{ key: 'perkantoran',        label: 'Gedung Perkantoran',       short: 'Perkantoran',   kw: 'gedung perkantoran',  tag: 'perkantoran',     priority: 8 },
-	{ key: 'sekolah-kampus',     label: 'Sekolah dan Kampus',       short: 'Kampus',        kw: 'sekolah kampus',      tag: 'pendidikan',      priority: 4 },
-	{ key: 'pabrik-sawit',       label: 'Pabrik Kelapa Sawit',      short: 'Pabrik Sawit',  kw: 'pabrik kelapa sawit', tag: 'kelapa-sawit',    priority: 9 },
-	{ key: 'pertambangan',       label: 'Sektor Pertambangan',      short: 'Tambang',       kw: 'pertambangan',        tag: 'pertambangan',    priority: 9 },
-	{ key: 'data-center',        label: 'Data Center',              short: 'Data Center',   kw: 'data center',         tag: 'data-center',     priority: 6 },
-	{ key: 'spbu',               label: 'SPBU dan Rest Area',       short: 'SPBU',          kw: 'spbu',                tag: 'spbu',            priority: 5 },
-	{ key: 'gedung-pemerintah',  label: 'Gedung Pemerintah',        short: 'Gedung Negara', kw: 'gedung pemerintah',   tag: 'b2g',             priority: 9 },
-	{ key: 'pelabuhan-logistik', label: 'Pelabuhan dan Logistik',   short: 'Logistik',      kw: 'pelabuhan logistik',  tag: 'logistik',        priority: 5 },
+const BUYERS = [
+	{ key: 'epc',              label: 'Kontraktor EPC PLTS',          short: 'Kontraktor EPC',    kw: 'kontraktor epc',               tag: 'epc',              priority: 10 },
+	{ key: 'developer',        label: 'Developer Energi Terbarukan',  short: 'Developer EBT',     kw: 'developer energi terbarukan',  tag: 'developer',        priority: 10 },
+	{ key: 'manufaktur',       label: 'Industri Manufaktur',          short: 'Manufaktur',        kw: 'industri manufaktur',          tag: 'manufaktur',       priority: 9 },
+	{ key: 'kawasan-industri', label: 'Pengelola Kawasan Industri',   short: 'Kawasan Industri',  kw: 'kawasan industri',             tag: 'kawasan-industri', priority: 8 },
+	{ key: 'pemerintah',       label: 'Proyek Pemerintah',            short: 'Proyek Pemerintah', kw: 'proyek pemerintah',            tag: 'b2g',              priority: 7 },
+	{ key: 'mep',              label: 'Kontraktor MEP',               short: 'Kontraktor MEP',   kw: 'kontraktor mep',               tag: 'kontraktor-mep',   priority: 7 },
+	{ key: 'properti',         label: 'Properti Komersial',           short: 'Properti Komersial', kw: 'properti komersial',          tag: 'properti-komersial', priority: 6 },
 ];
 
 // ---------------------------------------------------------------------------
-// Axis B: buyer intent.
+// Axis B: what is bought. `priority` follows each category's share of sales.
+// `link` is the page the article must link to in its body; every one returned 200
+// on the live site before being written here.
 //
-// This axis IS the search-intent step: `intent` is carried through to
-// generate-article.mjs, which uses it to choose the article's shape. A "biaya"
-// article opens with a number and a table; a "regulasi" article opens with the
-// rule and its date. Writing both the same way is what makes bulk content read
-// like bulk content.
+// Each product has one pillar and four long-tail angles. The angle drives the
+// article's shape in generate-article.mjs and, with the product, the thumbnail
+// illustration - so a 'perbandingan' article about mounting reads and looks
+// different from a 'pengadaan' one.
 //
-// Each intent supplies exactly 7 children. `t` is the title stem, `s` the short
-// stem for seoTitle, `k` the keyphrase stem. Keyphrase = `${k} ${segment.kw}`,
-// which is what makes the whole matrix collision-free by construction.
+// rows: [angle, title stem, short stem for seoTitle, keyphrase stem]
 // ---------------------------------------------------------------------------
-const INTENTS = [
+const PRODUCTS = [
 	{
-		key: 'biaya-roi', tag: 'biaya-roi', priority: 10, funnel: 'bofu',
-		pillar: { t: 'Biaya dan ROI PLTS untuk', s: 'Biaya dan ROI PLTS', k: 'biaya plts' },
-		link: '/layanan/epc/segmen-ci/',
-		children: [
-			{ t: 'Simulasi Payback Period PLTS di',            s: 'Payback Period PLTS',       k: 'payback period plts' },
-			{ t: 'Estimasi CAPEX PLTS 100 kWp untuk',          s: 'CAPEX PLTS 100 kWp',        k: 'capex plts 100 kwp' },
-			{ t: 'Struktur Biaya OPEX Tahunan PLTS di',        s: 'OPEX Tahunan PLTS',         k: 'opex tahunan plts' },
-			{ t: 'Perbandingan Tarif PLN dan LCOE PLTS untuk', s: 'Tarif PLN vs LCOE PLTS',    k: 'lcoe plts' },
-			{ t: 'Menghitung Penghematan Listrik Tahunan di',  s: 'Penghematan Listrik',       k: 'penghematan listrik tahunan' },
-			{ t: 'Analisis Kelayakan Investasi PLTS untuk',    s: 'Kelayakan Investasi PLTS',  k: 'kelayakan investasi plts' },
-			{ t: 'Rincian Biaya PLTS 1 MWp untuk',             s: 'Biaya PLTS 1 MWp',          k: 'biaya plts 1 mwp' },
+		key: 'mounting-rel', tag: 'mounting', priority: 10,
+		rows: [
+			['panduan',      'Panduan Memilih Mounting Rel PLTS untuk',               'Memilih Mounting Rel PLTS',      'mounting rel plts'],
+			['spesifikasi',  'Spesifikasi Teknis Mounting Rel Atap PLTS untuk',       'Spesifikasi Mounting Rel',       'spesifikasi mounting rel'],
+			['perbandingan', 'Perbandingan Mounting Rel Aluminium dan Baja Galvanis untuk', 'Mounting Aluminium vs Galvanis', 'mounting rel aluminium galvanis'],
+			['pengadaan',    'Checklist Pengadaan Mounting Rel PLTS untuk',           'Pengadaan Mounting Rel',         'pengadaan mounting rel'],
+			['mutu',         'Standar Beban Angin dan Uji Tarik Mounting Rel untuk',  'Beban Angin Mounting Rel',       'beban angin mounting rel'],
 		],
 	},
 	{
-		key: 'desain-sizing', tag: 'desain-sistem', priority: 9, funnel: 'mofu',
-		pillar: { t: 'Desain dan Sizing PLTS untuk', s: 'Desain dan Sizing PLTS', k: 'desain plts' },
-		link: '/layanan/sistem-tenaga-surya-epc/',
-		children: [
-			{ t: 'Menghitung Kapasitas PLTS dari Konsumsi kWh di', s: 'Kapasitas PLTS dari kWh', k: 'kapasitas plts' },
-			{ t: 'Analisis Profil Beban Listrik Harian di',        s: 'Profil Beban Listrik',    k: 'profil beban listrik' },
-			{ t: 'Perhitungan Kebutuhan Luas Atap PLTS di',        s: 'Luas Atap PLTS',          k: 'luas atap plts' },
-			{ t: 'Menentukan Rasio DC AC Inverter untuk',          s: 'Rasio DC AC Inverter',    k: 'rasio dc ac inverter' },
-			{ t: 'Simulasi Produksi Energi Tahunan PLTS di',       s: 'Simulasi Produksi PLTS',  k: 'simulasi produksi plts' },
-			{ t: 'Desain PLTS Hybrid dengan Baterai untuk',        s: 'PLTS Hybrid Baterai',     k: 'plts hybrid baterai' },
-			{ t: 'Tata Letak String PLTS dan Analisis Shading di', s: 'Tata Letak String PLTS',  k: 'tata letak string plts' },
+		key: 'pv-modul', tag: 'modul-surya', priority: 9,
+		rows: [
+			['panduan',      'Panduan Memilih Modul Surya untuk',                     'Memilih Modul Surya',            'modul surya'],
+			['spesifikasi',  'Membaca Datasheet dan Spesifikasi Modul Surya untuk',   'Datasheet Modul Surya',          'datasheet modul surya'],
+			['perbandingan', 'Perbandingan Modul Surya TOPCon dan PERC untuk',        'Modul Surya TOPCon vs PERC',     'modul surya topcon perc'],
+			['pengadaan',    'Checklist Pengadaan Modul Surya Skala Besar untuk',     'Pengadaan Modul Surya',          'pengadaan modul surya'],
+			['mutu',         'Syarat TKDN dan Sertifikasi Modul Surya untuk',         'TKDN Modul Surya',               'tkdn modul surya'],
 		],
 	},
 	{
-		key: 'regulasi', tag: 'regulasi', priority: 10, funnel: 'tofu',
-		pillar: { t: 'Regulasi dan Perizinan PLTS untuk', s: 'Regulasi PLTS', k: 'regulasi plts' },
-		link: '/layanan/sistem-tenaga-surya-epc/',
-		children: [
-			{ t: 'Permen ESDM 2 Tahun 2024 dan Dampaknya bagi', s: 'Permen ESDM 2/2024',      k: 'permen esdm 2 2024' },
-			{ t: 'Prosedur Pengajuan Kuota PLTS Atap PLN untuk', s: 'Kuota PLTS Atap PLN',    k: 'kuota plts atap' },
-			{ t: 'Sertifikat Laik Operasi (SLO) PLTS untuk',     s: 'SLO PLTS',               k: 'slo plts' },
-			{ t: 'Izin Usaha Penyediaan Tenaga Listrik untuk',   s: 'Izin Tenaga Listrik',    k: 'izin usaha tenaga listrik' },
-			{ t: 'Persyaratan Interkoneksi Jaringan PLN di',     s: 'Interkoneksi PLN',       k: 'interkoneksi jaringan pln' },
-			{ t: 'Ketentuan Ekspor Impor Energi Listrik di',     s: 'Ekspor Impor Energi',    k: 'ekspor impor energi listrik' },
-			{ t: 'Kepatuhan K3 pada Instalasi PLTS di',          s: 'K3 Instalasi PLTS',      k: 'k3 instalasi plts' },
+		key: 'walkway-tray', tag: 'walkway-cable-tray', priority: 6,
+		rows: [
+			['panduan',      'Panduan Memilih Walkway dan Cable Tray PLTS untuk',     'Walkway dan Cable Tray PLTS',    'walkway cable tray plts'],
+			['spesifikasi',  'Spesifikasi Cable Tray dan Walkway Atap PLTS untuk',    'Spesifikasi Cable Tray',         'spesifikasi cable tray'],
+			['perbandingan', 'Perbandingan Cable Tray Perforated dan Ladder untuk',   'Cable Tray Perforated vs Ladder', 'cable tray perforated ladder'],
+			['pengadaan',    'Checklist Pengadaan Walkway dan Cable Tray untuk',      'Pengadaan Walkway dan Tray',     'pengadaan walkway cable tray'],
+			['mutu',         'Standar Galvanis dan Ketahanan Korosi Cable Tray untuk', 'Galvanis Cable Tray',           'galvanis cable tray'],
 		],
 	},
 	{
-		key: 'komponen', tag: 'komponen', priority: 8, funnel: 'mofu',
-		pillar: { t: 'Panduan Pemilihan Komponen PLTS untuk', s: 'Komponen PLTS', k: 'komponen plts' },
-		link: '/produk/sistem-panel-surya/panel-surya/panel-tkdn/',
-		children: [
-			{ t: 'Memilih Modul Surya TKDN atau Impor untuk', s: 'Modul Surya TKDN',      k: 'modul surya tkdn' },
-			{ t: 'Memilih Inverter On-Grid yang Tepat untuk', s: 'Inverter On-Grid',      k: 'inverter on grid' },
-			{ t: 'Spesifikasi Sistem Baterai Penyimpanan di', s: 'Baterai Penyimpanan',   k: 'baterai penyimpanan' },
-			{ t: 'Sistem Mounting untuk Atap Bangunan di',    s: 'Sistem Mounting Atap',  k: 'sistem mounting atap' },
-			{ t: 'Pemilihan Kabel dan Proteksi Sisi DC di',   s: 'Kabel dan Proteksi DC', k: 'kabel proteksi dc' },
-			{ t: 'Sistem Monitoring dan SCADA PLTS di',       s: 'Monitoring SCADA PLTS', k: 'monitoring scada plts' },
-			{ t: 'Proteksi Petir dan Grounding PLTS di',      s: 'Proteksi Petir PLTS',   k: 'proteksi petir grounding' },
+		key: 'inverter', tag: 'inverter', priority: 5,
+		rows: [
+			['panduan',      'Panduan Memilih Inverter PLTS untuk',                   'Memilih Inverter PLTS',          'inverter plts'],
+			['spesifikasi',  'Spesifikasi Inverter On-Grid yang Wajib Dicek untuk',   'Spesifikasi Inverter On-Grid',   'spesifikasi inverter on grid'],
+			['perbandingan', 'Perbandingan Inverter String dan Central untuk',        'Inverter String vs Central',     'inverter string central'],
+			['pengadaan',    'Checklist Pengadaan dan Garansi Inverter PLTS untuk',   'Garansi Inverter PLTS',          'garansi inverter plts'],
+			['mutu',         'Standar Proteksi dan Sertifikasi Inverter untuk',       'Sertifikasi Inverter',           'sertifikasi inverter'],
 		],
 	},
 	{
-		key: 'instalasi', tag: 'instalasi', priority: 7, funnel: 'mofu',
-		pillar: { t: 'Instalasi dan Konstruksi PLTS untuk', s: 'Instalasi PLTS', k: 'instalasi plts' },
-		link: '/layanan/sistem-tenaga-surya-epc/',
-		children: [
-			{ t: 'Tahapan Konstruksi PLTS Atap di',                  s: 'Tahapan Konstruksi PLTS', k: 'tahapan konstruksi plts' },
-			{ t: 'Survei Lokasi dan Uji Kekuatan Struktur Atap di',  s: 'Uji Struktur Atap',       k: 'uji struktur atap' },
-			{ t: 'Manajemen Proyek EPC PLTS di',                     s: 'Manajemen Proyek EPC',    k: 'manajemen proyek epc' },
-			{ t: 'Commissioning dan Uji Fungsi PLTS di',             s: 'Commissioning PLTS',      k: 'commissioning plts' },
-			{ t: 'Instalasi PLTS Tanpa Henti Operasional di',    s: 'Instalasi Tanpa Henti',   k: 'instalasi tanpa henti operasional' },
-			{ t: 'Keselamatan Kerja di Ketinggian pada Proyek',      s: 'K3 Kerja Ketinggian',     k: 'keselamatan kerja ketinggian' },
-			{ t: 'Serah Terima dan Dokumentasi As-Built PLTS di',    s: 'Dokumentasi As-Built',    k: 'dokumentasi as built' },
+		key: 'kabel-dc', tag: 'kabel-dc', priority: 3,
+		rows: [
+			['panduan',      'Panduan Memilih Kabel Solar DC PLTS untuk',                    'Memilih Kabel Solar DC',       'kabel solar dc plts'],
+			['spesifikasi',  'Spesifikasi Kabel Solar DC PV1-F untuk',                       'Spesifikasi Kabel Solar DC', 'spesifikasi kabel solar dc'],
+			['perbandingan', 'Perbandingan Kabel Solar DC dan Kabel NYY untuk',             'Kabel Solar DC vs NYY',        'kabel solar dc nyy'],
+			['pengadaan',    'Checklist Pengadaan Kabel Solar DC dan Konektor MC4 untuk',   'Pengadaan Kabel Solar DC',     'pengadaan kabel solar dc'],
+			['mutu',         'Standar dan Ketahanan UV Kabel Solar DC untuk',               'Standar Kabel Solar DC',       'standar kabel solar dc'],
 		],
 	},
 	{
-		key: 'om', tag: 'operasi-pemeliharaan', priority: 7, funnel: 'mofu',
-		pillar: { t: 'Operasi dan Pemeliharaan PLTS untuk', s: 'Pemeliharaan PLTS', k: 'pemeliharaan plts' },
-		link: '/layanan/manajemen-energi/',
-		children: [
-			{ t: 'Jadwal Pembersihan Modul Surya di',              s: 'Pembersihan Modul Surya', k: 'pembersihan modul surya' },
-			{ t: 'Mendeteksi Degradasi Performa Modul PLTS di',    s: 'Degradasi Modul PLTS',    k: 'degradasi modul plts' },
-			{ t: 'Inspeksi Termografi Rutin PLTS di',              s: 'Termografi PLTS',         k: 'termografi plts' },
-			{ t: 'Menyusun Kontrak O&M dan SLA PLTS untuk',        s: 'Kontrak O&M PLTS',        k: 'kontrak o&m plts' },
-			{ t: 'Penanganan Gangguan Inverter PLTS di',           s: 'Gangguan Inverter',       k: 'gangguan inverter plts' },
-			{ t: 'Analisis Performance Ratio PLTS di',             s: 'Performance Ratio PLTS',  k: 'performance ratio plts' },
-			{ t: 'Penggantian Komponen dan Klaim Garansi PLTS di', s: 'Garansi Komponen PLTS',   k: 'garansi komponen plts' },
+		key: 'kabel-ac', tag: 'kabel-ac', priority: 3,
+		rows: [
+			['panduan',      'Panduan Memilih Kabel AC PLTS untuk',                         'Memilih Kabel AC PLTS',        'kabel ac plts'],
+			['spesifikasi',  'Spesifikasi Kabel AC NYY dan NYA PLTS untuk',                 'Spesifikasi Kabel AC',         'spesifikasi kabel ac nyy nya'],
+			['perbandingan', 'Perbandingan Kabel AC Tembaga dan Aluminium untuk',           'Kabel AC Tembaga vs Aluminium', 'kabel ac tembaga aluminium'],
+			['pengadaan',    'Checklist Pengadaan Kabel AC PLTS untuk',                     'Pengadaan Kabel AC',           'pengadaan kabel ac'],
+			['mutu',         'Standar SNI dan Kapasitas Hantar Arus Kabel AC untuk',        'Standar Kabel AC',             'standar kabel ac'],
 		],
 	},
 	{
-		key: 'pembiayaan', tag: 'pembiayaan', priority: 9, funnel: 'bofu',
-		pillar: { t: 'Skema Pembiayaan PLTS untuk', s: 'Pembiayaan PLTS', k: 'pembiayaan plts' },
-		link: '/layanan/epc/segmen-ci/',
-		children: [
-			{ t: 'Skema BOO (Build Own Operate) PLTS untuk',     s: 'Skema BOO PLTS',        k: 'skema boo plts' },
-			{ t: 'Skema BOT (Build Operate Transfer) PLTS untuk', s: 'Skema BOT PLTS',       k: 'skema bot plts' },
-			{ t: 'Perbandingan CAPEX Mandiri vs Sewa PLTS di',   s: 'CAPEX vs Sewa PLTS',    k: 'capex mandiri vs sewa' },
-			{ t: 'Power Purchase Agreement (PPA) PLTS untuk',    s: 'PPA PLTS',              k: 'ppa plts' },
-			{ t: 'Green Financing dan Kredit Bank untuk PLTS di', s: 'Green Financing PLTS', k: 'green financing plts' },
-			{ t: 'Skema Leasing Peralatan PLTS untuk',           s: 'Leasing PLTS',          k: 'leasing peralatan plts' },
-			{ t: 'Struktur Kontrak dan Pembagian Risiko PLTS di', s: 'Kontrak dan Risiko',   k: 'struktur kontrak plts' },
+		key: 'perawatan', tag: 'perawatan', priority: 4,
+		rows: [
+			['panduan',      'Panduan Pembersihan dan Perawatan PLTS untuk',          'Pembersihan dan Perawatan PLTS', 'pembersihan perawatan plts'],
+			['spesifikasi',  'Spesifikasi Layanan Pembersihan Panel Surya untuk',     'Layanan Pembersihan Panel',      'layanan pembersihan panel surya'],
+			['perbandingan', 'Perbandingan Pembersihan Manual dan Robotik untuk', 'Pembersihan Manual vs Robotik', 'pembersihan manual robotik'],
+			['pengadaan',    'Checklist Kontrak Perawatan dan SLA PLTS untuk',        'Kontrak Perawatan PLTS',         'kontrak perawatan plts'],
+			['mutu',         'Indikator Kinerja Perawatan PLTS untuk',                'Indikator Perawatan PLTS',       'indikator kinerja perawatan'],
 		],
 	},
 	{
-		key: 'esg', tag: 'esg', priority: 8, funnel: 'mofu',
-		pillar: { t: 'PLTS untuk Pelaporan ESG di', s: 'PLTS dan Pelaporan ESG', k: 'esg plts' },
-		link: '/layanan/manajemen-energi/',
-		children: [
-			{ t: 'Menghitung Pengurangan Emisi CO2 dari PLTS di', s: 'Pengurangan Emisi CO2',  k: 'pengurangan emisi co2' },
-			{ t: 'Sertifikat Energi Terbarukan REC untuk',        s: 'Sertifikat REC',         k: 'sertifikat rec' },
-			{ t: 'Pelaporan Emisi Scope 2 GHG Protocol di',       s: 'Emisi Scope 2',          k: 'emisi scope 2' },
-			{ t: 'Kontribusi PLTS pada Skor ESG di',              s: 'Skor ESG dan PLTS',      k: 'skor esg' },
-			{ t: 'Persyaratan Karbon Rantai Pasok untuk',         s: 'Karbon Rantai Pasok',    k: 'karbon rantai pasok' },
-			{ t: 'PLTS dan Sertifikasi Bangunan Hijau di',        s: 'Sertifikasi Bangunan Hijau', k: 'sertifikasi bangunan hijau' },
-			{ t: 'Perdagangan Karbon dan Nilai Ekonominya bagi',  s: 'Perdagangan Karbon',     k: 'perdagangan karbon' },
-		],
-	},
-	{
-		key: 'pengadaan', tag: 'pengadaan', priority: 10, funnel: 'bofu',
-		pillar: { t: 'Panduan Pengadaan PLTS untuk', s: 'Pengadaan PLTS', k: 'pengadaan plts' },
-		link: '/tentang/sonushub/',
-		children: [
-			{ t: 'Menyusun Dokumen RFQ PLTS untuk',              s: 'RFQ PLTS',              k: 'rfq plts' },
-			{ t: 'Spesifikasi Teknis Tender PLTS untuk',         s: 'Spesifikasi Tender',    k: 'spesifikasi tender plts' },
-			{ t: 'Memenuhi Syarat TKDN 40 Persen pada Proyek',   s: 'TKDN 40 Persen',        k: 'tkdn 40 persen' },
-			{ t: 'Evaluasi Vendor dan Kontraktor EPC untuk',     s: 'Evaluasi Vendor EPC',   k: 'evaluasi vendor epc' },
-			{ t: 'Kriteria Penilaian Teknis dan Harga pada Tender', s: 'Kriteria Penilaian Tender', k: 'kriteria penilaian tender' },
-			{ t: 'Klausul Garansi dalam Kontrak PLTS untuk',     s: 'Klausul Garansi PLTS',  k: 'klausul garansi plts' },
-			{ t: 'Pengadaan Material Kelistrikan B2B untuk',     s: 'Pengadaan Material B2B', k: 'pengadaan material kelistrikan' },
+		key: 'proyek', tag: 'proyek-epc', priority: 5,
+		rows: [
+			['panduan',      'Panduan Pengadaan Material Proyek EPC PLTS untuk',      'Material Proyek EPC PLTS',       'material proyek epc plts'],
+			['spesifikasi',  'Menyusun Bill of Materials Proyek PLTS untuk',          'Bill of Materials PLTS',         'bill of materials plts'],
+			['perbandingan', 'Perbandingan Pengadaan Paket Material dan Turnkey untuk', 'Paket Material vs Turnkey', 'pengadaan paket material turnkey'],
+			['pengadaan',    'Manajemen Jadwal Pengiriman Material Proyek PLTS untuk', 'Jadwal Pengiriman Material',    'jadwal pengiriman material plts'],
+			['mutu',         'Dokumen Serah Terima dan Datasheet Proyek PLTS untuk',  'Dokumen Serah Terima PLTS',      'dokumen serah terima plts'],
 		],
 	},
 ];
 
+for (const p of PRODUCTS) if (!SONUSHUB_PRODUCT[p.key]) throw new Error(`product "${p.key}" has no SonusHUB page in lib/sonushub.mjs`);
+
 // ---------------------------------------------------------------------------
-// Read what is already published so the matrix never collides with it.
-// Same frontmatter-scraping approach new-article.mjs uses.
+// What is already on the site, so the matrix never collides with it.
 // ---------------------------------------------------------------------------
 function readExisting() {
 	const keyphrases = new Set();
@@ -267,160 +207,118 @@ const existing = readExisting();
 const topics = [];
 const problems = [];
 
-for (const seg of SEGMENTS) {
-	for (const intent of INTENTS) {
-		const rows = [
-			{ ...intent.pillar, kind: 'pillar' },
-			...intent.children.map((c) => ({ ...c, kind: 'longtail' })),
-		];
-
-		for (const [i, row] of rows.entries()) {
-			const title = `${row.t} ${seg.label}`;
-			const seoTitle = `${row.s} untuk ${seg.short}`;
-			const focusKeyphrase = `${row.k} ${seg.kw}`;
-			const slug = slugify(title);
-
-			// Tags drive getRelatedArticles(). Segment first so siblings in the
-			// same segment cluster before siblings sharing only an intent - a
-			// factory buyer reading about factory ROI wants factory sizing next,
-			// not hotel ROI.
-			const tags = [seg.tag, intent.tag, 'plts', row.kind === 'pillar' ? 'panduan' : 'teknis'];
+for (const buyer of BUYERS) {
+	for (const product of PRODUCTS) {
+		for (const [angle, t, s, k] of product.rows) {
+			const pillar = angle === 'panduan';
+			const title = `${t} ${buyer.label}`;
+			const seoTitle = `${s} untuk ${buyer.short}`;
 
 			topics.push({
-				id: `${seg.key}--${intent.key}--${row.kind === 'pillar' ? 'pilar' : `t${i}`}`,
-				kind: row.kind,
+				id: `${buyer.key}--${product.key}--${angle}`,
+				kind: pillar ? 'pillar' : 'longtail',
 				status: 'pending',
-				wave: 0, // assigned below
-				segment: seg.key,
-				segmentLabel: seg.label,
-				intent: intent.key,
-				funnel: intent.funnel,
+				rank: 0, // assigned below
+				buyer: buyer.key,
+				buyerLabel: buyer.label,
+				product: product.key,
+				angle,
 				title,
-				// Only emit seoTitle when the real title would be truncated in the
-				// SERP. Setting it unconditionally would throw away descriptive
-				// title characters on the ~40% of rows that already fit.
+				// Only when the real title would be truncated in the SERP; setting it everywhere would throw away descriptive title characters on the titles that already fit.
 				seoTitle: title.length > SEO_TITLE_MAX ? seoTitle : undefined,
-				slug,
-				focusKeyphrase,
-				tags,
-				internalLink: intent.link,
-				priority: seg.priority * intent.priority,
+				slug: slugify(title),
+				focusKeyphrase: `${k} ${buyer.kw}`,
+				// Tags drive RelatedArticles: buyer first so a contractor reading about mounting is offered the same buyer's modules next, not another buyer's mounting.
+				tags: [buyer.tag, product.tag, 'pengadaan-material', pillar ? 'panduan' : 'teknis'],
+				sonushubLink: SONUSHUB_PRODUCT[product.key],
+				priority: buyer.priority * product.priority,
 			});
 		}
 	}
 }
 
-// --- preserve generation state ---------------------------------------------
-// Re-running this script after a matrix tweak must not forget which topics have
-// already been written. Without this, adjusting one intent's funnel label would
-// silently reset every `generated` row to `pending` and the next run would
-// regenerate articles that already exist - which generate-article.mjs then
-// refuses as "directory already exists", leaving the queue wedged.
-//
-// Keyed by id, and only the mutable run fields are carried over; everything
-// describing WHAT to write is rebuilt from the matrix on purpose.
+// --- carry over state ---------------------------------------------------------
+// Rows from the previous plan survive only if they already produced an article. A
+// pending row of the old matrix is simply dropped; a generated one becomes
+// `legacy`: still on disk, still visible to the tools, but never in the review queue
+// and never published by the schedule.
 if (existsSync(OUT)) {
 	try {
 		const prev = JSON.parse(readFileSync(OUT, 'utf8'));
+		const newIds = new Set(topics.map((t) => t.id));
 		const byId = new Map((prev.topics ?? []).map((t) => [t.id, t]));
 		let carried = 0;
-		let retried = 0;
+		let retired = 0;
+
 		for (const t of topics) {
 			const old = byId.get(t.id);
 			if (!old || old.status === 'pending') continue;
-			if (retryFailed && old.status === 'failed') {
-				retried += 1;
-				continue; // stays pending, and drops the stale lastError with it
-			}
+			if (retryFailed && old.status === 'failed') continue;
 			t.status = old.status;
-			if (old.generatedAt) t.generatedAt = old.generatedAt;
-			if (old.lastError) t.lastError = old.lastError;
+			for (const f of ['generatedAt', 'lastError', 'reviewNote', 'approvedAt', 'publishedAt']) if (old[f]) t[f] = old[f];
 			carried += 1;
 		}
-		if (carried) console.log(`  carried over ${carried} non-pending status row(s) from the previous plan`);
-		if (retried) console.log(`  --retry-failed: ${retried} failed row(s) sent back to the queue`);
+
+		for (const old of prev.topics ?? []) {
+			if (newIds.has(old.id)) continue;
+			if (old.status === 'generated' || old.status === 'legacy') {
+				topics.push({ ...old, status: 'legacy', legacy: true, rank: 0 });
+				retired += 1;
+			}
+		}
+		if (carried) console.log(`  carried over ${carried} non-pending row(s) from the previous plan`);
+		if (retired) console.log(`  ${retired} article(s) of the old matrix kept as status "legacy" (on disk, out of the queue)`);
 	} catch {
 		console.log('  previous topics.json was unreadable; starting from a clean state');
 	}
 }
 
-// --- wave assignment -------------------------------------------------------
-// Wave 1 is the 100 articles that prove the whole chain before the other ~900.
-//
-// Composition is a QUOTA, not a side effect of priority. Measured B2B guidance
-// puts 60-70% of production at bottom-of-funnel, and the reason is a gap rather
-// than a preference: only 4.7% of B2B content teams work BOFU at all, while the
-// other 95.3% publish top-of-funnel that earns traffic and closes nothing.
-// Sorting purely by priority would have filled wave 1 with whatever scored high,
-// which on this matrix skews informational - the same mistake at a larger scale.
-//
-// So the buckets are filled separately and explicitly, and the run prints the
-// resulting split. Pillars still outrank their own long-tail inside a bucket: a
-// pillar is the hub its 7 children link into, so shipping children first builds
-// a cluster with no centre.
-const FUNNEL_QUOTA = { bofu: 0.65, mofu: 0.25, tofu: 0.10 };
+// --- rank: the order articles are written in ----------------------------------
+// Priority decides what comes first. Inside every group of four - one weekly review
+// batch and, a week later, one week of publishing - the product and the buyer must
+// differ, because four articles on one product for one buyer in a week is the
+// pattern that reads as bulk to a human reviewer as much as to a crawler.
+const live = topics.filter((t) => !t.legacy);
+const queue = live
+	.filter((t) => t.status === 'pending')
+	.sort((a, b) => b.priority - a.priority || (a.kind === b.kind ? 0 : a.kind === 'pillar' ? -1 : 1) || a.id.localeCompare(b.id));
 
-const byPriority = (a, b) => {
-	if (b.priority !== a.priority) return b.priority - a.priority;
-	if (a.kind !== b.kind) return a.kind === 'pillar' ? -1 : 1;
-	return a.id.localeCompare(b.id);
-};
-
-const buckets = { bofu: [], mofu: [], tofu: [] };
-for (const t of topics) buckets[t.funnel].push(t);
-for (const k of Object.keys(buckets)) buckets[k].sort(byPriority);
-
-topics.forEach((t) => { t.wave = 2; });
-
-let placed = 0;
-for (const [funnel, share] of Object.entries(FUNNEL_QUOTA)) {
-	const want = Math.round(WAVE_1_SIZE * share);
-	for (const t of buckets[funnel].slice(0, want)) {
-		t.wave = 1;
-		placed += 1;
+let rank = 0;
+while (queue.length) {
+	const group = [queue.shift()];
+	for (const strict of [true, false]) {
+		for (let i = 0; i < queue.length && group.length < GROUP; ) {
+			const c = queue[i];
+			const clash = group.some((g) => g.product === c.product || (strict && g.buyer === c.buyer));
+			if (clash) i += 1;
+			else group.push(queue.splice(i, 1)[0]);
+		}
 	}
+	for (const t of group) t.rank = (rank += 1);
+	// A group that could not reach GROUP distinct rows (the tail of the queue) keeps whatever it has.
 }
 
-// Rounding can leave wave 1 a seat or two short. Fill from BOFU, because that is
-// the bucket the quota exists to protect.
-if (placed < WAVE_1_SIZE) {
-	for (const t of buckets.bofu) {
-		if (placed >= WAVE_1_SIZE) break;
-		if (t.wave === 1) continue;
-		t.wave = 1;
-		placed += 1;
-	}
-}
-
-// --- validation ------------------------------------------------------------
-// The matrix should make collisions impossible. This proves it rather than
-// assuming it, and catches a typo in a stem that silently duplicates another.
+// --- validation ---------------------------------------------------------------
 const seen = { slug: new Map(), keyphrase: new Map(), title: new Map() };
 
-for (const t of topics) {
+for (const t of live) {
 	for (const [field, value] of [
 		['slug', t.slug],
 		['keyphrase', t.focusKeyphrase.toLowerCase()],
 		['title', t.title.toLowerCase()],
 	]) {
-		if (seen[field].has(value)) {
-			problems.push(`duplicate ${field} "${value}": ${t.id} vs ${seen[field].get(value)}`);
-		} else {
-			seen[field].set(value, t.id);
-		}
+		if (seen[field].has(value)) problems.push(`duplicate ${field} "${value}": ${t.id} vs ${seen[field].get(value)}`);
+		else seen[field].set(value, t.id);
 	}
 
-	// Collisions against the live site only matter for topics this plan has not
-	// written yet. Once a topic has been generated, its own article is sitting in
-	// src/content/berita and would otherwise be reported as a foreign collision -
-	// which deadlocks every re-run after the first generation batch.
+	// A topic that already produced its article would otherwise collide with itself.
 	if (t.status === 'pending') {
 		if (existing.slugs.has(t.slug)) problems.push(`${t.id}: slug "${t.slug}" already exists on the site`);
 		if (existing.keyphrases.has(t.focusKeyphrase.toLowerCase())) problems.push(`${t.id}: focusKeyphrase "${t.focusKeyphrase}" already used by a published article`);
 		if (existing.titles.has(t.title.toLowerCase())) problems.push(`${t.id}: title already used by a published article`);
 	}
 
-	// Title and keyphrase are both decided here, so a mismatch is not a bad article but an unwritable topic - it burned three DeepSeek calls each on 112 of 1008 rows.
+	// Title and keyphrase are both decided here, so a mismatch is an unwritable topic, not a bad article: it burned three DeepSeek calls each on 112 rows of the previous plan.
 	if (!containsLoose(t.title, t.focusKeyphrase)) {
 		const have = new Set(t.title.toLowerCase().split(/[^a-z0-9]+/));
 		const missing = t.focusKeyphrase.split(/\s+/).filter((w) => !have.has(w.toLowerCase()));
@@ -431,29 +329,21 @@ for (const t of topics) {
 	if (t.seoTitle && t.seoTitle.length > SEO_TITLE_MAX) problems.push(`${t.id}: seoTitle is ${t.seoTitle.length} chars (max ${SEO_TITLE_MAX})`);
 	if (t.slug.length > SLUG_MAX) problems.push(`${t.id}: slug is ${t.slug.length} chars (max ${SLUG_MAX})`);
 	if (!/^[a-z0-9]+(?:-[a-z0-9]+)*$/.test(t.slug)) problems.push(`${t.id}: slug "${t.slug}" is not URL-safe`);
-	for (const tag of t.tags) {
-		if (tag.length < 2 || tag.length > 40) problems.push(`${t.id}: tag "${tag}" must be 2-40 chars`);
-	}
 	if (t.tags.length > 8) problems.push(`${t.id}: ${t.tags.length} tags (max 8)`);
 }
 
-// --- report ----------------------------------------------------------------
-const bySegment = {};
-const byIntent = {};
-for (const t of topics) {
-	bySegment[t.segment] = (bySegment[t.segment] || 0) + 1;
-	byIntent[t.intent] = (byIntent[t.intent] || 0) + 1;
-}
+// --- report -------------------------------------------------------------------
+const count = (rows, f) => rows.reduce((m, t) => m.set(t[f], (m.get(t[f]) || 0) + 1), new Map());
+const pending = live.filter((t) => t.status === 'pending');
 
-console.log(`\nplan-topics: ${topics.length} topics`);
-console.log(`  ${SEGMENTS.length} segments x ${INTENTS.length} intents = ${SEGMENTS.length * INTENTS.length} pillars`);
-console.log(`  ${topics.filter((t) => t.kind === 'pillar').length} pillars, ${topics.filter((t) => t.kind === 'longtail').length} long-tail`);
-console.log(`  wave 1: ${topics.filter((t) => t.wave === 1).length}   wave 2: ${topics.filter((t) => t.wave === 2).length}`);
-const w1 = topics.filter((t) => t.wave === 1);
-const pct = (f) => Math.round((w1.filter((t) => t.funnel === f).length / w1.length) * 100);
-console.log(`  wave 1 funnel: ${pct('bofu')}% bofu / ${pct('mofu')}% mofu / ${pct('tofu')}% tofu  (target 65/25/10)`);
-console.log(`  seoTitle needed on ${topics.filter((t) => t.seoTitle).length} of ${topics.length}`);
-console.log(`  existing on site: ${existing.slugs.size} slugs, ${existing.keyphrases.size} keyphrases - checked against, no collisions`);
+console.log(`\nplan-topics: ${live.length} topics (${BUYERS.length} buyers x ${PRODUCTS.length} products = ${BUYERS.length * PRODUCTS.length} pillars, ${live.filter((t) => t.kind === 'pillar').length} pillars + ${live.filter((t) => t.kind === 'longtail').length} long-tail)`);
+console.log(`  ${pending.length} pending = ~${Math.ceil(pending.length / GROUP)} weekly batches of ${GROUP}`);
+console.log(`  seoTitle needed on ${live.filter((t) => t.seoTitle).length} of ${live.length}`);
+console.log(`  existing on site: ${existing.slugs.size} slugs, ${existing.keyphrases.size} keyphrases - checked against`);
+console.log('\n  first 3 batches (rank order):');
+for (const t of pending.sort((a, b) => a.rank - b.rank).slice(0, GROUP * 3)) {
+	console.log(`${(t.rank - 1) % GROUP === 0 ? '  --' : '    '} #${String(t.rank).padStart(2)} ${t.buyer.padEnd(16)} ${t.product.padEnd(13)} ${t.angle.padEnd(12)} ${t.title}`);
+}
 
 if (problems.length) {
 	console.error(`\n${problems.length} problem(s):`);
@@ -464,12 +354,7 @@ if (problems.length) {
 }
 
 if (dryRun) {
-	console.log('\n--dry-run: nothing written. Sample of wave 1:\n');
-	for (const t of topics.filter((x) => x.wave === 1).slice(0, 8)) {
-		console.log(`  ${t.title}`);
-		console.log(`    /berita/${t.slug}/`);
-		console.log(`    kw: ${t.focusKeyphrase}  |  tags: ${t.tags.join(', ')}\n`);
-	}
+	console.log('\n--dry-run: nothing written.\n');
 	process.exit(0);
 }
 
@@ -479,7 +364,7 @@ writeFileSync(
 	JSON.stringify(
 		{
 			generatedAt: new Date().toISOString(),
-			counts: { total: topics.length, wave1: WAVE_1_SIZE, segments: SEGMENTS.length, intents: INTENTS.length },
+			counts: { total: live.length, buyers: BUYERS.length, products: PRODUCTS.length, batchSize: GROUP },
 			topics,
 		},
 		null,
@@ -487,7 +372,5 @@ writeFileSync(
 	),
 	'utf8',
 );
-
 console.log(`\nwrote ${OUT}`);
-console.log('  Review the titles in this file BEFORE generating. Fixing 1000 titles');
-console.log('  in one JSON costs minutes; fixing them after generation costs a rewrite.\n');
+console.log('  Read the titles BEFORE the first batch is generated; fixing 280 titles in one JSON costs minutes.\n');

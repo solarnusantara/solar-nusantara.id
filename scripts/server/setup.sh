@@ -148,7 +148,7 @@ say "[4/4] Penjadwal"
 if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
-	# Hourly small batches beat one nightly run: a bad prompt shows up within the hour, and a transient API failure costs one batch.
+	# Daily, not hourly: the run writes ONE batch of four and then stops until a human has decided it, so most days it only reports "waiting for review" and exits 0. Daily is what lets Monday's decisions release the next batch within a day.
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - generate article drafts
@@ -160,16 +160,17 @@ Type=oneshot
 User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
-ExecStart=/usr/bin/env node scripts/generate-article.mjs --limit 4 --wave 1
+ExecStartPre=/usr/bin/git pull --rebase --autostash
+ExecStart=/usr/bin/env node scripts/generate-article.mjs
 TimeoutStartSec=3600
 EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - hourly draft generation
+Description=Solar Nusantara - daily draft batch (held while a batch awaits review)
 
 [Timer]
-OnCalendar=*-*-* *:07:00
+OnCalendar=*-*-* 02:07:00
 Persistent=true
 RandomizedDelaySec=300
 
@@ -177,7 +178,7 @@ RandomizedDelaySec=300
 WantedBy=timers.target
 EOF
 
-	# Publishing: once a day, and only what a human put in data/approved.txt.
+	# Publishing: Tuesday to Friday, one approved article per run = four a week. Review is Monday, so publication starts the day after.
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - publish approved drafts
@@ -190,16 +191,16 @@ User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
 ExecStartPre=/usr/bin/git pull --rebase --autostash
-ExecStart=/usr/bin/env node scripts/publish-drip.mjs --auto --limit 12
+ExecStart=/usr/bin/env node scripts/publish-drip.mjs
 TimeoutStartSec=1800
 EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - daily drip publish
+Description=Solar Nusantara - publish one approved article (Tue-Fri)
 
 [Timer]
-OnCalendar=*-*-* 09:23:00
+OnCalendar=Tue..Fri *-*-* 09:23:00
 Persistent=true
 RandomizedDelaySec=900
 
@@ -217,8 +218,8 @@ else
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
-	GEN_LINE="7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1 $MARKER"
-	PUB_LINE="23 9 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1 $MARKER"
+	GEN_LINE="7 2 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	PUB_LINE="23 9 * * 2-5 cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs >> \$HOME/sn-publish.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"
 	crontab -l 2>/dev/null | grep -vF "$MARKER" > "$CRON_TMP" || true
@@ -245,9 +246,9 @@ say ""
 say "Langkah berikutnya, berurutan:"
 say "  1. isi DEEPSEEK_API_KEY di $ENV_FILE  (kalau belum)"
 say "  2. cd $CLONE && npm run plan-topics"
-say "  3. npm run generate -- --limit 1   lalu BACA hasilnya sendiri, sekali saja"
-say "  4. npm run publish -- --auto --dry-run   lihat apa yang akan terbit"
-say "  5. npm run publish -- --auto --limit 1   artikel pertama, sungguhan"
+say "  3. npm run generate -- --dry-run   menulis satu batch di terminal tanpa menyimpan; BACA sekali"
+say "  4. Senin: npm run review   putuskan batch (setujui / tulis ulang / tolak), lalu kirim"
+say "  5. npm run publish -- --dry-run   lihat apa yang terbit hari itu (Selasa-Jumat, satu per hari)"
 say ""
 say "Setelah itu berjalan tanpa campur tangan: generate tiap jam, terbit 12/hari."
 say "Yang menahan artikel buruk adalah tiga gate mesin - struktur, penulisan, dan"
