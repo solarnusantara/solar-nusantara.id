@@ -5,7 +5,7 @@ description: "Panduan green financing PLTS pabrik manufaktur: bandingkan skema C
 focusKeyphrase: "green financing plts pabrik manufaktur"
 pubDate: "2026-10-08"
 tags: ["manufaktur", "pembiayaan", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Siapa yang sebaiknya memegang kepemilikan aset PLTS di atap pabrik Anda: perusahaan sendiri atau pihak ketiga? Pertanyaan ini muncul sebelum pertanyaan anggaran, karena jawabannya menentukan bentuk pembukuan, tarif listrik, dan risiko yang Anda tanggung. Skema green financing PLTS pabrik manufaktur selalu berputar pada satu sumbu: siapa pemilik aset, siapa yang menanggung belanja modal, dan siapa yang memanen penghematan. Artikel ini membandingkan skema pendanaan secara berdampingan untuk pabrik yang arus kasnya padat modal dan sensitif terhadap jadwal pembayaran.

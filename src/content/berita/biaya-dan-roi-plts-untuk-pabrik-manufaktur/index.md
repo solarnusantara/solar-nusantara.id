@@ -4,7 +4,7 @@ description: "Rincian biaya PLTS pabrik manufaktur 1 MWp: CAPEX Rp 9-13 miliar, 
 focusKeyphrase: "biaya plts pabrik manufaktur"
 pubDate: "2026-10-08"
 tags: ["manufaktur", "biaya-roi", "plts", "panduan"]
-draft: false
+draft: true
 ---
 
 Investasi PLTS untuk pabrik manufaktur berukuran 1 MWp di Indonesia saat ini berada di rentang Rp 9–13 miliar, dengan contoh kasus nyata Rp 11 miliar dan OPEX Rp 220 juta per tahun. Dengan asumsi produksi 1.400 kWh per kWp per tahun dan tarif listrik industri Rp 1.400 per kWh, titik impas umumnya tercapai antara tahun ke-6 dan ke-8. Angka-angka itu menjelaskan mengapa perhitungan biaya PLTS pabrik manufaktur tidak bisa disamakan dengan sektor lain. Profil beban pabrik relatif konstan pada jam siang, luas atap besar, dan konsumsi energi tinggi sehingga porsi listrik yang bisa digantikan energi surya jauh lebih besar dibanding bangunan komersial.

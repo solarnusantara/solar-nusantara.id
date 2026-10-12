@@ -4,7 +4,7 @@ description: "Klausul garansi PLTS gedung pemerintah harus mengikat kinerja, buk
 focusKeyphrase: "klausul garansi plts gedung pemerintah"
 pubDate: "2026-10-08"
 tags: ["b2g", "pengadaan", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 ## Klausul Garansi dalam Kontrak PLTS untuk Gedung Pemerintah

@@ -4,7 +4,7 @@ description: "Panduan evaluasi vendor EPC pabrik manufaktur: dokumen wajib, veri
 focusKeyphrase: "evaluasi vendor epc pabrik manufaktur"
 pubDate: "2026-10-08"
 tags: ["manufaktur", "pengadaan", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Banyak pabrik manufaktur kehilangan miliaran rupiah bukan karena harga modul surya, tetapi karena kesalahan memilih kontraktor EPC. Evaluasi vendor EPC pabrik manufaktur yang dangkal—hanya membandingkan penawaran harga terendah—sering berujung pada desain sistem yang tidak cocok dengan profil beban produksi. Akibatnya, target penghematan listrik tidak tercapai, sementara biaya perbaikan dan downtime justru membengkak. Artikel ini membahas dokumen dan verifikasi yang spesifik untuk konteks manufaktur, tanpa mengulang dasar-dasar pengadaan PLTS.

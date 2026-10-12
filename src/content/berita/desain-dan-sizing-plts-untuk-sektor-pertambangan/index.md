@@ -4,7 +4,7 @@ description: "Panduan desain PLTS pertambangan: variabel penentu kapasitas, cont
 focusKeyphrase: "desain plts pertambangan"
 pubDate: "2026-10-08"
 tags: ["pertambangan", "desain-sistem", "plts", "panduan"]
-draft: false
+draft: true
 ---
 
 Ukuran PLTS di lokasi tambang tidak ditentukan oleh luas lahan kosong atau besar tagihan listrik bulanan. Ada lima variabel yang menentukan: profil beban harian, iradiasi matahari di lokasi, ketersediaan dan kapasitas grid PLN, rencana ekspansi produksi, serta toleransi operasi terhadap fluktuasi pasokan. Kelima variabel itu saling mengunci, sehingga desain PLTS pertambangan yang sehat selalu dimulai dari data operasional, bukan dari katalog modul. Kesalahan paling umum di lapangan adalah menetapkan kapasitas dalam kWp lebih dulu, lalu menyesuaikan asumsi di belakangnya.

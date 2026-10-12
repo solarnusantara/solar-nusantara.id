@@ -4,7 +4,7 @@ description: "Panduan izin usaha tenaga listrik pabrik manufaktur: dampak Permen
 focusKeyphrase: "izin usaha tenaga listrik pabrik manufaktur"
 pubDate: "2026-10-08"
 tags: ["manufaktur", "regulasi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Permen ESDM No. 2 Tahun 2024 menjadi rujukan baru yang mengubah lanskap izin usaha tenaga listrik pabrik manufaktur di Indonesia. Regulasi ini merevisi ketentuan PLTS atap yang sebelumnya membatasi kapasitas pemasangan maksimal 100% dari daya terpasang pelanggan PLN. Kini kapasitas PLTS atap tunduk pada kuota yang tersedia dari PLN, bukan lagi pada plafon daya pelanggan. Bagi manajer fasilitas dan kepala teknik, perubahan ini menggeser titik kritis proyek dari kapasitas menjadi ketersediaan kuota wilayah.

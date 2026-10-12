@@ -4,7 +4,7 @@ description: "Analisis kelayakan investasi PLTS gedung pemerintah: rincian CAPEX
 focusKeyphrase: "kelayakan investasi plts gedung pemerintah"
 pubDate: "2026-10-08"
 tags: ["b2g", "biaya-roi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Untuk gedung pemerintah dengan kapasitas 1 MWp, CAPEX PLTS di Indonesia berada di rentang Rp 9–13 miliar pada periode 2024–2025. Modul surya menyumbang sekitar 40% dari total CAPEX sistem 1 MW. Karena itu, kelayakan investasi PLTS gedung pemerintah tidak berhenti pada harga beli per watt, melainkan pada seberapa besar tagihan listrik yang bisa ditekan setiap tahun.

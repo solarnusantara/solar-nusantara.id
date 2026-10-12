@@ -4,7 +4,7 @@ description: "Estimasi capex PLTS 100 kWp pabrik kelapa sawit: rentang biaya, ri
 focusKeyphrase: "capex plts 100 kwp pabrik kelapa sawit"
 pubDate: "2026-10-08"
 tags: ["kelapa-sawit", "biaya-roi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Berapa sebenarnya CAPEX PLTS 100 kWp pabrik kelapa sawit yang perlu disiapkan? Untuk kapasitas 100 kWp, rentang investasi yang realistis di Indonesia saat ini adalah Rp 900 juta sampai Rp 1,3 miliar. Angka itu diturunkan dari patokan CAPEX PLTS 1 MWp di Indonesia yang berada di kisaran Rp 9–13 miliar pada 2024–2025, dengan penskalaan linear sebagai asumsi indikatif. Bagi pabrik kelapa sawit, kapasitas sebesar ini umumnya diarahkan untuk menutup beban siang hari seperti penerangan, pompa, dan motor berdaya kecil.

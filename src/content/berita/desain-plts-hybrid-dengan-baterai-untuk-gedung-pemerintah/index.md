@@ -4,7 +4,7 @@ description: "Panduan desain PLTS hybrid baterai gedung pemerintah: variabel pen
 focusKeyphrase: "plts hybrid baterai gedung pemerintah"
 pubDate: "2026-10-08"
 tags: ["b2g", "desain-sistem", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Ukuran sistem PLTS hybrid baterai gedung pemerintah tidak ditentukan oleh luas atap, melainkan oleh profil beban harian, target kemandirian listrik, dan kuota daya yang disetujui PLN. Luas atap hanya menetapkan batas maksimum, bukan target desain. Karena itu, perancangan yang sehat selalu dimulai dari data konsumsi, bukan dari katalog modul.

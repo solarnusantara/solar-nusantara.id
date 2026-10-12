@@ -4,7 +4,7 @@ description: "Ketentuan ekspor impor energi listrik pabrik manufaktur di PLTS at
 focusKeyphrase: "ekspor impor energi listrik pabrik manufaktur"
 pubDate: "2026-10-08"
 tags: ["manufaktur", "regulasi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Permen ESDM No. 2 Tahun 2024 adalah titik balik bagi perencanaan PLTS atap di kawasan industri, dan rujukan resminya dapat ditelusuri melalui [JDIH Kementerian ESDM](https://jdih.esdm.go.id/). Regulasi ini menghapus pembatasan kapasitas 100% dari daya terpasang pelanggan PLN dan menggantinya dengan mekanisme kuota yang ketersediaannya ditentukan PLN. Bagi manajer fasilitas dan kepala teknik, pertanyaan utamanya kini bergeser: bukan lagi sekadar boleh atau tidak memasang, tetapi seberapa besar ruang ekspor impor energi listrik pabrik manufaktur yang tersedia di titik sambungan Anda. Kepastian kuota itulah yang kini menentukan ukuran sistem, jauh sebelum urusan anggaran dibahas.

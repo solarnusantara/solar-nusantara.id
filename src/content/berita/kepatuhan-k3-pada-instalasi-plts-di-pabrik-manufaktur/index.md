@@ -4,7 +4,7 @@ description: "Panduan kepatuhan K3 instalasi PLTS pabrik manufaktur: perubahan P
 focusKeyphrase: "k3 instalasi plts pabrik manufaktur"
 pubDate: "2026-10-08"
 tags: ["manufaktur", "regulasi", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Permen ESDM No. 2 Tahun 2024 mengubah aturan main pemasangan PLTS atap di Indonesia, termasuk di kawasan industri. Regulasi ini menghapus pembatasan 100% dari daya terpasang pelanggan PLN dan menggantinya dengan mekanisme kuota yang disediakan PLN. Bagi pabrik manufaktur, dampaknya bukan sekadar kapasitas terpasang, melainkan kesiapan dokumen, jadwal kerja, dan prosedur keselamatan di area produksi. Kepatuhan K3 instalasi PLTS pabrik manufaktur kini menentukan apakah proyek dapat beroperasi komersial atau justru tertahan di tahap commissioning.

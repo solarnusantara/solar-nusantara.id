@@ -4,7 +4,7 @@ description: "Analisis profil beban listrik pabrik kelapa sawit sebagai dasar pe
 focusKeyphrase: "profil beban listrik pabrik kelapa sawit"
 pubDate: "2026-10-08"
 tags: ["kelapa-sawit", "desain-sistem", "plts", "teknis"]
-draft: false
+draft: true
 ---
 
 Ukuran sistem PLTS di pabrik kelapa sawit tidak ditentukan oleh luas atap atau besar anggaran, melainkan oleh bentuk profil beban listrik pabrik kelapa sawit itu sendiri. Profil ini menunjukkan kapan listrik paling banyak dikonsumsi, seberapa dalam lembah pemakaian, dan seberapa tinggi beban puncak yang harus dilayani. Tanpa data tersebut, kapasitas sistem hanyalah taksiran yang berisiko over-investasi atau under-delivery.
