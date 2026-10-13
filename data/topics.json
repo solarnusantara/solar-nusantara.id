@@ -6125,7 +6125,7 @@
     {
       "id": "pabrik-manufaktur--biaya-roi--pilar",
       "kind": "pillar",
-      "status": "legacy",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -6143,13 +6143,12 @@
       "internalLink": "/layanan/epc/segmen-ci/",
       "priority": 100,
       "generatedAt": "2026-09-25T07:21:38.522Z",
-      "legacy": true,
       "rank": 0
     },
     {
       "id": "pabrik-manufaktur--biaya-roi--t1",
       "kind": "longtail",
-      "status": "legacy",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -6167,7 +6166,6 @@
       "internalLink": "/layanan/epc/segmen-ci/",
       "priority": 100,
       "generatedAt": "2026-09-22T03:05:30.777Z",
-      "legacy": true,
       "rank": 0
     },
     {
@@ -6197,7 +6195,7 @@
     {
       "id": "pabrik-manufaktur--biaya-roi--t3",
       "kind": "longtail",
-      "status": "legacy",
+      "status": "generated",
       "wave": 1,
       "segment": "pabrik-manufaktur",
       "segmentLabel": "Pabrik Manufaktur",
@@ -6215,7 +6213,6 @@
       "internalLink": "/layanan/epc/segmen-ci/",
       "priority": 100,
       "generatedAt": "2026-09-22T03:05:31.444Z",
-      "legacy": true,
       "rank": 0
     },
     {
