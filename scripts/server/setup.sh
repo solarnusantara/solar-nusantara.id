@@ -167,12 +167,12 @@ EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - daily draft batch (held while a batch awaits review)
+Description=Solar Nusantara - rewrites at once, new batch when review is done and stock is low
 
 [Timer]
-OnCalendar=*-*-* 02:07:00
+OnCalendar=*:0/5
 Persistent=true
-RandomizedDelaySec=300
+RandomizedDelaySec=30
 
 [Install]
 WantedBy=timers.target
@@ -218,7 +218,7 @@ else
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
-	GEN_LINE="7 2 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	GEN_LINE="*/5 * * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
 	PUB_LINE="23 9 * * 2-5 cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs >> \$HOME/sn-publish.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"

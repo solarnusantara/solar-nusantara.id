@@ -40,7 +40,7 @@ import { SONUSHUB_GENERAL, tagSonushubLinks } from './lib/sonushub.mjs';
 import { checkFacts, verifyExternalLinks } from './lib/fact-guard.mjs';
 import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
-import { awaitingReview, loadStore, saveStore, applyDecisions } from './lib/review-state.mjs';
+import { awaitingReview, awaitingRewrite, loadStore, saveStore, applyDecisions } from './lib/review-state.mjs';
 
 const BATCH_SIZE = 4;
 /** A topic can fail its gates three times and be marked failed; extra topics keep one bad one from shrinking the week's batch. */
@@ -202,17 +202,30 @@ const KIND_SPEC = {
 	},
 };
 
+/** The body of the draft being revised, without its frontmatter. */
+function previousBody(topic) {
+	const file = join(CONTENT_DIR, topic.slug, 'index.md');
+	const text = existsSync(file) ? readFileSync(file, 'utf8').replace(/\r/g, '') : '';
+	return text.replace(/^---\n[\s\S]*?\n---\n/, '').trim();
+}
+
 function buildPrompt(topic, previousErrors) {
 	// The second SonusHUB link must be a different page from the product's own.
 	const sonushubOthers = SONUSHUB_GENERAL.filter((u) => u !== topic.sonushubLink);
 	const spec = KIND_SPEC[topic.kind] ?? KIND_SPEC.longtail;
 
 	// A reviewer's note from a "redo" decision: guidance for the rewrite, not a rule the gates check.
+	// On a rewrite the old draft goes in too: the reviewer approved most of it, so only the named points change. Without it a one-number fix can rewrite paragraphs that were already fine.
 	const reviewer = topic.reviewNote
 		? `
-CATATAN REVIEWER DARI VERSI SEBELUMNYA - perhatikan saat menulis ulang:
+CATATAN REVIEWER DARI VERSI SEBELUMNYA - perbaiki tepat poin ini:
 - ${topic.reviewNote}
-`
+${topic.rewrite ? `
+Ini REVISI, bukan tulisan baru. Berikut versi sebelumnya. Ubah HANYA yang diminta catatan di atas; pertahankan kalimat, struktur, dan angka lain sebagaimana adanya.
+<<<VERSI_SEBELUMNYA
+${previousBody(topic)}
+VERSI_SEBELUMNYA>>>
+` : ''}`
 		: '';
 
 	const retry = previousErrors?.length
@@ -503,32 +516,47 @@ if (!onlyId) {
 	// Decisions first: they may be exactly what unlocks this run. Skipped on --dry-run because a "redo" deletes its draft.
 	if (!dryRun) {
 		const d = applyDecisions(store);
-		if (d.approved.length + d.rejected.length + d.redo.length) {
+		if (d.approved.length + d.rejected.length + d.redo.length + d.manual.length) {
 			persist();
 			console.log(`\nreview applied: ${d.approved.length} approved, ${d.redo.length} sent back for a rewrite, ${d.rejected.length} rejected`);
 		}
+		for (const slug of d.manual) console.log(`  ! ${slug}: no further rewrite (old plan, or round limit reached) - approve or reject it as it is`);
+		for (const slug of d.stale) console.log(`  ! ${slug}: approval was for an older version - it waits for a new decision`);
 	}
 
-	const waiting = awaitingReview(store);
-	if (waiting.length) {
-		console.log(`\ngenerate: ${waiting.length} article(s) still waiting for review - no new batch until they are decided:`);
-		for (const t of waiting) console.log(`  - ${t.slug}`);
-		console.log('  Decide them (npm run review), push data/review.txt, and this runs again.\n');
-		process.exit(0);
+	// A rewrite belongs to the batch already under review, so it runs now, ahead of the lock below, and never starts a new batch.
+	if (awaitingRewrite(store).length === 0) {
+		const waiting = awaitingReview(store);
+		if (waiting.length) {
+			console.log(`\ngenerate: ${waiting.length} article(s) still waiting for review - no new batch until they are decided:`);
+			for (const t of waiting) console.log(`  - ${t.slug}`);
+			console.log('  Decide them on the review page and this runs again.\n');
+			process.exit(0);
+		}
+
+		// Approval is immediate, publishing is one a day: without this the timer would write batches faster than they publish.
+		const stock = store.topics.filter((t) => t.status === 'approved' && !t.legacy).length;
+		if (stock >= batchSize) {
+			console.log(`\ngenerate: ${stock} approved article(s) still waiting to publish - next batch when fewer than ${batchSize} remain.\n`);
+			process.exit(0);
+		}
 	}
 }
 
+const rewrites = onlyId ? [] : awaitingRewrite(store);
 const pool = onlyId
 	? store.topics.filter((t) => t.id === onlyId)
-	: store.topics.filter((t) => !t.legacy && t.status === 'pending').sort((a, b) => a.rank - b.rank);
+	: rewrites.length
+		? rewrites
+		: store.topics.filter((t) => !t.legacy && t.status === 'pending').sort((a, b) => a.rank - b.rank);
 
 if (pool.length === 0) {
 	console.log(onlyId ? `no topic with id "${onlyId}"` : 'no pending topics left in the plan');
 	process.exit(0);
 }
 
-const target = onlyId ? 1 : batchSize;
-console.log(`\ngenerate: batch of ${target}, concurrency ${concurrency}`);
+const target = onlyId ? 1 : rewrites.length || batchSize;
+console.log(`\ngenerate: ${rewrites.length ? `${rewrites.length} rewrite(s)` : `batch of ${target}`}, concurrency ${concurrency}`);
 console.log(`  model: ${modelOverride || 'deepseek-flash'}`);
 if (dryRun) console.log('  --dry-run: nothing will be written\n');
 
@@ -543,8 +571,16 @@ async function processTopic(topic) {
 
 	if (!result.ok) {
 		failed += 1;
-		topic.status = 'failed';
 		topic.lastError = result.reason;
+		if (topic.rewrite) {
+			// The old draft is still on disk and still good enough to decide on: put it back in review with the failure noted, rather than losing it to "failed".
+			topic.status = 'generated';
+			topic.needsManual = true;
+			delete topic.rewrite;
+			topic.round -= 1;
+		} else {
+			topic.status = 'failed';
+		}
 		console.log(`\n  FAIL  ${topic.slug}  (${secs}s)  ${result.reason}`);
 		for (const e of (result.errors || []).slice(0, 6)) console.log(`          x ${e}`);
 		persist();
@@ -552,7 +588,7 @@ async function processTopic(topic) {
 	}
 
 	const dir = join(CONTENT_DIR, topic.slug);
-	if (existsSync(dir) && !dryRun) {
+	if (existsSync(dir) && !dryRun && !topic.rewrite) {
 		failed += 1;
 		topic.status = 'skipped';
 		topic.lastError = 'directory already exists';
@@ -567,7 +603,10 @@ async function processTopic(topic) {
 		topic.status = 'generated';
 		topic.generatedAt = new Date().toISOString();
 		delete topic.lastError;
+		if (topic.rewrite) topic.lastReviewNote = topic.reviewNote;
 		delete topic.reviewNote;
+		delete topic.rewrite;
+		delete topic.needsManual;
 	}
 
 	// A draft is born with its hero, so the reviewer sees what readers will see. A failure here does not lose the article; publish-drip refuses to publish one without a hero.
@@ -610,11 +649,11 @@ while (done < target && drawn < allowance && drawn < pool.length) {
 console.log(`\ngenerate: ${done} written, ${failed} failed${done < target && !onlyId ? `  (wanted ${target})` : ''}`);
 
 // Push the batch so a reviewer can pull it. Drafts are invisible on the site (draft: true), so this publishes nothing.
-if (done && !dryRun && !onlyId) {
+if ((done || rewrites.length) && !dryRun && !onlyId) {
 	try {
 		const git = (args) => execFileSync('git', args, { encoding: 'utf8', stdio: 'pipe' });
 		git(['add', CONTENT_DIR, 'data']);
-		git(['commit', '-m', `content: draft batch for review (${done})`, '-m', written.map((s) => `- ${s}`).join('\n')]);
+		git(['commit', '-m', rewrites.length ? `content: rewrite for review (${done} of ${rewrites.length})` : `content: draft batch for review (${done})`, '-m', (written.length ? written : rewrites.map((t) => t.slug)).map((s) => `- ${s}`).join('\n')]);
 		if (!noPush) git(['push']);
 		console.log(noPush ? '  committed locally (--no-push).' : '  pushed. Review it: git pull && npm run review');
 	} catch (e) {
