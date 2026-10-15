@@ -42,8 +42,21 @@ import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
 import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
 import { DRAFTS_DIR, draftDir, slugTaken } from './lib/articles.mjs';
+import { record, spentToday } from './lib/spend-guard.mjs';
 
 const BATCH_SIZE = 4;
+/** A call that has not finished by now is abandoned. A pillar is the slow case (up to 32k tokens), so this is generous. */
+const API_TIMEOUT_MS = 5 * 60_000;
+/**
+ * Hard ceiling on DeepSeek tokens per UTC day, counted in data/api-spend.log. A normal batch is
+ * ~60k tokens and the worst case the loop allows (8 topics x 3 attempts) is ~360k; this sits
+ * above both and far below a runaway. Raise it here, on purpose, if the plan outgrows it.
+ */
+const DAILY_TOKEN_CAP = 500_000;
+/** Transient API errors in a row before the run gives up instead of working through the queue. */
+const MAX_API_FAILURES = 2;
+/** A transient API error is retried once, not three times: a busy service answers the same way. */
+const MAX_API_ATTEMPTS = 2;
 /** A topic can fail its gates three times and be marked failed; extra topics keep one bad one from shrinking the week's batch. */
 const MAX_EXTRA_ATTEMPTS = 4;
 const CTA_SOURCE = 'drafts/cta-block.md';
@@ -275,38 +288,77 @@ DESCRIPTION: <satu kalimat meta description, WAJIB antara ${DESC_MIN} dan ${DESC
 }
 
 // --- api --------------------------------------------------------------------
-async function callModel(topic, previousErrors) {
-	const res = await fetch(`${API_BASE}/chat/completions`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		body: JSON.stringify({
-			model: modelFor(topic),
-			messages: [{ role: 'user', content: buildPrompt(topic, previousErrors) }],
-			temperature: 0.6,
-			// Both DeepSeek models reason before answering, and reasoning tokens
-			// come out of this same budget. Measured on this prompt shape:
-			// deepseek-flash burns ~5.5k reasoning of ~7.3k total, deepseek-v4-pro
-			// ~6.2k of ~9.3k. At the old 4000 the article was truncated mid-sentence
-			// every time, which surfaced as three confusing validation errors
-			// (missing closing section, missing list, one internal link) instead of
-			// the one real cause.
-			//
-			// Kind-aware since pillars moved to 1800-2500 words: Indonesian runs
-			// roughly two tokens a word, so a 2,000-word pillar is ~4-5k output
-			// tokens on top of the same 6-8k of reasoning, and 16000 truncated it
-			// on every attempt. Long-tail articles are unchanged.
-			max_tokens: topic.kind === 'pillar' ? 32000 : 16000,
-		}),
-	});
-
-	if (!res.ok) {
-		const detail = await res.text().catch(() => '');
-		throw new Error(`DeepSeek HTTP ${res.status}: ${detail.slice(0, 300)}`);
+/**
+ * A failure of the API itself, not of the article. The topic did nothing wrong, so it must
+ * stay `pending` and be tried again later instead of being marked `failed`.
+ *   transient  429, 5xx, timeout, no connection: it may well work next time
+ *   fatal      other 4xx (bad key, no balance, bad request): retrying cannot help
+ *   budget     our own daily cap is used up
+ */
+class ApiError extends Error {
+	constructor(message, kind) {
+		super(message);
+		this.kind = kind;
 	}
-	const json = await res.json();
+}
+
+async function callModel(topic, previousErrors) {
+	// Both DeepSeek models reason before answering, and reasoning tokens
+	// come out of this same budget. Measured on this prompt shape:
+	// deepseek-flash burns ~5.5k reasoning of ~7.3k total, deepseek-v4-pro
+	// ~6.2k of ~9.3k. At the old 4000 the article was truncated mid-sentence
+	// every time, which surfaced as three confusing validation errors
+	// (missing closing section, missing list, one internal link) instead of
+	// the one real cause.
+	//
+	// Kind-aware since pillars moved to 1800-2500 words: Indonesian runs
+	// roughly two tokens a word, so a 2,000-word pillar is ~4-5k output
+	// tokens on top of the same 6-8k of reasoning, and 16000 truncated it
+	// on every attempt. Long-tail articles are unchanged.
+	const maxTokens = topic.kind === 'pillar' ? 32000 : 16000;
+
+	const spent = spentToday('deepseek');
+	if (spent >= DAILY_TOKEN_CAP) {
+		throw new ApiError(`daily DeepSeek budget used up (${spent} of ${DAILY_TOKEN_CAP} tokens today, UTC)`, 'budget');
+	}
+
+	let json;
+	try {
+		const res = await fetch(`${API_BASE}/chat/completions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${API_KEY}`,
+			},
+			signal: AbortSignal.timeout(API_TIMEOUT_MS),
+			body: JSON.stringify({
+				model: modelFor(topic),
+				messages: [{ role: 'user', content: buildPrompt(topic, previousErrors) }],
+				temperature: 0.6,
+				max_tokens: maxTokens,
+			}),
+		});
+
+		if (!res.ok) {
+			const detail = await res.text().catch(() => '');
+			// A refused request is not billed, so it is not charged to the budget either.
+			const kind = res.status === 429 || res.status >= 500 ? 'transient' : 'fatal';
+			throw new ApiError(`DeepSeek HTTP ${res.status}: ${detail.slice(0, 300)}`, kind);
+		}
+		json = await res.json();
+	} catch (e) {
+		if (e instanceof ApiError) throw e;
+		if (e.name === 'TimeoutError') {
+			// The request went out and nothing came back: the provider may still have generated, and billed, the answer. Charge the most this call could have cost.
+			record('deepseek', maxTokens, 'timeout');
+			throw new ApiError(`DeepSeek gave no answer within ${API_TIMEOUT_MS / 1000}s`, 'transient');
+		}
+		throw new ApiError(`DeepSeek unreachable: ${e.cause?.code ?? e.message}`, 'transient');
+	}
+
+	// The answer is paid for whatever the gates think of it.
+	record('deepseek', json?.usage?.total_tokens ?? maxTokens, topic.slug);
+
 	const choice = json?.choices?.[0];
 	const text = choice?.message?.content ?? '';
 
@@ -421,6 +473,12 @@ async function generateOne(topic) {
 		try {
 			call = await callModel(topic, previousErrors);
 		} catch (e) {
+			if (e instanceof ApiError) {
+				// Not the article's fault. Retrying a refusal or our own cap cannot help; a transient error gets one more try.
+				if (e.kind !== 'transient' || attempt >= MAX_API_ATTEMPTS) return { ok: false, api: e.kind, reason: e.message };
+				await new Promise((r) => setTimeout(r, 15_000 * attempt));
+				continue;
+			}
 			if (attempt === MAX_ATTEMPTS) return { ok: false, reason: e.message };
 			await new Promise((r) => setTimeout(r, 2000 * attempt));
 			continue;
@@ -517,11 +575,24 @@ if (dryRun) console.log('  --dry-run: nothing will be written\n');
 let done = 0;
 let failed = 0;
 const written = [];
+/** Set when the API itself is the problem; every lane stops taking new topics. */
+let stopReason = null;
+let apiFailures = 0;
 
 async function processTopic(topic) {
+	if (stopReason) return;
 	const started = Date.now();
 	const result = await generateOne(topic);
 	const secs = ((Date.now() - started) / 1000).toFixed(0);
+
+	if (!result.ok && result.api) {
+		// The API failed, not the article: the topic keeps its status and the next run tries it again. A fatal error or our own cap stops the run at once; transient ones need MAX_API_FAILURES in a row.
+		apiFailures += result.api === 'transient' ? 1 : MAX_API_FAILURES;
+		if (apiFailures >= MAX_API_FAILURES) stopReason = result.reason;
+		console.log(`\n  API   ${topic.slug}  (${secs}s)  ${result.reason}  - stays ${topic.status}`);
+		return;
+	}
+	if (result.ok) apiFailures = 0;
 
 	if (!result.ok) {
 		failed += 1;
@@ -580,7 +651,7 @@ async function processTopic(topic) {
 // Fill the batch, not just attempt it: a topic that fails its gates must not shrink the week's four, so keep drawing from the queue until four are written or the extra-attempt allowance is spent.
 let drawn = 0;
 const allowance = target + (onlyId ? 0 : MAX_EXTRA_ATTEMPTS);
-while (done < target && drawn < allowance && drawn < pool.length) {
+while (done < target && drawn < allowance && drawn < pool.length && !stopReason) {
 	const take = Math.min(target - done, allowance - drawn, pool.length - drawn);
 	const round = pool.slice(drawn, drawn + take);
 	drawn += take;
@@ -592,6 +663,10 @@ while (done < target && drawn < allowance && drawn < pool.length) {
 }
 
 console.log(`\ngenerate: ${done} written, ${failed} failed${done < target && !onlyId ? `  (wanted ${target})` : ''}`);
+if (stopReason) {
+	console.log(`generate: stopped early because of the API, not the articles: ${stopReason}`);
+	console.log('  Topics not written keep their status and are tried again on the next run.');
+}
 
 // Push the batch so the stock survives on GitHub, not only on the server's disk. Drafts live outside src/, so this publishes nothing (deploy.yml ignores pushes that touch only drafts/ and data/).
 if (done && !dryRun && !onlyId) {
@@ -606,4 +681,4 @@ if (done && !dryRun && !onlyId) {
 		process.exit(1);
 	}
 }
-process.exit(failed && !done ? 1 : 0);
+process.exit((failed || stopReason) && !done ? 1 : 0);

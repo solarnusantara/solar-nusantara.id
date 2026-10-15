@@ -19,6 +19,17 @@
 import { readFileSync, writeFileSync, mkdirSync, existsSync, appendFileSync } from 'node:fs';
 import { join } from 'node:path';
 import sharp from 'sharp';
+import { record, spentToday } from './lib/spend-guard.mjs';
+
+/**
+ * Ceilings that --yes cannot raise. The default run is ~$0.11, so these are far above any
+ * intended use and far below a mistake (--quality high --force on every image, run twice).
+ * Raise them in this file, on purpose, when the manifest really grows.
+ */
+const MAX_RUN_USD = 1;
+const DAILY_USD_CAP = 2;
+/** An image that has not come back by now is abandoned (and charged as if it had been made). */
+const FETCH_TIMEOUT_MS = 120_000;
 
 const MANIFEST = 'data/illustrations.json';
 const OUT_DIR = 'data/illustrations';
@@ -131,6 +142,17 @@ console.log(`  model ${MODEL}, ${SIZE}, quality ${quality}`);
 console.log(`  estimated cost: $${estimate.toFixed(3)}  (per-image price is unconfirmed; see PRICE in this file)`);
 
 if (todo.length === 0) process.exit(0);
+
+const spent = spentToday('openai');
+if (estimate > MAX_RUN_USD) {
+	console.error(`\n  REFUSED: $${estimate.toFixed(3)} is over the per-run ceiling of $${MAX_RUN_USD} (MAX_RUN_USD). Narrow it with --only or --max.\n`);
+	process.exit(1);
+}
+if (spent + estimate > DAILY_USD_CAP) {
+	console.error(`\n  REFUSED: $${spent.toFixed(3)} already spent today (UTC) + $${estimate.toFixed(3)} would pass the daily cap of $${DAILY_USD_CAP} (DAILY_USD_CAP).\n`);
+	process.exit(1);
+}
+
 if (!has('yes')) {
 	console.log('\n  nothing called. Re-run with --yes to spend it.\n');
 	process.exit(0);
@@ -145,11 +167,19 @@ if (!API_KEY) {
 // --- api --------------------------------------------------------------------
 async function generate(prompt) {
 	for (let attempt = 0; ; attempt++) {
-		const res = await fetch('https://api.openai.com/v1/images/generations', {
-			method: 'POST',
-			headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${API_KEY}` },
-			body: JSON.stringify({ model: MODEL, prompt, size: SIZE, quality, n: 1, output_format: 'png' }),
-		});
+		let res;
+		try {
+			res = await fetch('https://api.openai.com/v1/images/generations', {
+				method: 'POST',
+				headers: { 'Content-Type': 'application/json', Authorization: `Bearer ${API_KEY}` },
+				signal: AbortSignal.timeout(FETCH_TIMEOUT_MS),
+				body: JSON.stringify({ model: MODEL, prompt, size: SIZE, quality, n: 1, output_format: 'png' }),
+			});
+		} catch (e) {
+			// The request went out and nothing came back: it may still have been made, and billed.
+			if (e.name === 'TimeoutError') record('openai', PRICE[quality], 'timeout');
+			throw e;
+		}
 		if (res.ok) return res.json();
 		// Only transport-level failures retry. A bad picture is a human's call, and a
 		// retry loop that re-rolls on its own is how a $0.20 job becomes a $2 one.
@@ -176,6 +206,7 @@ for (const it of todo) {
 
 		const u = json.usage ?? {};
 		outTokens += u.output_tokens ?? 0;
+		record('openai', u.output_tokens ? u.output_tokens * OUTPUT_USD_PER_TOKEN : PRICE[quality], it.key);
 		appendFileSync(
 			COST_LOG,
 			`${new Date().toISOString()}\t${it.key}\t${MODEL}\t${quality}\tin=${u.input_tokens ?? '?'}\tout=${u.output_tokens ?? '?'}\n`,

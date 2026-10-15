@@ -145,6 +145,18 @@ fi
 say ""
 say "[4/4] Penjadwal"
 
+# One pipeline at a time: generate and publish both write data/topics.json and push. The kernel drops a flock when its process dies, so a crashed run cannot leave the lock stuck.
+LOCK="$CLONE/.pipeline.lock"
+if command -v flock >/dev/null 2>&1; then
+	FLOCK="$(command -v flock)"
+	GEN_LOCK="$FLOCK -n $LOCK "     # lock taken: skip this run, tomorrow's is enough
+	PUB_LOCK="$FLOCK -w 3600 $LOCK " # wait up to an hour for a generate in progress, so the day's article is not lost
+else
+	GEN_LOCK=""
+	PUB_LOCK=""
+	say "  PERINGATAN: flock tidak ada; generate dan publish bisa berjalan bersamaan"
+fi
+
 if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
@@ -160,8 +172,7 @@ Type=oneshot
 User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
-ExecStartPre=/usr/bin/git pull --rebase --autostash
-ExecStart=/usr/bin/env node scripts/generate-article.mjs
+ExecStart=${GEN_LOCK}/bin/sh -c '/usr/bin/git pull --rebase --autostash && exec /usr/bin/env node scripts/generate-article.mjs'
 TimeoutStartSec=3600
 EOF
 
@@ -190,9 +201,8 @@ Type=oneshot
 User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
-ExecStartPre=/usr/bin/git pull --rebase --autostash
-ExecStart=/usr/bin/env node scripts/publish-drip.mjs
-TimeoutStartSec=1800
+ExecStart=${PUB_LOCK}/bin/sh -c '/usr/bin/git pull --rebase --autostash && exec /usr/bin/env node scripts/publish-drip.mjs'
+TimeoutStartSec=5400
 EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.timer >/dev/null <<'EOF'
@@ -218,8 +228,8 @@ else
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
-	GEN_LINE="7 2 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
-	PUB_LINE="23 9 * * 2-5 cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs >> \$HOME/sn-publish.log 2>&1 $MARKER"
+	GEN_LINE="7 2 * * * cd $CLONE && ${GEN_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs' >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	PUB_LINE="23 9 * * 2-5 cd $CLONE && ${PUB_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs' >> \$HOME/sn-publish.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"
 	crontab -l 2>/dev/null | grep -vF "$MARKER" > "$CRON_TMP" || true

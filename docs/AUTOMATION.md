@@ -224,7 +224,8 @@ journalctl -u solar-nusantara-generate -n 50
 berlaku pada pemasangan baru. Dua perubahan harus dibuat di server:
 
 1. Ubah jadwal generate dari tiap 5 menit menjadi harian 02:07 (`OnCalendar=*-*-* 02:07:00`
-   pada timer systemd, atau `7 2 * * *` pada crontab), lalu `systemctl daemon-reload`.
+   pada timer systemd, atau `7 2 * * *` pada crontab), lalu `systemctl daemon-reload`. Bungkus
+   perintahnya dengan `flock` seperti yang dipasang `setup.sh`.
 2. `git pull && npm ci`. Pipeline memerlukan `satori`, `@resvg/resvg-js`, dan `sharp`.
    Tanpa `npm ci`, publish berhenti dengan error yang jelas, bukan menerbitkan tanpa hero.
 
@@ -272,7 +273,49 @@ adalah sebuah pilihan; pilihan itu harus dibuat sadar.
 
 ---
 
-## 8. Kalau ada yang rusak
+## 8. Batas biaya API
+
+Dua API berbayar dipakai, dan masing-masing punya pagar di kode **dan** harus punya pagar di
+sisi penyedia. Pagar di kode hanya melindungi dari kesalahan di sisi kita; pagar penyedia
+melindungi dari semuanya, termasuk mesin lain yang memakai key yang sama.
+
+| API | Dipakai oleh | Pagar di kode |
+|---|---|---|
+| DeepSeek | `generate-article.mjs` (server) | 500.000 token per hari UTC (`DAILY_TOKEN_CAP`); `max_tokens` per panggilan (16k, pilar 32k); timeout 5 menit; paling banyak 8 topik x 3 percobaan per run |
+| OpenAI | `generate-illustrations.mjs` (hanya laptop) | estimasi dulu, wajib `--yes`; maksimal US$1 per run (`MAX_RUN_USD`); US$2 per hari UTC (`DAILY_USD_CAP`); `--max` 50 gambar; timeout 2 menit; berhenti di kegagalan pertama |
+
+**Ledger.** Setiap panggilan dicatat satu baris di `data/api-spend.log` (tidak di-commit;
+ledger server adalah yang penting). Sebelum memanggil, skrip menjumlahkan pemakaian hari itu
+dan menolak jika batas tercapai. Contoh melihat pemakaian hari ini di server:
+
+```bash
+grep "$(date -u +%F)" ~/solar-nusantara.id/data/api-spend.log | tail
+```
+
+**Cara menghitung.** DeepSeek dihitung dalam token (`usage.total_tokens` dari respons). Panggilan
+yang **timeout** dihitung sebesar `max_tokens`-nya, karena penyedia bisa saja tetap membuat dan
+menagih jawabannya; ini sengaja konservatif, jadi satu malam dengan API yang menggantung bisa
+mencatat ratusan ribu token yang sebenarnya tidak ditagih. Panggilan yang ditolak (503, 401)
+tidak ditagih dan tidak dihitung. Harga per token DeepSeek tidak dicatat di repo, jadi batasnya
+dalam token, bukan rupiah.
+
+**Mengubah batas**: ubah konstantanya di skrip, di PR, bukan lewat flag atau env. Batas yang bisa
+dilewati dengan satu flag bukan batas.
+
+**Pagar di sisi penyedia (dilakukan sekali, di dashboard, bukan lewat kode):**
+
+- **DeepSeek** memakai saldo prabayar: pemakaian berhenti saat saldo habis (HTTP 402). Isi saldo
+  secukupnya untuk beberapa minggu, bukan sebanyak-banyaknya, dan jangan aktifkan top-up otomatis.
+- **OpenAI**: pasang *monthly budget* dan *hard limit* di Settings > Limits. Key OpenAI hanya ada
+  di laptop; server tidak pernah memegangnya.
+
+**Kalau batas harian tercapai**, generate berhenti dengan pesan "daily DeepSeek budget used up";
+topik tetap `pending` dan dicoba lagi setelah hari UTC berganti (08:00 WITA; run generate 02:07 WITA yang jatuh sebelum itu
+masih di hari UTC yang sama, jadi bisa ikut terhenti). Itu bukan kegagalan artikel.
+
+---
+
+## 9. Kalau ada yang rusak
 
 | Gejala | Penyebab biasanya | Tindakan |
 |---|---|---|
@@ -284,16 +327,27 @@ adalah sebuah pilihan; pilihan itu harus dibuat sadar.
 | `Permission denied (publickey)` saat push | "Allow write access" tidak dicentang | Settings > Deploy keys |
 | `DEEPSEEK_API_KEY is not set` | env file kosong atau tidak terbaca | `sudo cat /etc/solar-nusantara/env` |
 | Generate gagal terus, 3 percobaan | kuota API habis, atau prompt terlalu ketat | `journalctl -u solar-nusantara-generate -n 80`; draft yang ditolak ada di `data/failed/` |
-| Banyak topik berstatus `failed` berturut-turut | masalah sistemik (prompt, gate, API) | set `PUBLISH_NOT_BEFORE`, cari sebabnya, jalankan ulang |
+| Generate: "stopped early because of the API" | DeepSeek sibuk (503/429), timeout, key salah atau saldo habis (401/402), atau batas harian | topik **tidak** ditandai `failed`; tidak ada yang perlu dipulihkan, run berikutnya mencoba lagi. 401/402: periksa key dan saldo |
+| Banyak topik berstatus `failed` berturut-turut | gate menolak isi artikel (prompt atau gate bermasalah); gangguan API tidak lagi menyebabkan ini | set `PUBLISH_NOT_BEFORE`, baca `data/failed/`, cari sebabnya |
 | Push sukses tapi situs tidak berubah | Actions gagal | tab Actions di GitHub |
 
-Tidak ada pemutus arus otomatis: kalau gate generate gagal terus, topik ditandai `failed`
-satu per satu dan stok mengering, lalu publish berhenti karena tidak ada draft. Itu
-berhenti dengan sendirinya, tetapi pelan; periksa log bila stok tidak terisi seminggu.
+**Gangguan API tidak membakar antrean.** Error 429, 5xx, timeout, dan "tidak tersambung" ditangani
+sebagai masalah penyedia: topik tetap `pending`, dicoba satu kali lagi, dan setelah dua topik
+berturut-turut gagal begitu, run berhenti (jadi paling banyak sekitar tiga topik disentuh).
+Error 4xx lain (key salah, saldo habis) dan batas harian menghentikan run seketika.
+
+Yang masih tidak otomatis: kalau gate generate gagal terus karena isi artikelnya, topik
+ditandai `failed` satu per satu dan stok mengering, lalu publish berhenti karena tidak ada
+draft. Itu berhenti dengan sendirinya, tetapi pelan; periksa log bila stok tidak terisi seminggu.
+
+**Kunci jadwal.** Generate dan publish sama-sama menulis `data/topics.json` dan push, jadi
+keduanya dibungkus `flock` pada `.pipeline.lock` di folder clone. Generate yang menemukan kunci
+terpakai melewatkan run-nya; publish menunggu sampai satu jam supaya artikel hari itu tidak
+hilang karena generate masih berjalan.
 
 ---
 
-## 9. Batas keamanan data
+## 10. Batas keamanan data
 
 Repo ini **publik**. `DB_PR.csv` di proyek ERP memuat `Pagu` dan `Final Price` (harga
 pengadaan internal dan margin); generator tidak pernah membacanya. Berkas pasar internal
