@@ -119,7 +119,7 @@
     {
       "id": "epc--pv-modul--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 2,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -135,7 +135,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-15T18:08:39.650Z"
     },
     {
       "id": "epc--pv-modul--spesifikasi",
@@ -883,7 +884,7 @@
     {
       "id": "developer--mounting-rel--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 1,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -900,7 +901,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-15T18:08:38.601Z"
     },
     {
       "id": "developer--mounting-rel--spesifikasi",
@@ -1981,7 +1983,7 @@
     {
       "id": "manufaktur--walkway-tray--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 3,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -1998,7 +2000,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 54
+      "priority": 54,
+      "generatedAt": "2026-10-15T18:10:55.855Z"
     },
     {
       "id": "manufaktur--walkway-tray--spesifikasi",
@@ -2965,7 +2968,7 @@
     {
       "id": "kawasan-industri--inverter--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 4,
       "buyer": "kawasan-industri",
       "buyerLabel": "Pengelola Kawasan Industri",
@@ -2982,7 +2985,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 40
+      "priority": 40,
+      "generatedAt": "2026-10-15T18:09:58.760Z"
     },
     {
       "id": "kawasan-industri--inverter--spesifikasi",
