@@ -75,7 +75,7 @@ produk *mounting rel*, sudut *perbandingan*. Kata kunci = `<stem> <kata kunci pe
 sehingga unik secara struktural.
 
 Artikel dari matriks lama tetap ada di disk dan di situs. Barisnya di `topics.json`
-berstatus `legacy`: tidak masuk antrean review, tidak pernah diterbitkan jadwal, dan tidak
+berstatus `legacy`: tidak masuk antrean, tidak pernah diterbitkan jadwal, dan tidak
 diberi hero oleh pipeline. Empat yang sudah tayang tetap tayang.
 
 ## 5. Ke mana artikel mengarahkan pembaca
@@ -134,8 +134,10 @@ tentang rel mounting hanya mengundang kutipan karangan.
 ## 6. Yang tidak ditulis artikel
 
 - **Merek produk tertentu.** Artikel membandingkan kategori dan spesifikasi. Gate fakta
-  memberi peringatan bila sebuah merek disebut, dan peringatan itu muncul di halaman review.
+  memberi peringatan bila sebuah merek disebut; peringatan itu dicetak di log generate dan
+  tidak menahan artikel.
 - **Harga satuan, nama calon klien, syarat pembayaran perusahaan.** Aturan 11 di prompt.
 - **Nomor standar yang tidak pasti.** Aturan 12: bila ragu, sebut jenis standarnya, bukan
   nomornya. Gate fakta hanya memeriksa regulasi Indonesia yang ada di daftar putihnya, jadi
-  nomor standar (IEC, SNI, EN) adalah hal pertama yang harus dicek manusia saat review.
+  nomor standar (IEC, SNI, EN) tidak dijaga gate mana pun. Tidak ada review sebelum
+  terbit, jadi cek sendiri artikel yang sudah tayang (lihat `docs/AUTOMATION.md` bagian 4).

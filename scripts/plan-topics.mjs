@@ -32,17 +32,17 @@
  * how the company sells, not what the reader is searching for. Only the shape of
  * the market (who buys, what they buy, in what proportion) shaped the weights.
  */
-import { readFileSync, writeFileSync, readdirSync, mkdirSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, mkdirSync, existsSync } from 'node:fs';
 import { join } from 'node:path';
 import { containsLoose } from './lib/seo-rules.mjs';
 import { SONUSHUB_PRODUCT } from './lib/sonushub.mjs';
+import { allArticleDirs } from './lib/articles.mjs';
 
-const CONTENT_DIR = 'src/content/berita';
 const OUT = 'data/topics.json';
 const SLUG_MAX = 75;
 const TITLE_MAX = 110;
 const SEO_TITLE_MAX = 60;
-const GROUP = 4; // one weekly review batch
+const GROUP = 4; // one batch = one week of publishing
 
 const dryRun = process.argv.includes('--dry-run');
 const retryFailed = process.argv.includes('--retry-failed');
@@ -179,16 +179,11 @@ function readExisting() {
 	const keyphrases = new Set();
 	const slugs = new Set();
 	const titles = new Set();
-	let dirs = [];
-	try {
-		dirs = readdirSync(CONTENT_DIR);
-	} catch {
-		return { keyphrases, slugs, titles };
-	}
-	for (const d of dirs) {
-		slugs.add(d);
+	// Drafts count as much as live articles: a draft's slug and keyphrase are just as taken.
+	for (const { slug, dir } of allArticleDirs()) {
+		slugs.add(slug);
 		try {
-			const raw = readFileSync(join(CONTENT_DIR, d, 'index.md'), 'utf8');
+			const raw = readFileSync(join(dir, 'index.md'), 'utf8');
 			const kp = raw.match(/^focusKeyphrase\s*:\s*["']?([^"'\n]+)/m);
 			if (kp) keyphrases.add(kp[1].trim().toLowerCase());
 			const ti = raw.match(/^title\s*:\s*["']?([^"'\n]+)/m);
@@ -240,7 +235,7 @@ for (const buyer of BUYERS) {
 // --- carry over state ---------------------------------------------------------
 // Rows from the previous plan survive only if they already produced an article. A
 // pending row of the old matrix is simply dropped; a generated one becomes
-// `legacy`: still on disk, still visible to the tools, but never in the review queue
+// `legacy`: still on disk, still visible to the tools, but never in the queue
 // and never published by the schedule.
 if (existsSync(OUT)) {
 	try {
@@ -255,7 +250,7 @@ if (existsSync(OUT)) {
 			if (!old || old.status === 'pending') continue;
 			if (retryFailed && old.status === 'failed') continue;
 			t.status = old.status;
-			for (const f of ['generatedAt', 'lastError', 'reviewNote', 'approvedAt', 'publishedAt']) if (old[f]) t[f] = old[f];
+			for (const f of ['generatedAt', 'lastError', 'publishedAt']) if (old[f]) t[f] = old[f];
 			carried += 1;
 		}
 
@@ -274,10 +269,10 @@ if (existsSync(OUT)) {
 }
 
 // --- rank: the order articles are written in ----------------------------------
-// Priority decides what comes first. Inside every group of four - one weekly review
-// batch and, a week later, one week of publishing - the product and the buyer must
+// Priority decides what comes first. Inside every group of four - one generated
+// batch and one week of publishing - the product and the buyer must
 // differ, because four articles on one product for one buyer in a week is the
-// pattern that reads as bulk to a human reviewer as much as to a crawler.
+// pattern that reads as bulk to a reader as much as to a crawler.
 const live = topics.filter((t) => !t.legacy);
 const queue = live
 	.filter((t) => t.status === 'pending')

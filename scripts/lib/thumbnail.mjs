@@ -13,8 +13,8 @@ import satori from 'satori';
 import { Resvg } from '@resvg/resvg-js';
 import sharp from 'sharp';
 import { splitFrontmatter, parseFrontmatter } from './seo-rules.mjs';
+import { articleDir } from './articles.mjs';
 
-export const CONTENT_DIR = 'src/content/berita';
 const ILLUSTRATIONS = 'data/illustrations';
 const LOGO = 'src/assets/logo.png';
 const W = 1200;
@@ -123,7 +123,7 @@ export async function compose(topic, title, description) {
 }
 
 // --- articles ---------------------------------------------------------------
-export const articleFile = (slug) => join(CONTENT_DIR, slug, 'index.md');
+export const articleFile = (slug) => join(articleDir(slug), 'index.md');
 
 export function readArticle(slug) {
 	const raw = readFileSync(articleFile(slug), 'utf8');
@@ -149,7 +149,7 @@ export async function writeHero(topic) {
 	if (!data) throw new Error('frontmatter malformed');
 	if (data.heroImage) return { written: false };
 	const out = await compose(topic, data.title, data.description);
-	writeFileSync(join(CONTENT_DIR, topic.slug, 'hero.webp'), out.webp);
+	writeFileSync(join(articleDir(topic.slug), 'hero.webp'), out.webp);
 	writeFileSync(articleFile(topic.slug), withHero(raw, altFor.get(out.key)), 'utf8');
 	return { written: true, key: out.key, fit: out.fit };
 }

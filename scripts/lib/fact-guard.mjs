@@ -109,7 +109,7 @@ const KNOWN_ENTITIES = [
 /**
  * Product brands the company trades. The articles compare categories and specifications, not
  * brands: naming one reads as an endorsement, invites a claim nobody verified, and says which
- * suppliers sit behind the marketplace. Reported as a WARNING so it shows up in review, where a
+ * suppliers sit behind the marketplace. Reported as a WARNING, printed in the generate log where a
  * person can decide it is fine, rather than as an error the model cannot reason its way around.
  */
 const PRODUCT_BRANDS = ['tongwei', 'tcl solar', 'aiko', 'haitai', 'trina', 'longi', 'ja solar', 'astronergy', 'solax', 'kstar', 'hopewind', 'sungrow', 'huawei', 'jinko', 'canadian solar', 'jjlapp', 'sunkean', 'helukabel'];

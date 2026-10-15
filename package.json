@@ -13,7 +13,6 @@
     "new-article": "node scripts/new-article.mjs",
     "plan-topics": "node scripts/plan-topics.mjs",
     "generate": "node scripts/generate-article.mjs",
-    "review": "node scripts/review-batch.mjs",
     "publish": "node scripts/publish-drip.mjs",
     "refresh": "node scripts/refresh-stale.mjs",
     "illustrations": "node scripts/generate-illustrations.mjs",

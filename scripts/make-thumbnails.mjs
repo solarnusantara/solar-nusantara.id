@@ -29,7 +29,7 @@ async function runWrite() {
 	const only = flag('slug');
 	const targets = topics.filter((t) => (only ? t.slug === only : true)).filter((t) => existsSync(articleFile(t.slug)));
 	if (only && targets.length === 0) {
-		console.error(`"${only}" is not an article of the current plan with a directory under src/content/berita`);
+		console.error(`"${only}" is not an article of the current plan with a directory under drafts/berita or src/content/berita`);
 		process.exit(1);
 	}
 

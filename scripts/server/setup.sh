@@ -148,7 +148,7 @@ say "[4/4] Penjadwal"
 if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
-	# Daily, not hourly: the run writes ONE batch of four and then stops until a human has decided it, so most days it only reports "waiting for review" and exits 0. Daily is what lets Monday's decisions release the next batch within a day.
+	# Daily: the run writes a batch of four only when fewer than four drafts are waiting, so on most days it reports the stock and exits 0. Publishing takes four a week, so the stock refills about weekly.
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - generate article drafts
@@ -167,10 +167,10 @@ EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - rewrites at once, new batch when review is done and stock is low
+Description=Solar Nusantara - refill the draft stock (a batch of 4 when fewer than 4 wait)
 
 [Timer]
-OnCalendar=*:0/5
+OnCalendar=*-*-* 02:07:00
 Persistent=true
 RandomizedDelaySec=30
 
@@ -178,10 +178,10 @@ RandomizedDelaySec=30
 WantedBy=timers.target
 EOF
 
-	# Publishing: Tuesday to Friday, one approved article per run = four a week. Review is Monday, so publication starts the day after.
+	# Publishing: Tuesday to Friday, one draft per run = four a week.
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.service >/dev/null <<EOF
 [Unit]
-Description=Solar Nusantara - publish approved drafts
+Description=Solar Nusantara - publish the next draft
 After=network-online.target
 Wants=network-online.target
 
@@ -197,7 +197,7 @@ EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - publish one approved article (Tue-Fri)
+Description=Solar Nusantara - publish one article (Tue-Fri)
 
 [Timer]
 OnCalendar=Tue..Fri *-*-* 09:23:00
@@ -218,7 +218,7 @@ else
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
-	GEN_LINE="*/5 * * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	GEN_LINE="7 2 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
 	PUB_LINE="23 9 * * 2-5 cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs >> \$HOME/sn-publish.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"
@@ -227,7 +227,7 @@ else
 %s
 ' "$GEN_LINE" "$PUB_LINE" >> "$CRON_TMP"
 	if crontab "$CRON_TMP"; then
-		say "  crontab user terpasang (generate tiap jam menit :07, publish 09:23)"
+		say "  crontab user terpasang (generate harian 02:07, publish Selasa-Jumat 09:23)"
 		say ""
 		crontab -l | grep -F "$MARKER" | sed 's/^/    /' | cut -c1-110
 	else
@@ -247,17 +247,13 @@ say "Langkah berikutnya, berurutan:"
 say "  1. isi DEEPSEEK_API_KEY di $ENV_FILE  (kalau belum)"
 say "  2. cd $CLONE && npm run plan-topics"
 say "  3. npm run generate -- --dry-run   menulis satu batch di terminal tanpa menyimpan; BACA sekali"
-say "  4. Senin: npm run review   putuskan batch (setujui / tulis ulang / tolak), lalu kirim"
-say "  5. npm run publish -- --dry-run   lihat apa yang terbit hari itu (Selasa-Jumat, satu per hari)"
+say "  4. npm run publish -- --dry-run   lihat apa yang terbit hari itu (Selasa-Jumat, satu per hari)"
 say ""
-say "Setelah itu berjalan tanpa campur tangan: generate tiap jam, terbit 12/hari."
-say "Yang menahan artikel buruk adalah tiga gate mesin - struktur, penulisan, dan"
-say "fakta - plus pemutus arus yang MENGHENTIKAN publikasi kalau kurang dari 60%"
-say "draft lolos bersih. Kegagalan sistemik berhenti sendiri, tidak terbit 1000 kali."
-say ""
-say "Satu artikel dari tiap 10 dicatat di data/spotcheck.log. Itu bukan gerbang,"
-say "hanya contoh untuk dibaca sewaktu-waktu - gate tidak bisa menilai apakah"
-say "sebuah artikel layak dikirim ke calon klien."
+say "Setelah itu berjalan tanpa campur tangan: generate harian mengisi drafts/berita/"
+say "(batch 4 bila stok kurang dari 4), publish memindahkan satu draft ke situs tiap"
+say "Selasa-Jumat = 4 per minggu. Tidak ada review manusia; yang menahan artikel buruk"
+say "adalah gate mesin (struktur SEO, fakta, tautan keluar, hero) di generate dan publish."
+say "Draft yang gagal gate tetap di drafts/berita/ dan dilewati; draft berikutnya terbit."
 say ""
 say "MENAHAN PUBLIKASI: set PUBLISH_NOT_BEFORE=YYYY-MM-DD di $ENV_FILE."
 say "Generate tetap jalan, draft tetap bertambah, tidak ada yang terbit sampai"

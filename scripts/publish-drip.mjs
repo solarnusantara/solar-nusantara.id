@@ -1,27 +1,29 @@
 #!/usr/bin/env node
 /**
- * Publish what a human approved, one article per run, and push.
+ * Publish the next draft from drafts/berita, one article per run, and push.
  *
- *   npm run publish                       # the daily run (timer: Tuesday-Friday): next approved article
+ *   npm run publish                       # the daily run (timer: Tuesday-Friday): next draft in line
  *   npm run publish -- --dry-run          # what would go out; writes and pushes nothing
  *   npm run publish -- --limit 2          # more than one, for a manual catch-up
  *   npm run publish -- --no-push          # commit locally
  *   npm run publish -- --not-before 2026-11-02
  *
- * Nothing is published that has not been through data/review.txt. There is no
- * unattended mode: the review gate would be a suggestion if a flag could skip it.
- * What this script still checks is the machine side - the SEO gate, the fact gate,
- * and the hero image - because an approved article can have been edited after approval.
+ * Nobody reads a draft before it goes out, so the machine gates are the whole gate:
+ * the SEO gate, the fact gate and the hero image here, then check-content and
+ * check-seo on the real site after the article has been moved into src/content/berita.
+ * A draft that fails stays in drafts/berita and is tried again next run; if it still
+ * fails, the next draft in line goes out instead of the week being lost.
+ * Publishing moves the article's folder out of drafts/berita into src/content/berita.
  */
-import { readFileSync, writeFileSync, existsSync } from 'node:fs';
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 import { checkFacts } from './lib/fact-guard.mjs';
 import { writeHero } from './lib/thumbnail.mjs';
-import { loadStore, saveStore, applyDecisions } from './lib/review-state.mjs';
+import { loadStore, saveStore, readyDrafts } from './lib/topic-store.mjs';
+import { DRAFTS_DIR, draftDir, liveDir } from './lib/articles.mjs';
 
-const CONTENT_DIR = 'src/content/berita';
 /** Four a week: the timer fires Tuesday to Friday and each run publishes one. */
 const DEFAULT_BATCH = 1;
 
@@ -62,31 +64,23 @@ if (notBeforeRaw) {
 	}
 }
 
-// --- what is approved -------------------------------------------------------
+// --- what is waiting -------------------------------------------------------
 const store = loadStore();
 
-// Decisions pushed since the last run. Skipped on --dry-run because a "redo" deletes its draft.
-if (!dryRun) {
-	const d = applyDecisions(store);
-	if (d.approved.length + d.rejected.length + d.redo.length) {
-		saveStore(store);
-		console.log(`review applied: ${d.approved.length} approved, ${d.redo.length} sent back for a rewrite, ${d.rejected.length} rejected`);
-	}
-}
-
-const approved = store.topics.filter((t) => t.status === 'approved' && !t.legacy).sort((a, b) => a.rank - b.rank);
-if (approved.length === 0) {
-	console.log('\npublish-drip: nothing approved is waiting. Review the current batch: npm run review\n');
+const ready = readyDrafts(store);
+if (ready.length === 0) {
+	console.log(`\npublish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.\n`);
 	process.exit(0);
 }
 
-/** Read one approved draft and run every machine-checkable gate against it. */
+/** Read one draft and run every machine-checkable gate against it. */
 function inspect(topic) {
 	const slug = topic.slug;
-	const file = join(CONTENT_DIR, slug, 'index.md');
-	if (!existsSync(file)) return { topic, slug, errors: ['approved, but the article file is gone'] };
+	const file = join(draftDir(slug), 'index.md');
+	if (!existsSync(file)) return { topic, slug, errors: [`the draft is gone from ${DRAFTS_DIR}`] };
+	if (existsSync(liveDir(slug))) return { topic, slug, errors: ['an article with this slug is already live'] };
 	const raw = readFileSync(file, 'utf8');
-	if (!/^draft:\s*true\s*$/m.test(raw)) return { topic, slug, errors: ['not a draft any more (already live?)'] };
+	if (!/^draft:\s*true\s*$/m.test(raw)) return { topic, slug, errors: ['not marked draft: true'] };
 
 	const split = splitFrontmatter(raw);
 	if (!split) return { topic, slug, errors: ['frontmatter malformed'] };
@@ -97,15 +91,15 @@ function inspect(topic) {
 
 	const heroErrors = [];
 	if (!data.heroImage) heroErrors.push('no heroImage in frontmatter');
-	else if (!existsSync(join(CONTENT_DIR, slug, data.heroImage))) heroErrors.push(`heroImage file missing: ${data.heroImage}`);
+	else if (!existsSync(join(draftDir(slug), data.heroImage))) heroErrors.push(`heroImage file missing: ${data.heroImage}`);
 
-	return { topic, slug, file, raw, errors: [...seo.errors, ...facts.errors, ...heroErrors] };
+	return { topic, slug, file, raw, errors: [...seo.errors, ...facts.errors, ...heroErrors], contentFailed: seo.errors.length + facts.errors.length > 0 };
 }
 
-// Heal a missing hero before judging it: generate gives every draft one, but an article rewritten by hand may have lost it. Idempotent.
+// Heal a missing hero before judging it: generate gives every draft one, but a draft edited by hand may have lost it. Idempotent.
 const picked = [];
 const held = [];
-for (const topic of approved) {
+for (const topic of ready) {
 	if (picked.length >= limit) break;
 	if (!dryRun) {
 		try {
@@ -119,15 +113,26 @@ for (const topic of approved) {
 	else picked.push(a);
 }
 
-console.log(`\npublish-drip: ${picked.length} of ${approved.length} approved article(s) go out now`);
+console.log(`\npublish-drip: ${picked.length} of ${ready.length} waiting draft(s) go out now`);
 for (const a of picked) console.log(`  -> /berita/${a.slug}/`);
 for (const a of held) {
 	console.log(`  HELD  ${a.slug}`);
 	for (const e of a.errors.slice(0, 5)) console.log(`          x ${e}`);
 }
 
+// Nobody edits a draft, so a draft that fails the SEO or fact gate fails identically next run. Take it out of the stock (it stays in drafts/berita for inspection) so it cannot hold up the queue or keep generate from refilling it. A missing hero is different: that can be a missing dependency, so it is retried.
+if (!dryRun) {
+	let failedNow = 0;
+	for (const a of held.filter((h) => h.contentFailed)) {
+		a.topic.status = 'failed';
+		a.topic.lastError = `publish gate: ${a.errors[0]}`;
+		failedNow += 1;
+	}
+	if (failedNow) saveStore(store);
+}
+
 if (picked.length === 0) {
-	console.log('\nEvery approved article failed a gate; they stay approved and are retried next run.\n');
+	console.log(`\nNo waiting draft passed the gates. Drafts that failed on content are marked failed and stay in ${DRAFTS_DIR}; the rest are retried next run.\n`);
 	process.exit(held.length ? 1 : 0);
 }
 
@@ -145,10 +150,15 @@ for (const a of picked) {
 		.replace(/^draft:\s*true\s*$/m, 'draft: false')
 		.replace(/^pubDate:\s*["']?[^"'\n]+["']?\s*$/m, `pubDate: "${today}"`);
 	writeFileSync(a.file, next, 'utf8');
+	renameSync(draftDir(a.slug), liveDir(a.slug));
 }
 
+/** Undo the publish on disk: back into the drafts folder, as the draft it was. */
 const restore = () => {
-	for (const a of picked) writeFileSync(a.file, a.raw, 'utf8');
+	for (const a of picked) {
+		if (existsSync(liveDir(a.slug))) renameSync(liveDir(a.slug), draftDir(a.slug));
+		writeFileSync(a.file, a.raw, 'utf8');
+	}
 };
 
 // check-content runs site-wide because duplicate metadata is cross-article; check-seo is scoped to this batch so the legacy backlog cannot block new work.
@@ -183,14 +193,18 @@ saveStore(store);
 
 // --- commit and push --------------------------------------------------------
 try {
-	run('git', ['add', CONTENT_DIR, 'data']);
+	// 'drafts' stages the removal of the moved folder; src/content/berita stages its arrival.
+	run('git', ['add', '-A', 'src/content/berita', 'drafts', 'data']);
 	const subject = `content: publish ${picked.length} article${picked.length > 1 ? 's' : ''} (${today})`;
 	run('git', ['commit', '-m', subject, '-m', slugs.map((s) => `- /berita/${s}/`).join('\n')]);
 	console.log(`\n  committed: ${subject}`);
 } catch (e) {
 	const out = `${e.stdout || ''}${e.stderr || ''}`;
 	restore();
-	for (const a of picked) a.topic.status = 'approved';
+	for (const a of picked) {
+		a.topic.status = 'generated';
+		delete a.topic.publishedAt;
+	}
 	saveStore(store);
 	console.error(`\ngit commit failed, articles reverted to draft:\n${out}`);
 	process.exit(1);

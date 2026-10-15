@@ -17,10 +17,11 @@
  *                        outcome unless something counts
  *   - duplicate title/description  the classic Ahrefs/Semrush site-audit errors
  *   - body image alt     an <img>/![]() with no alt text
+ *   - hero image         a published article with no heroImage, a missing file, or no alt
  *
  * Exit code 1 on any error. Warnings do not block.
  */
-import { readdirSync, readFileSync, statSync } from 'node:fs';
+import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
 import { join, basename, dirname } from 'node:path';
 
 const CONTENT_DIR = 'src/content/berita';
@@ -136,6 +137,16 @@ for (const dir of dirs) {
 	const desc = data.description || '';
 	if (desc.length < 70 || desc.length > 160) {
 		err(dir, `description is ${desc.length} chars; must be 70-160`);
+	}
+
+	// A live article must have its hero, and the file must exist: the schema only
+	// sees this at astro build, after the commit was already made.
+	if (!data.heroImage) {
+		err(dir, 'no heroImage; a published article needs one (keep it draft: true until it has one)');
+	} else if (!existsSync(join(CONTENT_DIR, dir, data.heroImage))) {
+		err(dir, `heroImage file missing: ${data.heroImage}`);
+	} else if (!data.heroImageAlt) {
+		err(dir, 'heroImage is set but heroImageAlt is empty');
 	}
 
 	for (const [map, value, label] of [
