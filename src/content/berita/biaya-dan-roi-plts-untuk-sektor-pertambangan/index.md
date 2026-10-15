@@ -1,6 +1,8 @@
 ---
 title: "Biaya dan ROI PLTS untuk Sektor Pertambangan"
 description: "Rincian biaya PLTS pertambangan per MWp, simulasi payback, skema BOO/BOT, dan faktor yang mengubah ROI sistem surya di lokasi tambang."
+heroImage: "./hero.webp"
+heroImageAlt: "Ilustrasi area tambang terbuka dengan truk, ekskavator, dan hamparan panel surya"
 focusKeyphrase: "biaya plts pertambangan"
 pubDate: "2026-10-09"
 tags: ["pertambangan", "biaya-roi", "plts", "panduan"]

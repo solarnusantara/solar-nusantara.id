@@ -13,9 +13,10 @@
     "new-article": "node scripts/new-article.mjs",
     "plan-topics": "node scripts/plan-topics.mjs",
     "generate": "node scripts/generate-article.mjs",
-    "review": "node scripts/review-batch.mjs",
     "publish": "node scripts/publish-drip.mjs",
     "refresh": "node scripts/refresh-stale.mjs",
+    "illustrations": "node scripts/generate-illustrations.mjs",
+    "thumbnails": "node scripts/make-thumbnails.mjs",
     "dns": "node scripts/dns.mjs",
     "preview": "astro preview",
     "astro": "astro"
@@ -29,10 +30,13 @@
     "swiper": "^12.0.3"
   },
   "devDependencies": {
+    "@resvg/resvg-js": "^2.6.2",
     "@unocss/astro": "^66.7.0",
     "@unocss/preset-attributify": "^66.7.0",
     "@unocss/preset-icons": "^66.7.0",
     "@unocss/preset-uno": "^66.7.0",
+    "satori": "^0.47.1",
+    "sharp": "^0.34.5",
     "unocss": "^66.7.0"
   }
 }

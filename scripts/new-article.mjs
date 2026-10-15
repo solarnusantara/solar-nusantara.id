@@ -11,10 +11,10 @@
  * This script derives the slug from the title, strips anything that is not
  * URL-safe, and refuses to overwrite an existing article.
  */
-import { mkdirSync, writeFileSync, existsSync, readdirSync, readFileSync } from 'node:fs';
+import { mkdirSync, writeFileSync, readFileSync } from 'node:fs';
 import { join } from 'node:path';
+import { DRAFTS_DIR, allArticleDirs, slugTaken } from './lib/articles.mjs';
 
-const CONTENT_DIR = 'src/content/berita';
 const SLUG_MAX = 75;
 
 const argv = process.argv.slice(2);
@@ -51,18 +51,19 @@ if (!slug) {
 	process.exit(1);
 }
 
-const dir = join(CONTENT_DIR, slug);
-if (existsSync(dir)) {
-	console.error(`${dir} already exists. Pick a different title or --slug.`);
+// A new article starts as a draft in the drafts folder; the slug must be free there and on the live site.
+const dir = join(DRAFTS_DIR, slug);
+if (slugTaken(slug)) {
+	console.error(`/berita/${slug}/ already exists (drafts or live). Pick a different title or --slug.`);
 	process.exit(1);
 }
 
 // Warn about an existing focus keyphrase collision before the file is written,
 // because two articles chasing one query is the definition of cannibalisation.
 const existingKeyphrases = new Set();
-for (const d of readdirSync(CONTENT_DIR)) {
+for (const { dir: d } of allArticleDirs()) {
 	try {
-		const raw = readFileSync(join(CONTENT_DIR, d, 'index.md'), 'utf8');
+		const raw = readFileSync(join(d, 'index.md'), 'utf8');
 		const m = raw.match(/^focusKeyphrase\s*:\s*["']?([^"'\n]+)/m);
 		if (m) existingKeyphrases.add(m[1].trim().toLowerCase());
 	} catch {
@@ -106,7 +107,8 @@ Aturan yang dijaga oleh \`npm run check\`:
   remark-math membaca dua tanda dolar sebagai rumus dan menelan teks di antaranya
 - focusKeyphrase harus unik terhadap seluruh artikel lain
 
-Hapus \`draft: true\` ketika artikel siap terbit.
+Artikel ini draft dan tinggal di drafts/berita/. Saat siap terbit: hapus \`draft: true\`,
+lalu pindahkan foldernya ke src/content/berita/.
 `;
 
 mkdirSync(dir, { recursive: true });

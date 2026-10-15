@@ -1,6 +1,8 @@
 ---
 title: "Analisis Kelayakan Investasi PLTS untuk Pabrik Kelapa Sawit"
 description: "Analisis kelayakan investasi PLTS pabrik kelapa sawit: CAPEX Rp 9–13 miliar per MWp, rincian payback, dan faktor yang mengubah angkanya."
+heroImage: "./hero.webp"
+heroImageAlt: "Ilustrasi grafik batang yang naik, tumpukan koin, dan satu panel surya"
 focusKeyphrase: "kelayakan investasi plts pabrik kelapa sawit"
 pubDate: "2026-10-09"
 tags: ["kelapa-sawit", "biaya-roi", "plts", "teknis"]

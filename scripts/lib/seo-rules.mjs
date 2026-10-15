@@ -26,13 +26,22 @@
  *     is a reasonable ask.
  */
 
+import { isSonushub, isAllowedSonushub } from './sonushub.mjs';
+
 const INTRO_WORDS = 150;
 const DENSITY_MIN = 0.003; // 0.3%
 const DENSITY_MAX = 0.025; // 2.5%
 const MAX_SENTENCES_PER_PARAGRAPH = 4;
 const MIN_INTERNAL_LINKS = 2;
-const MIN_EXTERNAL_LINKS = 1;
-const MIN_CONVERSION_LINKS = 1;
+/**
+ * Authoritative outbound links (regulators, standards bodies) are allowed and welcome where an
+ * article explains a rule, but no longer required. The outbound links an article exists to
+ * provide are the ones to SonusHUB; demanding a regulator citation on a mounting-rail article
+ * invites an invented one, and each real one is a reader sent somewhere that is not the catalogue.
+ */
+const MIN_EXTERNAL_LINKS = 0;
+/** Links to SonusHUB, where the traffic is meant to go: the product's category page plus one general page. */
+const MIN_SONUSHUB_LINKS = 2;
 
 /**
  * Length and structure by article kind.
@@ -51,16 +60,6 @@ const KIND_RULES = {
 	pillar: { minWords: 1600, maxWords: 3000, minH2: 6 },
 	longtail: { minWords: 700, maxWords: 1800, minH2: 4 },
 };
-
-/**
- * Prefixes that represent a commercial destination rather than more reading.
- *
- * Linking articles to articles builds a crawlable graph and nothing else. The
- * playbook is explicit that a cluster links back to its pillar AND out to a
- * conversion page; without the second half the archive earns traffic that never
- * reaches a service page. /berita/ is deliberately absent from this list.
- */
-export const CONVERSION_PREFIXES = ['/layanan/', '/produk/', '/tentang/sonushub/', '/kontak/'];
 
 /**
  * Domains that are worth citing from a technical B2B energy article.
@@ -167,7 +166,7 @@ function sentenceCount(paragraph) {
  * @param {'pillar'|'longtail'} [a.kind] article kind; defaults to longtail
  * @returns {{errors: string[], warnings: string[], stats: object}}
  */
-export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
+export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail', requiredLink = null }) {
 	const rules = KIND_RULES[kind] ?? KIND_RULES.longtail;
 	const errors = [];
 	const warnings = [];
@@ -286,16 +285,36 @@ export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 		errors.push(`${internal.length} internal link(s); at least ${MIN_INTERNAL_LINKS} are required`);
 	}
 
-	// At least one internal link has to leave the archive. Article-to-article
-	// links make the corpus crawlable; only a link to a service or product page
-	// turns a reader researching PLTS costs into an RFQ. An article that links
-	// exclusively to /berita/ has done half the job the playbook describes.
-	const conversion = internal.filter((h) => CONVERSION_PREFIXES.some((p) => h.startsWith(p)));
-	if (conversion.length < MIN_CONVERSION_LINKS) {
-		errors.push(
-			`${conversion.length} link(s) to a conversion page; at least ${MIN_CONVERSION_LINKS} is required. ` +
-				`Link to one of ${CONVERSION_PREFIXES.join(', ')} - a link to /berita/ does not count.`,
-		);
+	// The point of the archive is to send a buyer to SonusHUB. Links only to other articles, or to
+	// pages on this site, build a crawlable graph and earn traffic that never reaches the catalogue.
+	// So: at least MIN_SONUSHUB_LINKS links to sonushub.id, every one on the allowlist
+	// (lib/sonushub.mjs), and, when the caller knows the article's product, that product's own page.
+	// Distinct pages: the same URL twice is one destination, not two.
+	const seenPage = new Set();
+	const sonushub = external.filter(isSonushub).filter((u) => {
+		try {
+			const k = new URL(u).pathname.replace(/\/+$/, '');
+			return seenPage.has(k) ? false : seenPage.add(k);
+		} catch {
+			return true;
+		}
+	});
+	if (sonushub.length < MIN_SONUSHUB_LINKS) {
+		errors.push(`${sonushub.length} link(s) to sonushub.id; at least ${MIN_SONUSHUB_LINKS} are required (the product's category page and one general page)`);
+	}
+	for (const h of sonushub.filter((u) => !isAllowedSonushub(u))) {
+		errors.push(`sonushub.id link not on the allowlist: ${h} - use only the URLs given in the prompt`);
+	}
+	// Same page whether written with www, a query string (utm_*) or a trailing slash.
+	const bare = (u) => {
+		try {
+			return new URL(u).pathname.replace(/\/+$/, '');
+		} catch {
+			return u;
+		}
+	};
+	if (requiredLink && !sonushub.some((u) => bare(u) === bare(requiredLink))) {
+		errors.push(`missing the product's SonusHUB link: ${requiredLink}`);
 	}
 
 	const trustedHits = external.filter((h) => {
@@ -322,7 +341,7 @@ export function checkSeo({ title, focusKeyphrase, body, kind = 'longtail' }) {
 			occurrences,
 			density: Number((density * 100).toFixed(2)),
 			internalLinks: internal.length,
-			conversionLinks: conversion.length,
+			sonushubLinks: sonushub.length,
 			externalTrusted: trustedHits.length,
 		},
 	};

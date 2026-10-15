@@ -111,9 +111,19 @@ const beritaCollection = defineCollection({
           });
         }
 
+        // No hero, no live article: it is the thumbnail in listings, the og:image
+        // and the first thing a reader sees. Drafts are exempt (returned above),
+        // so a draft can be written first and given its hero before it goes out.
+        if (!d.heroImage) {
+          ctx.addIssue({
+            code: z.ZodIssueCode.custom,
+            path: ['heroImage'],
+            message: 'heroImage is required for a published article. Add the image, or keep the article `draft: true`.',
+          });
+        }
+
         // An image with no alt is an accessibility defect and an Ahrefs/Semrush
-        // audit failure. Conditional rather than unconditional, because an
-        // article with no hero image has nothing to describe.
+        // audit failure.
         if (d.heroImage && !d.heroImageAlt) {
           ctx.addIssue({
             code: z.ZodIssueCode.custom,

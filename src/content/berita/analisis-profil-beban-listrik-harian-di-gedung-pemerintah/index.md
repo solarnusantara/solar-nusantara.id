@@ -1,6 +1,8 @@
 ---
 title: "Analisis Profil Beban Listrik Harian di Gedung Pemerintah"
 description: "Panduan menganalisis profil beban listrik gedung pemerintah untuk menentukan kapasitas PLTS, CAPEX, dan skema pengadaan yang tepat"
+heroImage: "./hero.webp"
+heroImageAlt: "Ilustrasi grafik garis kurva beban harian dengan matahari di atas puncaknya"
 focusKeyphrase: "profil beban listrik gedung pemerintah"
 pubDate: "2026-10-09"
 tags: ["b2g", "desain-sistem", "plts", "teknis"]

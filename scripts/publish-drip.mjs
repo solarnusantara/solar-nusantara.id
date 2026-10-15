@@ -1,23 +1,31 @@
 #!/usr/bin/env node
-/** Publish approved drafts, a few per day, and push. Flags: --auto (unattended), --dry-run, --limit N, --no-push, --not-before YYYY-MM-DD. */
-import { readFileSync, writeFileSync, existsSync, readdirSync, statSync, mkdirSync, appendFileSync } from 'node:fs';
+/**
+ * Publish the next draft from drafts/berita, one article per run, and push.
+ *
+ *   npm run publish                       # the daily run (timer: Tuesday-Friday): next draft in line
+ *   npm run publish -- --dry-run          # what would go out; writes and pushes nothing
+ *   npm run publish -- --limit 2          # more than one, for a manual catch-up
+ *   npm run publish -- --no-push          # commit locally
+ *   npm run publish -- --not-before 2026-11-02
+ *
+ * Nobody reads a draft before it goes out, so the machine gates are the whole gate:
+ * the SEO gate, the fact gate and the hero image here, then check-content and
+ * check-seo on the real site after the article has been moved into src/content/berita.
+ * A draft that fails stays in drafts/berita and is tried again next run; if it still
+ * fails, the next draft in line goes out instead of the week being lost.
+ * Publishing moves the article's folder out of drafts/berita into src/content/berita.
+ */
+import { readFileSync, writeFileSync, existsSync, renameSync } from 'node:fs';
 import { join } from 'node:path';
 import { execFileSync } from 'node:child_process';
 import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './lib/seo-rules.mjs';
 import { checkFacts } from './lib/fact-guard.mjs';
-import { spreadBatch } from './lib/batch-order.mjs';
+import { writeHero } from './lib/thumbnail.mjs';
+import { loadStore, saveStore, readyDrafts } from './lib/topic-store.mjs';
+import { DRAFTS_DIR, draftDir, liveDir } from './lib/articles.mjs';
 
-const CONTENT_DIR = 'src/content/berita';
-const APPROVED = 'data/approved.txt';
-const SPOTCHECK = 'data/spotcheck.log';
-const DEFAULT_BATCH = 12;
-
-/** Circuit breaker for --auto: below this clean rate a systemic failure would otherwise publish every day until someone noticed weeks later. */
-const AUTO_MIN_PASS_RATE = 0.6;
-const AUTO_MIN_EXAMINED = 5;
-
-/** One in N published articles is logged for optional later reading. Never blocks. */
-const SPOTCHECK_EVERY = 10;
+/** Four a week: the timer fires Tuesday to Friday and each run publishes one. */
+const DEFAULT_BATCH = 1;
 
 const argv = process.argv.slice(2);
 const has = (n) => argv.includes(`--${n}`);
@@ -28,7 +36,6 @@ const flag = (n, d = null) => {
 
 const dryRun = has('dry-run');
 const noPush = has('no-push');
-const auto = has('auto');
 const limit = Number(flag('limit', String(DEFAULT_BATCH)));
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: 'pipe' });
@@ -57,156 +64,109 @@ if (notBeforeRaw) {
 	}
 }
 
-const dirs = readdirSync(CONTENT_DIR).filter((d) => statSync(join(CONTENT_DIR, d)).isDirectory());
+// --- what is waiting -------------------------------------------------------
+const store = loadStore();
 
-/** Read one draft and run every machine-checkable gate against it. */
-function inspect(slug) {
-	const file = join(CONTENT_DIR, slug, 'index.md');
-	let raw;
-	try {
-		raw = readFileSync(file, 'utf8');
-	} catch {
-		return null;
-	}
-	if (!/^draft:\s*true\s*$/m.test(raw)) return null; // already live
-
-	const split = splitFrontmatter(raw);
-	if (!split) return { slug, file, raw, errors: ['frontmatter malformed'], warnings: [] };
-
-	const data = parseFrontmatter(split.frontmatter);
-	const seo = checkSeo({
-		title: data.title || '',
-		focusKeyphrase: data.focusKeyphrase || '',
-		body: split.body,
-		kind: kindFromTags(data.tags),
-	});
-	const facts = checkFacts({ body: split.body });
-
-	return {
-		slug,
-		file,
-		raw,
-		tags: data.tags,
-		errors: [...seo.errors, ...facts.errors],
-		warnings: [...seo.warnings, ...facts.warnings],
-		stats: seo.stats,
-	};
-}
-
-let candidates = [];
-
-if (auto) {
-	// Unattended selection is stricter on purpose - without a human, a warning is the only signal left that something is off.
-	const examined = dirs.map(inspect).filter(Boolean);
-
-	if (examined.length === 0) {
-		console.log('No drafts waiting. Nothing to publish.');
-		process.exit(0);
-	}
-
-	const clean = examined.filter((a) => a.errors.length === 0 && a.warnings.length === 0);
-	const rate = clean.length / examined.length;
-
-	console.log(`\npublish-drip --auto: ${examined.length} draft(s) examined, ${clean.length} clean (${Math.round(rate * 100)}%)`);
-
-	// Only judge the rate once there is a sample worth judging; two bad drafts out of two is noise.
-	if (examined.length >= AUTO_MIN_EXAMINED && rate < AUTO_MIN_PASS_RATE) {
-		console.error(`\nHALTED: only ${Math.round(rate * 100)}% of drafts are clean (floor ${Math.round(AUTO_MIN_PASS_RATE * 100)}%).`);
-		console.error('That is a systemic failure, not a few bad articles. Nothing published.\n');
-		const tally = new Map();
-		for (const a of examined) {
-			for (const e of a.errors) {
-				//  so "B2B" does not become "BNB" - a digit inside a word is not a variable
-				const key = e.replace(/\d+(?:[.,]\d+)?/g, 'N').slice(0, 90);
-				tally.set(key, (tally.get(key) || 0) + 1);
-			}
-		}
-		console.error('Kegagalan paling sering:');
-		for (const [msg, n] of [...tally.entries()].sort((a, b) => b[1] - a[1]).slice(0, 6)) {
-			console.error(`  ${String(n).padStart(3)}x  ${msg}`);
-		}
-		console.error('');
-		process.exit(1);
-	}
-
-	const rejected = examined.length - clean.length;
-	if (rejected) console.log(`  ${rejected} ditahan karena masih punya error atau warning`);
-
-	candidates = clean;
-} else {
-	// --- attended selection -------------------------------------------------
-	if (!existsSync(APPROVED)) {
-		console.error(`${APPROVED} does not exist.`);
-		console.error('Create it with one approved slug per line, then run this again.');
-		console.error('Generate the review sheet first: npm run review');
-		console.error('Or run unattended: npm run publish -- --auto');
-		process.exit(1);
-	}
-
-	const approved = readFileSync(APPROVED, 'utf8')
-		.split(/\r?\n/)
-		.map((l) => l.replace(/#.*$/, '').trim())
-		.filter(Boolean);
-
-	if (approved.length === 0) {
-		console.log('No approved slugs yet. Nothing to publish.');
-		process.exit(0);
-	}
-
-	for (const slug of approved) {
-		if (!dirs.includes(slug)) {
-			console.log(`  ? ${slug} - approved but no article directory; skipped`);
-			continue;
-		}
-		const a = inspect(slug);
-		if (a) candidates.push(a);
-	}
-}
-
-if (candidates.length === 0) {
-	console.log('Nothing publishable right now.');
+const ready = readyDrafts(store);
+if (ready.length === 0) {
+	console.log(`\npublish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.\n`);
 	process.exit(0);
 }
 
-// Spread by intent and segment: alphabetical order ships four URLs off one template on the same day, which is the pattern that reads as bulk.
-const batch = spreadBatch(candidates, limit);
-const today = new Date().toISOString().slice(0, 10);
+/** Read one draft and run every machine-checkable gate against it. */
+function inspect(topic) {
+	const slug = topic.slug;
+	const file = join(draftDir(slug), 'index.md');
+	if (!existsSync(file)) return { topic, slug, errors: [`the draft is gone from ${DRAFTS_DIR}`] };
+	if (existsSync(liveDir(slug))) return { topic, slug, errors: ['an article with this slug is already live'] };
+	const raw = readFileSync(file, 'utf8');
+	if (!/^draft:\s*true\s*$/m.test(raw)) return { topic, slug, errors: ['not marked draft: true'] };
 
-/** How many articles are already live, used only to spread the spot-check sample as the archive grows. */
-const publishedCount = dirs.filter((d) => {
-	try {
-		return !/^draft:\s*true\s*$/m.test(readFileSync(join(CONTENT_DIR, d, 'index.md'), 'utf8'));
-	} catch {
-		return false;
+	const split = splitFrontmatter(raw);
+	if (!split) return { topic, slug, errors: ['frontmatter malformed'] };
+	const data = parseFrontmatter(split.frontmatter);
+
+	const seo = checkSeo({ title: data.title || '', focusKeyphrase: data.focusKeyphrase || '', body: split.body, kind: kindFromTags(data.tags) });
+	const facts = checkFacts({ body: split.body });
+
+	const heroErrors = [];
+	if (!data.heroImage) heroErrors.push('no heroImage in frontmatter');
+	else if (!existsSync(join(draftDir(slug), data.heroImage))) heroErrors.push(`heroImage file missing: ${data.heroImage}`);
+
+	return { topic, slug, file, raw, errors: [...seo.errors, ...facts.errors, ...heroErrors], contentFailed: seo.errors.length + facts.errors.length > 0 };
+}
+
+// Heal a missing hero before judging it: generate gives every draft one, but a draft edited by hand may have lost it. Idempotent.
+const picked = [];
+const held = [];
+for (const topic of ready) {
+	if (picked.length >= limit) break;
+	if (!dryRun) {
+		try {
+			await writeHero(topic);
+		} catch {
+			/* inspect() reports the missing hero */
+		}
 	}
-}).length;
+	const a = inspect(topic);
+	if (a.errors.length) held.push(a);
+	else picked.push(a);
+}
 
-console.log(`\npublish-drip: ${batch.length} of ${candidates.length} ${auto ? 'clean' : 'approved'} draft(s)`);
-for (const a of batch) console.log(`  -> /berita/${a.slug}/`);
+console.log(`\npublish-drip: ${picked.length} of ${ready.length} waiting draft(s) go out now`);
+for (const a of picked) console.log(`  -> /berita/${a.slug}/`);
+for (const a of held) {
+	console.log(`  HELD  ${a.slug}`);
+	for (const e of a.errors.slice(0, 5)) console.log(`          x ${e}`);
+}
+
+// Nobody edits a draft, so a draft that fails the SEO or fact gate fails identically next run. Take it out of the stock (it stays in drafts/berita for inspection) so it cannot hold up the queue or keep generate from refilling it. A missing hero is different: that can be a missing dependency, so it is retried.
+if (!dryRun) {
+	let failedNow = 0;
+	for (const a of held.filter((h) => h.contentFailed)) {
+		a.topic.status = 'failed';
+		a.topic.lastError = `publish gate: ${a.errors[0]}`;
+		failedNow += 1;
+	}
+	if (failedNow) saveStore(store);
+}
+
+if (picked.length === 0) {
+	console.log(`\nNo waiting draft passed the gates. Drafts that failed on content are marked failed and stay in ${DRAFTS_DIR}; the rest are retried next run.\n`);
+	process.exit(held.length ? 1 : 0);
+}
 
 if (dryRun) {
 	console.log('\n--dry-run: nothing written, nothing pushed.\n');
 	process.exit(0);
 }
 
+// --- publish ---------------------------------------------------------------
+const today = new Date().toISOString().slice(0, 10);
+
 // pubDate is the publish date, not the generation date; updatedDate is deliberately untouched since it means a real revision.
-for (const a of batch) {
+for (const a of picked) {
 	const next = a.raw
 		.replace(/^draft:\s*true\s*$/m, 'draft: false')
 		.replace(/^pubDate:\s*["']?[^"'\n]+["']?\s*$/m, `pubDate: "${today}"`);
 	writeFileSync(a.file, next, 'utf8');
+	renameSync(draftDir(a.slug), liveDir(a.slug));
 }
 
+/** Undo the publish on disk: back into the drafts folder, as the draft it was. */
 const restore = () => {
-	for (const a of batch) writeFileSync(a.file, a.raw, 'utf8');
+	for (const a of picked) {
+		if (existsSync(liveDir(a.slug))) renameSync(liveDir(a.slug), draftDir(a.slug));
+		writeFileSync(a.file, a.raw, 'utf8');
+	}
 };
 
 // check-content runs site-wide because duplicate metadata is cross-article; check-seo is scoped to this batch so the legacy backlog cannot block new work.
 let failed = null;
-const batchSlugs = batch.map((a) => a.slug);
+const slugs = picked.map((a) => a.slug);
 for (const [label, args] of [
 	['check-content', ['scripts/check-content.mjs']],
-	['check-seo', ['scripts/check-seo.mjs', ...batchSlugs]],
+	['check-seo', ['scripts/check-seo.mjs', ...slugs]],
 ]) {
 	try {
 		run('node', args);
@@ -219,42 +179,33 @@ for (const [label, args] of [
 
 if (failed) {
 	restore();
-	console.error(`\n${failed.label} FAILED. All ${batch.length} article(s) reverted to draft.`);
+	console.error(`\n${failed.label} FAILED. ${picked.length} article(s) reverted to draft.`);
 	console.error('Nothing was committed and nothing was pushed.\n');
 	console.error(failed.output.split('\n').slice(-30).join('\n'));
 	process.exit(1);
 }
 
+for (const a of picked) {
+	a.topic.status = 'published';
+	a.topic.publishedAt = new Date().toISOString();
+}
+saveStore(store);
+
 // --- commit and push --------------------------------------------------------
 try {
-	run('git', ['add', CONTENT_DIR, 'data']);
-	const subject = `content: publish ${batch.length} article${batch.length > 1 ? 's' : ''} (${today})`;
-	const bodyLines = batch.map((a) => `- /berita/${a.slug}/`).join('\n');
-	run('git', ['commit', '-m', subject, '-m', bodyLines]);
+	// 'drafts' stages the removal of the moved folder; src/content/berita stages its arrival.
+	run('git', ['add', '-A', 'src/content/berita', 'drafts', 'data']);
+	const subject = `content: publish ${picked.length} article${picked.length > 1 ? 's' : ''} (${today})`;
+	run('git', ['commit', '-m', subject, '-m', slugs.map((s) => `- /berita/${s}/`).join('\n')]);
 	console.log(`\n  committed: ${subject}`);
-
-	// Sampling, not gating - no machine can judge whether an article is worth sending to a prospect.
-	try {
-		if (!existsSync('data')) mkdirSync('data', { recursive: true });
-		const sample = batch.filter((_, i) => (publishedCount + i) % SPOTCHECK_EVERY === 0);
-		if (sample.length) {
-			appendFileSync(
-				SPOTCHECK,
-				sample.map((a) => `${today}\t/berita/${a.slug}/\t${a.stats?.wordCount ?? '?'} kata`).join('\n') + '\n',
-				'utf8',
-			);
-			console.log(`  ${sample.length} artikel dicatat di ${SPOTCHECK} untuk dibaca sewaktu-waktu`);
-		}
-	} catch {
-		/* sampling is a convenience; never fail a publish over it */
-	}
 } catch (e) {
 	const out = `${e.stdout || ''}${e.stderr || ''}`;
-	if (/nothing to commit/i.test(out)) {
-		console.log('\n  nothing to commit - working tree already clean');
-		process.exit(0);
-	}
 	restore();
+	for (const a of picked) {
+		a.topic.status = 'generated';
+		delete a.topic.publishedAt;
+	}
+	saveStore(store);
 	console.error(`\ngit commit failed, articles reverted to draft:\n${out}`);
 	process.exit(1);
 }

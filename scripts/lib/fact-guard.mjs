@@ -106,6 +106,14 @@ const KNOWN_ENTITIES = [
 	'bright pln batam',
 ];
 
+/**
+ * Product brands the company trades. The articles compare categories and specifications, not
+ * brands: naming one reads as an endorsement, invites a claim nobody verified, and says which
+ * suppliers sit behind the marketplace. Reported as a WARNING, printed in the generate log where a
+ * person can decide it is fine, rather than as an error the model cannot reason its way around.
+ */
+const PRODUCT_BRANDS = ['tongwei', 'tcl solar', 'aiko', 'haitai', 'trina', 'longi', 'ja solar', 'astronergy', 'solax', 'kstar', 'hopewind', 'sungrow', 'huawei', 'jinko', 'canadian solar', 'jjlapp', 'sunkean', 'helukabel'];
+
 function stripCode(body) {
 	return body.replace(/```[\s\S]*?```/g, ' ').replace(/`[^`]*`/g, ' ');
 }
@@ -264,6 +272,11 @@ export function checkFacts({ body }) {
 			warnings.push(`sumber studi disebut tanpa dasar: "${m[0]}" - pastikan ini bukan karangan`);
 		}
 	}
+
+	// --- product brands -----------------------------------------------------
+	const lower = text.toLowerCase();
+	const named = PRODUCT_BRANDS.filter((b) => new RegExp(`(^|[^a-z0-9])${b}([^a-z0-9]|$)`).test(lower));
+	if (named.length) warnings.push(`merek produk disebut: ${named.join(', ')} - artikel membandingkan kategori, bukan merek`);
 
 	return { errors, warnings };
 }

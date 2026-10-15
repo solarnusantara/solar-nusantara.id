@@ -35,9 +35,11 @@ npm run build                            # runs check first, audit after
 | No duplicate title or description | The two most common Ahrefs/Semrush site-audit errors. |
 | Every image has descriptive alt | 14 of 18 articles had a hero image with no alt. |
 | No `#` heading in the body | The layout already renders the title as the page's only `<h1>`. |
+| `heroImage` present, file exists, `heroImageAlt` set | A live article without a hero fails `check-content` and the build. Drafts are exempt. |
 
 Drafts (`draft: true`) are skipped by all of the above. That is the point of a
-draft. The moment the flag comes off, every rule applies.
+draft. The moment the flag comes off, every rule applies. Drafts live in
+`drafts/berita/`, outside the site; publishing moves the folder into `src/content/berita/`.
 
 ---
 

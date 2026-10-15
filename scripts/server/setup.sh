@@ -148,7 +148,7 @@ say "[4/4] Penjadwal"
 if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
-	# Hourly small batches beat one nightly run: a bad prompt shows up within the hour, and a transient API failure costs one batch.
+	# Daily: the run writes a batch of four only when fewer than four drafts are waiting, so on most days it reports the stock and exits 0. Publishing takes four a week, so the stock refills about weekly.
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - generate article drafts
@@ -160,27 +160,28 @@ Type=oneshot
 User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
-ExecStart=/usr/bin/env node scripts/generate-article.mjs --limit 4 --wave 1
+ExecStartPre=/usr/bin/git pull --rebase --autostash
+ExecStart=/usr/bin/env node scripts/generate-article.mjs
 TimeoutStartSec=3600
 EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - hourly draft generation
+Description=Solar Nusantara - refill the draft stock (a batch of 4 when fewer than 4 wait)
 
 [Timer]
-OnCalendar=*-*-* *:07:00
+OnCalendar=*-*-* 02:07:00
 Persistent=true
-RandomizedDelaySec=300
+RandomizedDelaySec=30
 
 [Install]
 WantedBy=timers.target
 EOF
 
-	# Publishing: once a day, and only what a human put in data/approved.txt.
+	# Publishing: Tuesday to Friday, one draft per run = four a week.
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.service >/dev/null <<EOF
 [Unit]
-Description=Solar Nusantara - publish approved drafts
+Description=Solar Nusantara - publish the next draft
 After=network-online.target
 Wants=network-online.target
 
@@ -190,16 +191,16 @@ User=$RUN_USER
 WorkingDirectory=$CLONE
 EnvironmentFile=$ENV_FILE
 ExecStartPre=/usr/bin/git pull --rebase --autostash
-ExecStart=/usr/bin/env node scripts/publish-drip.mjs --auto --limit 12
+ExecStart=/usr/bin/env node scripts/publish-drip.mjs
 TimeoutStartSec=1800
 EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-publish.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - daily drip publish
+Description=Solar Nusantara - publish one article (Tue-Fri)
 
 [Timer]
-OnCalendar=*-*-* 09:23:00
+OnCalendar=Tue..Fri *-*-* 09:23:00
 Persistent=true
 RandomizedDelaySec=900
 
@@ -217,8 +218,8 @@ else
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
-	GEN_LINE="7 * * * * cd $CLONE && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs --limit 4 --wave 1 >> \$HOME/sn-generate.log 2>&1 $MARKER"
-	PUB_LINE="23 9 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs --auto --limit 12 >> \$HOME/sn-publish.log 2>&1 $MARKER"
+	GEN_LINE="7 2 * * * cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-generate.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	PUB_LINE="23 9 * * 2-5 cd $CLONE && git pull --rebase --autostash >> \$HOME/sn-publish.log 2>&1 && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs >> \$HOME/sn-publish.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"
 	crontab -l 2>/dev/null | grep -vF "$MARKER" > "$CRON_TMP" || true
@@ -226,7 +227,7 @@ else
 %s
 ' "$GEN_LINE" "$PUB_LINE" >> "$CRON_TMP"
 	if crontab "$CRON_TMP"; then
-		say "  crontab user terpasang (generate tiap jam menit :07, publish 09:23)"
+		say "  crontab user terpasang (generate harian 02:07, publish Selasa-Jumat 09:23)"
 		say ""
 		crontab -l | grep -F "$MARKER" | sed 's/^/    /' | cut -c1-110
 	else
@@ -245,18 +246,14 @@ say ""
 say "Langkah berikutnya, berurutan:"
 say "  1. isi DEEPSEEK_API_KEY di $ENV_FILE  (kalau belum)"
 say "  2. cd $CLONE && npm run plan-topics"
-say "  3. npm run generate -- --limit 1   lalu BACA hasilnya sendiri, sekali saja"
-say "  4. npm run publish -- --auto --dry-run   lihat apa yang akan terbit"
-say "  5. npm run publish -- --auto --limit 1   artikel pertama, sungguhan"
+say "  3. npm run generate -- --dry-run   menulis satu batch di terminal tanpa menyimpan; BACA sekali"
+say "  4. npm run publish -- --dry-run   lihat apa yang terbit hari itu (Selasa-Jumat, satu per hari)"
 say ""
-say "Setelah itu berjalan tanpa campur tangan: generate tiap jam, terbit 12/hari."
-say "Yang menahan artikel buruk adalah tiga gate mesin - struktur, penulisan, dan"
-say "fakta - plus pemutus arus yang MENGHENTIKAN publikasi kalau kurang dari 60%"
-say "draft lolos bersih. Kegagalan sistemik berhenti sendiri, tidak terbit 1000 kali."
-say ""
-say "Satu artikel dari tiap 10 dicatat di data/spotcheck.log. Itu bukan gerbang,"
-say "hanya contoh untuk dibaca sewaktu-waktu - gate tidak bisa menilai apakah"
-say "sebuah artikel layak dikirim ke calon klien."
+say "Setelah itu berjalan tanpa campur tangan: generate harian mengisi drafts/berita/"
+say "(batch 4 bila stok kurang dari 4), publish memindahkan satu draft ke situs tiap"
+say "Selasa-Jumat = 4 per minggu. Tidak ada review manusia; yang menahan artikel buruk"
+say "adalah gate mesin (struktur SEO, fakta, tautan keluar, hero) di generate dan publish."
+say "Draft yang gagal gate tetap di drafts/berita/ dan dilewati; draft berikutnya terbit."
 say ""
 say "MENAHAN PUBLIKASI: set PUBLISH_NOT_BEFORE=YYYY-MM-DD di $ENV_FILE."
 say "Generate tetap jalan, draft tetap bertambah, tidak ada yang terbit sampai"
