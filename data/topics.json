@@ -10,7 +10,7 @@
     {
       "id": "epc--mounting-rel--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "failed",
       "rank": 5,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -26,7 +26,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "epc--mounting-rel--spesifikasi",
@@ -119,7 +120,7 @@
     {
       "id": "epc--pv-modul--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 3,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -135,7 +136,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-19T08:16:57.845Z"
     },
     {
       "id": "epc--pv-modul--spesifikasi",
@@ -206,7 +208,7 @@
     {
       "id": "epc--pv-modul--mutu",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 11,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -223,7 +225,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-19T08:27:08.868Z"
     },
     {
       "id": "epc--walkway-tray--panduan",
@@ -883,7 +886,7 @@
     {
       "id": "developer--mounting-rel--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "failed",
       "rank": 1,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -900,7 +903,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "developer--mounting-rel--spesifikasi",
@@ -971,7 +975,7 @@
     {
       "id": "developer--mounting-rel--mutu",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 9,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -988,7 +992,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-19T08:26:24.057Z"
     },
     {
       "id": "developer--pv-modul--panduan",
@@ -1103,7 +1108,7 @@
     {
       "id": "developer--walkway-tray--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 7,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -1120,7 +1125,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 60
+      "priority": 60,
+      "generatedAt": "2026-10-19T08:23:45.465Z"
     },
     {
       "id": "developer--walkway-tray--spesifikasi",
@@ -1981,7 +1987,7 @@
     {
       "id": "manufaktur--walkway-tray--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "failed",
       "rank": 4,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -1998,7 +2004,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 54
+      "priority": 54,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "manufaktur--walkway-tray--spesifikasi",
@@ -2091,7 +2098,7 @@
     {
       "id": "manufaktur--inverter--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 8,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2107,7 +2114,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 45
+      "priority": 45,
+      "generatedAt": "2026-10-19T08:19:08.126Z"
     },
     {
       "id": "manufaktur--inverter--spesifikasi",
@@ -6125,7 +6133,7 @@
     {
       "id": "umum--pengetahuan--jenis-material-plts",
       "kind": "pillar",
-      "status": "pending",
+      "status": "generated",
       "rank": 2,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6140,7 +6148,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/kalkulator-panel-surya",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-10-19T08:13:47.678Z"
     },
     {
       "id": "umum--pengetahuan--jenis-modul-surya",
@@ -6407,7 +6416,7 @@
     {
       "id": "umum--merek--aiko",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 6,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6425,7 +6434,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-10-19T08:17:30.713Z"
     },
     {
       "id": "umum--merek--jinko",
@@ -6568,7 +6578,7 @@
     {
       "id": "umum--merek--deye",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 10,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6586,7 +6596,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-10-19T08:24:50.405Z"
     },
     {
       "id": "umum--merek--kabelindo",
