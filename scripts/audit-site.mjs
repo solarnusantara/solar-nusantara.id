@@ -300,3 +300,24 @@ if (findings.length === 0) {
 	}
 	console.log(`  ${findings.length} findings total\n`);
 }
+
+// --------------------------------------------------- draft previews ------
+// Unlike everything above, these fail the build, and so the deploy. A draft that reaches Google
+// before it is published cannot be taken back, so /pratinjau/ must be noindex, out of the sitemap
+// and the search index, and unlinked from every indexable page.
+const PREVIEW = '/pratinjau/';
+const leaks = [];
+for (const url of pages.keys()) if (url.startsWith(PREVIEW)) leaks.push(`${url} is not noindex`);
+for (const url of sitemapUrls) if (url.startsWith(PREVIEW)) leaks.push(`${url} is in the sitemap`);
+for (const [url, html] of pages) {
+	if (/href=["'](?:https?:\/\/[^"'/]*solar-nusantara\.id)?\/pratinjau\//i.test(html)) leaks.push(`${url} links to a draft preview`);
+}
+for (const f of files.filter((f) => f.endsWith('.json') || f.endsWith('.xml'))) {
+	if (readFileSync(f, 'utf8').includes(PREVIEW)) leaks.push(`${f} mentions ${PREVIEW}`);
+}
+if (leaks.length) {
+	console.error(`audit-site: draft previews could be indexed (${leaks.length}):`);
+	for (const l of leaks) console.error(`  x ${l}`);
+	console.error('');
+	process.exit(1);
+}
