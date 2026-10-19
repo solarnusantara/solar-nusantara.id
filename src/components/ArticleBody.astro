@@ -1,0 +1,61 @@
+---
+import { Image } from 'astro:assets';
+import RelatedArticles from './RelatedArticles.astro';
+import type { Article } from '../utils/articles';
+
+/**
+ * Everything an article shows inside the Layout: the date line, the hero, the
+ * body (the default slot) and the related links. Shared by the live article and
+ * its preview, so a preview looks exactly like the page it will become.
+ */
+type Props = { data: Article['data']; body: string; related: Article[] };
+
+const { data, body, related } = Astro.props;
+
+// Calculate reading time
+const wordsPerMinute = 200;
+const wordCount = body.split(/\s+/g).length;
+const readingTime = Math.ceil(wordCount / wordsPerMinute);
+---
+
+<div class="text-lg text-gray-500 -mt-8 mb-8 flex flex-wrap items-center gap-x-2">
+  <time datetime={data.pubDate.toISOString()} class="whitespace-nowrap">
+    {data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+  </time>
+  {data.author && (
+    <span class="whitespace-nowrap">
+      <span class="text-gray-400">&bull;</span>
+      {data.authorUrl ? (
+        <>
+          <span>Oleh </span>
+          <a href={data.authorUrl} target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-blue-600 hover:underline transition-colors">
+            {data.author}
+          </a>
+        </>
+      ) : (
+        <span>Oleh {data.author}</span>
+      )}
+    </span>
+  )}
+  <span class="whitespace-nowrap">
+    <span class="text-gray-400">&bull;</span>
+    <span>{readingTime} menit baca</span>
+  </span>
+</div>
+
+{data.heroImage && (
+  <div class="mb-12 not-prose -mx-4 sm:-mx-8 md:-mx-16 lg:mx-0">
+    <Image 
+      src={data.heroImage} 
+      alt={data.heroImageAlt || data.title} 
+      width={1200} 
+      height={600} 
+      class="w-full h-auto object-cover rounded-2xl shadow-lg" 
+      loading="eager" 
+    />
+  </div>
+)}
+
+<slot />
+
+<RelatedArticles posts={related} />

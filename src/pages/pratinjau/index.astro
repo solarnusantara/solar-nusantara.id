@@ -1,0 +1,38 @@
+---
+import Layout from '../../layouts/Layout.astro';
+import { getQueuedDrafts } from '../../utils/articles';
+
+const drafts = await getQueuedDrafts();
+---
+
+<Layout
+  title="Pratinjau Artikel"
+  description="Artikel Solar Nusantara yang sudah ditulis dan menunggu giliran terbit, dalam urutan terbitnya."
+  noindex
+>
+  <main class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
+    <div class="max-w-3xl mx-auto">
+      <h1 class="text-4xl font-bold text-gray-900 mb-4 tracking-tight">Pratinjau Artikel</h1>
+      <p class="text-lg text-gray-600">
+        Artikel yang menunggu giliran terbit (Selasa sampai Jumat, satu per hari), dalam urutan antrean. Artikel yang belum lolos pemeriksaan otomatis dilewati dan dicoba lagi nanti.
+        Halaman ini tidak muncul di Google maupun di daftar berita.
+      </p>
+
+      {drafts.length === 0 ? (
+        <p class="mt-12 text-gray-600">Tidak ada artikel dalam antrean.</p>
+      ) : (
+        <ol class="mt-12 space-y-4">
+          {drafts.map((draft, i) => (
+            <li class="rounded-xl bg-white p-5 shadow-sm">
+              <span class="text-sm text-gray-500">#{i + 1}</span>
+              <a href={`/pratinjau/${draft.id}/`} class="block text-xl font-semibold text-gray-900 hover:text-blue-600">
+                {draft.data.title}
+              </a>
+              <p class="mt-1 text-gray-600">{draft.data.description}</p>
+            </li>
+          ))}
+        </ol>
+      )}
+    </div>
+  </main>
+</Layout>

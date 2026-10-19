@@ -1,10 +1,9 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Image } from 'astro:assets';
 import { SITE_CONFIG } from '../../config';
 import { buildArticleSchema } from '../../utils/articleSchema';
 import { getPublishedArticles, getRelatedArticles, hasMath, type Article } from '../../utils/articles';
-import RelatedArticles from '../../components/RelatedArticles.astro';
+import ArticleBody from '../../components/ArticleBody.astro';
 
 export async function getStaticPaths() {
   const posts = await getPublishedArticles();
@@ -21,10 +20,7 @@ type Props = { post: Article; related: Article[] };
 const { post, related } = Astro.props;
 const { Content, headings } = await post.render();
 
-// Calculate reading time
-const wordsPerMinute = 200;
 const wordCount = post.body.split(/\s+/g).length;
-const readingTime = Math.ceil(wordCount / wordsPerMinute);
 
 // Pass frontmatter and headings to the main layout so it can render the TOC
 const frontmatter = {
@@ -70,46 +66,8 @@ const jsonLd = buildArticleSchema({
   needsKatex={hasMath(post.body)}
 >
 
-  <div class="text-lg text-gray-500 -mt-8 mb-8 flex flex-wrap items-center gap-x-2">
-    <time datetime={post.data.pubDate.toISOString()} class="whitespace-nowrap">
-      {post.data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
-    </time>
-    {post.data.author && (
-      <span class="whitespace-nowrap">
-        <span class="text-gray-400">&bull;</span>
-        {post.data.authorUrl ? (
-          <>
-            <span>Oleh </span>
-            <a href={post.data.authorUrl} target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-blue-600 hover:underline transition-colors">
-              {post.data.author}
-            </a>
-          </>
-        ) : (
-          <span>Oleh {post.data.author}</span>
-        )}
-      </span>
-    )}
-    <span class="whitespace-nowrap">
-      <span class="text-gray-400">&bull;</span>
-      <span>{readingTime} menit baca</span>
-    </span>
-  </div>
-
-  {post.data.heroImage && (
-    <div class="mb-12 not-prose -mx-4 sm:-mx-8 md:-mx-16 lg:mx-0">
-      <Image 
-        src={post.data.heroImage} 
-        alt={post.data.heroImageAlt || post.data.title} 
-        width={1200} 
-        height={600} 
-        class="w-full h-auto object-cover rounded-2xl shadow-lg" 
-        loading="eager" 
-      />
-    </div>
-  )}
-  
-  <Content />
-
-  <RelatedArticles posts={related} />
+  <ArticleBody data={post.data} body={post.body} related={related}>
+    <Content />
+  </ArticleBody>
 
 </Layout>

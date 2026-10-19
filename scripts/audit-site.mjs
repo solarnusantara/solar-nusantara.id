@@ -59,16 +59,23 @@ function toUrlPath(file) {
 /** The 404 page is never crawled as a URL, so it is not audited as one. */
 const isErrorPage = (p) => p === '/404.html' || p === '/404/';
 
+/** A noindex page (the /pratinjau/ draft previews) is kept out of search on purpose: a valid link target, but not audited as a page. */
+const isNoindex = (html) => /<meta[^>]+name=["']robots["'][^>]+content=["'][^"']*noindex/i.test(html);
+
 const pages = new Map();
+const noindexPages = [];
 for (const f of htmlFiles) {
 	const p = toUrlPath(f);
 	if (isErrorPage(p)) continue;
-	pages.set(p, readFileSync(f, 'utf8'));
+	const html = readFileSync(f, 'utf8');
+	// Astro's redirect stubs are noindex too; they stay in, for the redirect checks.
+	if (isNoindex(html) && !/http-equiv=["']refresh["']/i.test(html)) noindexPages.push(p);
+	else pages.set(p, html);
 }
 
 /** Every path that resolves to a real file, in both slash forms. */
 const known = new Set();
-for (const p of pages.keys()) {
+for (const p of [...pages.keys(), ...noindexPages]) {
 	known.add(p);
 	if (p.endsWith('/') && p !== '/') known.add(p.slice(0, -1));
 }
@@ -272,7 +279,7 @@ for (const f of findings) {
 	grouped.get(f.kind).push(f.detail);
 }
 
-console.log(`\naudit-site: ${pages.size} pages, ${redirectPages.size} redirects\n`);
+console.log(`\naudit-site: ${pages.size} pages, ${redirectPages.size} redirects, ${noindexPages.length} noindex (not audited)\n`);
 
 if (findings.length === 0) {
 	console.log('  no findings\n');

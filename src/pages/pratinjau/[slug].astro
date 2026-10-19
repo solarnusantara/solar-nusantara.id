@@ -1,0 +1,53 @@
+---
+import { render } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+import ArticleBody from '../../components/ArticleBody.astro';
+import { getPublishedArticles, getQueuedDrafts, getRelatedArticles, hasMath, type DraftPreview, type Article } from '../../utils/articles';
+
+/**
+ * A draft as it will look once published, before it is in /berita/. Public but
+ * unlisted: noindex, out of the sitemap, the listings and the search index, and
+ * no Article structured data, so nothing here competes with the live page later.
+ */
+export async function getStaticPaths() {
+  const drafts = await getQueuedDrafts();
+  const published = await getPublishedArticles();
+  return drafts.map((draft) => ({
+    params: { slug: draft.id },
+    props: {
+      draft,
+      related: getRelatedArticles({ slug: draft.id, data: draft.data }, published, 3),
+    },
+  }));
+}
+type Props = { draft: DraftPreview; related: Article[] };
+
+const { draft, related } = Astro.props;
+const { Content, headings } = await render(draft);
+const body = draft.body ?? '';
+
+const frontmatter = {
+  title: draft.data.title,
+  seoTitle: draft.data.seoTitle,
+  description: draft.data.description,
+  heroImage: draft.data.heroImage,
+  pubDate: draft.data.pubDate,
+  updatedDate: draft.data.updatedDate,
+};
+---
+
+<Layout frontmatter={frontmatter} headings={headings} needsKatex={hasMath(body)} noindex>
+
+  <div class="not-prose mb-10 rounded-xl border border-amber-300 bg-amber-50 px-5 py-4 text-amber-900">
+    <p class="font-semibold">Pratinjau: artikel ini belum terbit.</p>
+    <p class="mt-1 text-sm">
+      Setelah terbit, alamatnya <code>/berita/{draft.id}/</code>.
+      <a href="/pratinjau/" class="underline">Semua pratinjau</a>
+    </p>
+  </div>
+
+  <ArticleBody data={draft.data} body={body} related={related}>
+    <Content />
+  </ArticleBody>
+
+</Layout>
