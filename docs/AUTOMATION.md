@@ -40,7 +40,7 @@ perpustakaan ilustrasi (bagian 5) dan menjalankan `plan-topics`.
 ## 2. Ritme mingguan
 
 ```
-generate (harian 02:07)   mengisi drafts/berita/ bila stok draft kurang dari 4
+generate (Senin 02:07)    mengisi drafts/berita/ sampai 8 draft (2 minggu terbitan)
 publish  (Selasa-Jumat    memindahkan SATU draft ke src/content/berita/,
           09:23)          commit + push  ->  Actions membangun situs
 ```
@@ -55,10 +55,12 @@ di antaranya.
 
 Dua hal membuat ritme ini bertahan sendiri:
 
-- **Generate tidak mendahului publish.** Generate berjalan harian, tetapi hanya menulis batch
-  (4 artikel) bila **kurang dari 4 draft** menunggu. Selebihnya ia melaporkan stok dan keluar
-  dengan status 0. Karena yang keluar empat per minggu, batch baru muncul kira-kira seminggu
-  sekali, dan stok bergerak di antara 0 dan 7 draft.
+- **Generate tidak mendahului publish lebih dari dua minggu.** Generate berjalan tiap Senin
+  02:07 dan hanya menulis kekurangan stok sampai **8 draft**: 8 pada run pertama, lalu 4 per
+  minggu (yang terbit Selasa-Jumat). Jadi setiap Senin pagi, artikel dua minggu ke depan sudah
+  ada sebagai draft dan bisa dilihat di `/pratinjau/` untuk laporan rencana artikel.
+  Kalau run Senin gagal (API sibuk, saldo habis), tidak ada run lain sampai Senin berikutnya:
+  jalankan `npm run generate` sekali secara manual di server.
 - **Satu artikel per run.** `publish-drip` mengambil satu draft per run, dan timernya hanya
   jalan Selasa-Jumat. Mengganti angka itu berarti mengganti jadwal, bukan kodenya.
 
@@ -212,7 +214,7 @@ Dua jadwal terpasang. Dengan sudo: systemd timer. Tanpa sudo: crontab user (log 
 
 | Jadwal | Waktu | Perintah |
 |---|---|---|
-| `solar-nusantara-generate` | harian 02:07 | `generate-article.mjs` (batch 4 bila stok < 4) |
+| `solar-nusantara-generate` | Senin 02:07 | `generate-article.mjs` (isi stok sampai 8) |
 | `solar-nusantara-publish` | Selasa-Jumat 09:23 | `publish-drip.mjs` (satu draft) |
 
 ```bash
@@ -223,8 +225,8 @@ journalctl -u solar-nusantara-generate -n 50
 **Server yang sudah terpasang dengan jadwal lama** tidak berubah sendiri: `setup.sh` hanya
 berlaku pada pemasangan baru. Dua perubahan harus dibuat di server:
 
-1. Ubah jadwal generate dari tiap 5 menit menjadi harian 02:07 (`OnCalendar=*-*-* 02:07:00`
-   pada timer systemd, atau `7 2 * * *` pada crontab), lalu `systemctl daemon-reload`. Bungkus
+1. Ubah jadwal generate menjadi Senin 02:07 (`OnCalendar=Mon *-*-* 02:07:00` pada timer
+   systemd, atau `7 2 * * 1` pada crontab), lalu `systemctl daemon-reload`. Bungkus
    perintahnya dengan `flock` seperti yang dipasang `setup.sh`.
 2. `git pull && npm ci`. Pipeline memerlukan `satori`, `@resvg/resvg-js`, dan `sharp`.
    Tanpa `npm ci`, publish berhenti dengan error yang jelas, bukan menerbitkan tanpa hero.
@@ -281,7 +283,7 @@ melindungi dari semuanya, termasuk mesin lain yang memakai key yang sama.
 
 | API | Dipakai oleh | Pagar di kode |
 |---|---|---|
-| DeepSeek | `generate-article.mjs` (server) | 500.000 token per hari UTC (`DAILY_TOKEN_CAP`); `max_tokens` per panggilan (16k, pilar 32k); timeout 5 menit; paling banyak 8 topik x 3 percobaan per run |
+| DeepSeek | `generate-article.mjs` (server) | 700.000 token per hari UTC (`DAILY_TOKEN_CAP`); `max_tokens` per panggilan (16k, pilar 32k); timeout 5 menit; paling banyak 12 topik x 3 percobaan per run |
 | OpenAI | `generate-illustrations.mjs` (hanya laptop) | estimasi dulu, wajib `--yes`; maksimal US$1 per run (`MAX_RUN_USD`); US$2 per hari UTC (`DAILY_USD_CAP`); `--max` 50 gambar; timeout 2 menit; berhenti di kegagalan pertama |
 
 **Ledger.** Setiap panggilan dicatat satu baris di `data/api-spend.log` (tidak di-commit;

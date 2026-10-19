@@ -160,7 +160,7 @@ fi
 if [ "$PRIV_MODE" = "system" ] && command -v systemctl >/dev/null 2>&1 && [ -d /run/systemd/system ]; then
 	RUN_USER="$(id -un)"
 
-	# Daily: the run writes a batch of four only when fewer than four drafts are waiting, so on most days it reports the stock and exits 0. Publishing takes four a week, so the stock refills about weekly.
+	# Weekly, Monday: the run fills the stock up to 8 drafts (two weeks of publishing), so every Monday morning the next two weeks can be previewed at /pratinjau/.
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.service >/dev/null <<EOF
 [Unit]
 Description=Solar Nusantara - generate article drafts
@@ -178,10 +178,10 @@ EOF
 
 	$SUDO tee /etc/systemd/system/solar-nusantara-generate.timer >/dev/null <<'EOF'
 [Unit]
-Description=Solar Nusantara - refill the draft stock (a batch of 4 when fewer than 4 wait)
+Description=Solar Nusantara - refill the draft stock to 8 (Monday)
 
 [Timer]
-OnCalendar=*-*-* 02:07:00
+OnCalendar=Mon *-*-* 02:07:00
 Persistent=true
 RandomizedDelaySec=30
 
@@ -228,7 +228,7 @@ else
 	MARKER="# solar-nusantara-pipeline"
 	NODE_BIN="$(command -v node || echo /usr/bin/node)"
 
-	GEN_LINE="7 2 * * * cd $CLONE && ${GEN_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs' >> \$HOME/sn-generate.log 2>&1 $MARKER"
+	GEN_LINE="7 2 * * 1 cd $CLONE && ${GEN_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs' >> \$HOME/sn-generate.log 2>&1 $MARKER"
 	PUB_LINE="23 9 * * 2-5 cd $CLONE && ${PUB_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs' >> \$HOME/sn-publish.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"
@@ -237,7 +237,7 @@ else
 %s
 ' "$GEN_LINE" "$PUB_LINE" >> "$CRON_TMP"
 	if crontab "$CRON_TMP"; then
-		say "  crontab user terpasang (generate harian 02:07, publish Selasa-Jumat 09:23)"
+		say "  crontab user terpasang (generate Senin 02:07, publish Selasa-Jumat 09:23)"
 		say ""
 		crontab -l | grep -F "$MARKER" | sed 's/^/    /' | cut -c1-110
 	else
@@ -259,8 +259,8 @@ say "  2. cd $CLONE && npm run plan-topics"
 say "  3. npm run generate -- --dry-run   menulis satu batch di terminal tanpa menyimpan; BACA sekali"
 say "  4. npm run publish -- --dry-run   lihat apa yang terbit hari itu (Selasa-Jumat, satu per hari)"
 say ""
-say "Setelah itu berjalan tanpa campur tangan: generate harian mengisi drafts/berita/"
-say "(batch 4 bila stok kurang dari 4), publish memindahkan satu draft ke situs tiap"
+say "Setelah itu berjalan tanpa campur tangan: generate tiap Senin mengisi drafts/berita/"
+say "(sampai 8 draft = 2 minggu), publish memindahkan satu draft ke situs tiap"
 say "Selasa-Jumat = 4 per minggu. Tidak ada review manusia; yang menahan artikel buruk"
 say "adalah gate mesin (struktur SEO, fakta, tautan keluar, hero) di generate dan publish."
 say "Draft yang gagal gate tetap di drafts/berita/ dan dilewati; draft berikutnya terbit."
