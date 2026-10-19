@@ -2,14 +2,16 @@
 /**
  * Keep the stock of drafts filled, from data/topics.json, using DeepSeek.
  *
- *   npm run generate                           # the daily run: a batch of 4 if fewer than 4 drafts are waiting
+ *   npm run generate                           # the weekly run (Monday): fill the stock up to 8 drafts
+ *   npm run generate -- --limit 4              # fill up to a different stock
  *   npm run generate -- --dry-run              # print, write nothing, push nothing
  *   npm run generate -- --id epc--mounting-rel--panduan    # one topic, ignores the stock check
  *   npm run generate -- --no-push              # write and commit locally
  *
  * Drafts are written to drafts/berita/<slug>/ and wait there for publish-drip.mjs,
- * which takes one per publishing day. Publishing is four a week, so a batch of 4 lasts
- * a week; the stock check is what keeps generation from running ahead of publishing.
+ * which takes one per publishing day. Publishing is four a week and the timer fires on
+ * Monday, so filling the stock to 8 means every Monday morning the next two weeks of
+ * articles exist as drafts and can be previewed at /pratinjau/ and reported on.
  * Each new draft is born with its hero image.
  *
  * Requires DEEPSEEK_API_KEY in the environment. Never read from the repo.
@@ -45,15 +47,16 @@ import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
 import { DRAFTS_DIR, draftDir, slugTaken } from './lib/articles.mjs';
 import { record, spentToday } from './lib/spend-guard.mjs';
 
-const BATCH_SIZE = 4;
+/** Two weeks of publishing (four a week). The Monday run writes whatever is missing: 8 the first time, 4 a week after that. */
+const STOCK_TARGET = 8;
 /** A call that has not finished by now is abandoned. A pillar is the slow case (up to 32k tokens), so this is generous. */
 const API_TIMEOUT_MS = 5 * 60_000;
 /**
- * Hard ceiling on DeepSeek tokens per UTC day, counted in data/api-spend.log. A normal batch is
- * ~60k tokens and the worst case the loop allows (8 topics x 3 attempts) is ~360k; this sits
+ * Hard ceiling on DeepSeek tokens per UTC day, counted in data/api-spend.log. A full batch of 8
+ * is ~120k tokens and the worst case the loop allows (12 topics x 3 attempts) is ~540k; this sits
  * above both and far below a runaway. Raise it here, on purpose, if the plan outgrows it.
  */
-const DAILY_TOKEN_CAP = 500_000;
+const DAILY_TOKEN_CAP = 700_000;
 /** Transient API errors in a row before the run gives up instead of working through the queue. */
 const MAX_API_FAILURES = 2;
 /** A transient API error is retried once, not three times: a busy service answers the same way. */
@@ -74,7 +77,7 @@ const flag = (name, fallback = null) => {
 };
 const has = (name) => argv.includes(`--${name}`);
 
-const batchSize = Number(flag('limit', String(BATCH_SIZE)));
+const stockTarget = Number(flag('limit', String(STOCK_TARGET)));
 const onlyId = flag('id');
 const dryRun = has('dry-run');
 const noPush = has('no-push');
@@ -580,13 +583,11 @@ function persist() {
 	if (!dryRun) saveStore(store);
 }
 
-// The timer is daily and publishing is four a week: write a batch only when the stock of drafts has run below one batch, so generation never runs ahead of publishing.
-if (!onlyId) {
-	const stock = readyDrafts(store).length;
-	if (stock >= batchSize) {
-		console.log(`\ngenerate: ${stock} draft(s) waiting in ${DRAFTS_DIR} - next batch when fewer than ${batchSize} remain.\n`);
-		process.exit(0);
-	}
+// Write only what the stock is short of, so generation never runs more than two weeks ahead of publishing.
+const stock = onlyId ? 0 : readyDrafts(store).length;
+if (!onlyId && stock >= stockTarget) {
+	console.log(`\ngenerate: ${stock} draft(s) waiting in ${DRAFTS_DIR} - the stock is full (${stockTarget}).\n`);
+	process.exit(0);
 }
 
 const pool = onlyId
@@ -598,7 +599,7 @@ if (pool.length === 0) {
 	process.exit(0);
 }
 
-const target = onlyId ? 1 : batchSize;
+const target = onlyId ? 1 : stockTarget - stock;
 console.log(`\ngenerate: batch of ${target}, concurrency ${concurrency}`);
 console.log(`  model: ${modelOverride || 'deepseek-flash'}`);
 if (dryRun) console.log('  --dry-run: nothing will be written\n');

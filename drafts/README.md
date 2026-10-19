@@ -6,7 +6,7 @@ Work in progress that is not part of the site. Nothing here is read by Astro.
 
 Articles written and waiting to go out: `index.md` (`draft: true`) and `hero.webp`.
 This is the stock that `scripts/publish-drip.mjs` draws from, one article per publishing
-day (Tuesday to Friday). `scripts/generate-article.mjs` refills it when fewer than four wait.
+day (Tuesday to Friday). `scripts/generate-article.mjs` refills it every Monday, up to eight (two weeks).
 
 Publishing moves the whole folder to `src/content/berita/<slug>/` with `draft: false`, so
 a folder is either here (not live) or there (live), never both. `ls drafts/berita` is what
