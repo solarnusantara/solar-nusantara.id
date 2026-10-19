@@ -42,9 +42,10 @@ const altFor = new Map(manifest.map((i) => [i.key, i.alt]));
 /** One picture per (product, angle): 35 pictures, each shared by the 7 buyers of that combination rather than by ~20 articles. */
 export const illustrationKey = (topic) => (topic.product ? `${topic.product}--${topic.angle}` : null);
 
+/** The angles added after the library was drawn (pengetahuan, merek) have no picture of their own; they use the product's pillar picture. */
 function pickIllustration(topic) {
-	const key = illustrationKey(topic);
-	return key && existsSync(join(ILLUSTRATIONS, `${key}.webp`)) ? key : null;
+	const keys = [illustrationKey(topic), topic.product && `${topic.product}--panduan`];
+	return keys.find((key) => key && existsSync(join(ILLUSTRATIONS, `${key}.webp`))) ?? null;
 }
 export { pickIllustration };
 

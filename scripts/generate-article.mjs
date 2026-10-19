@@ -38,6 +38,7 @@ import { join } from 'node:path';
 import { checkSeo, TRUSTED_EXTERNAL } from './lib/seo-rules.mjs';
 import { SONUSHUB_GENERAL, tagSonushubLinks } from './lib/sonushub.mjs';
 import { checkFacts, verifyExternalLinks } from './lib/fact-guard.mjs';
+import { brandByKey, BRANDS_CHECKED } from './lib/brands.mjs';
 import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
 import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
@@ -109,10 +110,12 @@ const modelFor = (topic) => modelOverride || 'deepseek-flash';
 // --- verified facts ---------------------------------------------------------
 /**
  * Every number here came from Solar Nusantara's own published material (the
- * Sonus ID YouTube channel) or from the regulation itself. This block is what
- * separates the output from generic AI filler: an article that cites the real
- * CAPEX band for a 1 MWp system in Indonesia is useful to a buyer, and one that
- * says "solar is a great investment" is not.
+ * Sonus ID YouTube channel) or from the regulation itself.
+ *
+ * No cost figure, on purpose (2026-10-19). The CAPEX band, the module share of
+ * CAPEX and the CAPEX/OPEX example used to be here, and every article repeated
+ * them: a cost figure the company publishes is one it has to answer for, and
+ * these had no audited source. fact-guard now rejects any rupiah figure.
  *
  * Deliberately NOT sourced from DB_PR.csv. That file carries `Pagu` and
  * `Final Price` - internal procurement prices and margin. Publishing supplier
@@ -121,10 +124,6 @@ const modelFor = (topic) => modelOverride || 'deepseek-flash';
  */
 const FACTS = `
 FAKTA TERVERIFIKASI (gunakan yang relevan, jangan mengarang angka lain):
-- CAPEX PLTS 1 MWp di Indonesia: Rp 9-13 miliar (rentang 2024-2025).
-- Modul surya menyumbang sekitar 40% dari total CAPEX sistem 1 MW.
-- Contoh nyata: perusahaan industri memasang PLTS 1 MWp dengan CAPEX Rp 11 miliar
-  dan estimasi OPEX Rp 220 juta per tahun.
 - Permen ESDM No. 2 Tahun 2024: pemasangan PLTS atap tidak lagi dibatasi 100% dari
   daya terpasang pelanggan PLN, melainkan tunduk pada kuota PLN yang tersedia.
 - Skema BOO (Build Own Operate): aset PLTS tetap milik solar developer seterusnya.
@@ -176,7 +175,37 @@ const ANGLE_SHAPE = {
 	perbandingan: 'Buka dengan keputusan yang harus dipilih pembaca. Wajib memuat satu tabel perbandingan berdampingan dan kondisi kapan masing-masing lebih tepat. Tutup dengan rekomendasi sesuai kebutuhan pembeli ini.',
 	pengadaan: 'Buka dengan kesalahan pengadaan yang mahal. Wajib memuat checklist bernomor yang bisa dipakai langsung. Tutup dengan dokumen yang harus diminta dari pemasok sebelum PO diterbitkan.',
 	mutu: 'Buka dengan standar atau persyaratan yang berlaku. Wajib memuat daftar uji atau sertifikat yang harus diminta. Tutup dengan cara memverifikasi klaim pemasok.',
+	pengetahuan: 'Artikel pengetahuan umum tentang jenis material. Buka dengan fungsi material ini di dalam sistem PLTS. Wajib memuat satu tabel jenis-jenisnya: ciri, kelebihan, keterbatasan, dan di mana biasa dipakai. Tutup dengan hal yang perlu dicek saat memilih jenisnya.',
+	merek: 'Artikel pengenalan satu merek. Buka dengan kategori material yang dibuat merek ini. Wajib memuat satu tabel lini produk yang tersedia di SonusHUB, hanya dari daftar FAKTA MEREK. Tutup dengan apa yang harus dicek di datasheet resmi sebelum memesan.',
 };
+
+/**
+ * The facts block and the brand rule for a brand article. A brand article states only what the
+ * SonusHUB catalogue lists for that brand (lib/brands.mjs) and names no other brand: comparing
+ * brands is out of the plan, and fact-guard rejects it.
+ */
+function brandBlock(topic) {
+	const brand = topic.brand ? brandByKey(topic.brand) : null;
+	if (!brand) {
+		return {
+			facts: '',
+			rule: `Jangan menyebut merek produk tertentu, harga satuan, nama calon klien, atau syarat
+    pembayaran perusahaan. Bandingkan kategori dan spesifikasi, bukan merek.`,
+		};
+	}
+	return {
+		facts: `
+FAKTA MEREK ${brand.name.toUpperCase()} (dari katalog SonusHUB per ${BRANDS_CHECKED}; hanya ini yang boleh disebut tentang merek ini):
+${brand.facts.map((f) => `- ${f}`).join('\n')}
+`,
+		rule: `Artikel ini HANYA tentang merek ${brand.name}. DILARANG menyebut merek lain dan DILARANG
+    membandingkan merek (tidak ada "lebih baik dari", "unggul dibanding", peringkat, atau pangsa pasar).
+    Tentang merek ini, sebut hanya lini produk di FAKTA MEREK. Jangan menulis sejarah perusahaan,
+    negara asal, tahun berdiri, efisiensi, garansi, atau angka spesifikasi yang tidak tercantum;
+    untuk itu arahkan pembaca ke datasheet resmi. Jangan menyebut harga satuan, nama calon klien,
+    atau syarat pembayaran perusahaan.`,
+	};
+}
 
 // --- prompt -----------------------------------------------------------------
 /**
@@ -219,6 +248,7 @@ function buildPrompt(topic, previousErrors) {
 	// The second SonusHUB link must be a different page from the product's own.
 	const sonushubOthers = SONUSHUB_GENERAL.filter((u) => u !== topic.sonushubLink);
 	const spec = KIND_SPEC[topic.kind] ?? KIND_SPEC.longtail;
+	const brand = brandBlock(topic);
 
 	const retry = previousErrors?.length
 		? `
@@ -239,7 +269,7 @@ BENTUK ARTIKEL: ${ANGLE_SHAPE[topic.angle]}
 JENIS ARTIKEL: ${spec.shape}
 
 ${FACTS}
-
+${brand.facts}
 ${COMPANY}
 
 ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
@@ -247,10 +277,10 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
    dan semua katanya harus muncul di 150 kata pertama, di minimal satu heading,
    dan di bagian penutup. Jangan diulang berlebihan - maksimal 3 kali seluruhnya.
    PENTING: pencocokan TIDAK peka huruf besar-kecil, jadi tulis akronim dengan
-   kapitalisasi yang wajar - "PLTS", "CAPEX", "OPEX", "ESDM", "TKDN", "kWp",
-   bukan huruf kecil semua. Menulis "payback period plts pabrik" di tengah
-   kalimat terbaca sebagai keyword stuffing, sedangkan "payback period PLTS
-   pabrik" terbaca wajar dan tetap dihitung cocok. Susun kalimatnya agar frasa
+   kapitalisasi yang wajar - "PLTS", "ESDM", "TKDN", "kWp", "MPPT",
+   bukan huruf kecil semua. Menulis "mounting rel plts kontraktor epc" di tengah
+   kalimat terbaca sebagai keyword stuffing, sedangkan "mounting rel PLTS untuk
+   kontraktor EPC" terbaca wajar dan tetap dihitung cocok. Susun kalimatnya agar frasa
    itu mengalir alami, bukan ditempelkan.
 2. Panjang ${spec.words} kata.
 3. Minimal ${spec.headings} heading tingkat "## ". DILARANG memakai heading "# ".
@@ -272,11 +302,12 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
    Gunakan URL beranda domain itu bila tidak yakin URL halamannya. JANGAN mengarang URL.
 8. Jangan menulis heading bernama "Pendahuluan" atau "Kesimpulan" - langsung ke isi.
 9. Jangan mengarang angka, nama klien, atau studi kasus. Pakai hanya fakta di atas.
-   Jika butuh angka lain, sebutkan sebagai asumsi dan jelaskan cara menghitungnya.
-10. Nilai rupiah ditulis "Rp 11 miliar". Jika menulis dolar, tulis "\\$100" dengan
-    garis miring terbalik di depannya.
-11. Jangan menyebut merek produk tertentu, harga satuan, nama calon klien, atau syarat
-    pembayaran perusahaan. Bandingkan kategori dan spesifikasi, bukan merek.
+   Angka teknis yang tidak ada di fakta (misalnya daya atau penampang) boleh ditulis
+   hanya sebagai contoh yang jelas disebut contoh, dan arahkan pembaca ke datasheet.
+10. DILARANG menulis angka biaya atau keuangan: nilai rupiah, harga, CAPEX, OPEX, ROI,
+    payback, LCOE, penghematan, atau persentase biaya. Bahas kriteria teknis dan
+    pengadaan, bukan perhitungan biaya.
+11. ${brand.rule}
 12. Sebut nomor standar (IEC, SNI, EN) hanya jika Anda yakin nomornya benar. Jika ragu,
     sebut jenis standarnya tanpa nomor dan arahkan pembaca memeriksa dokumen aslinya.
 ${retry}
@@ -458,7 +489,7 @@ function validate(topic, description, body) {
 	// time. A wrong regulation number is a writing mistake the model can fix when
 	// told about it, and fixing it costs one retry; catching it at publish costs
 	// an article that has to be regenerated anyway, later, with less context.
-	const facts = checkFacts({ body });
+	const facts = checkFacts({ body, brand: topic.brand });
 	errors.push(...facts.errors);
 
 	return { errors, stats: seo.stats, factWarnings: facts.warnings };
