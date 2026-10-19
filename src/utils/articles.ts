@@ -1,4 +1,5 @@
 import { getCollection, type CollectionEntry } from 'astro:content';
+import { queuedDraftSlugs } from './draftQueue';
 
 export type Article = CollectionEntry<'berita'>;
 
@@ -31,7 +32,11 @@ export async function getPublishedArticles(): Promise<Article[]> {
  * recency - so the same page always produces the same links and the HTML is
  * stable between builds.
  */
-export function getRelatedArticles(current: Article, all: Article[], limit = 3): Article[] {
+export function getRelatedArticles(
+	current: { slug: string; data: Pick<Article['data'], 'tags'> },
+	all: Article[],
+	limit = 3,
+): Article[] {
 	const currentTags = new Set(current.data.tags ?? []);
 
 	const scored = all
@@ -58,4 +63,15 @@ export function getRelatedArticles(current: Article, all: Article[], limit = 3):
  */
 export function hasMath(body: string): boolean {
 	return /\$\$[\s\S]+?\$\$/.test(body) || /(?<!\$)\$(?!\s)[^\n$]+?(?<!\s)\$(?!\$)/.test(body);
+}
+
+export type DraftPreview = CollectionEntry<'pratinjau'>;
+
+/** The drafts waiting to be published, next in line first. Rendered only under /pratinjau/. */
+export async function getQueuedDrafts(): Promise<DraftPreview[]> {
+	const order = queuedDraftSlugs();
+	// Filtered as well as loaded by the queue: with nothing queued the glob loader matches no file
+	// and returns without clearing the data store, so last build's entries would still be there.
+	const drafts = await getCollection('pratinjau', ({ id }) => order.includes(id));
+	return drafts.sort((a, b) => order.indexOf(a.id) - order.indexOf(b.id));
 }

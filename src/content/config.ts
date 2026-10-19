@@ -1,4 +1,6 @@
-import { defineCollection, z } from 'astro:content';
+import { defineCollection, z, type SchemaContext } from 'astro:content';
+import { glob } from 'astro/loaders';
+import { queuedDraftSlugs } from '../utils/draftQueue';
 
 /**
  * Content schema for solar-nusantara.id.
@@ -29,8 +31,7 @@ import { defineCollection, z } from 'astro:content';
  * schema declares it. To override a URL, set `slug:` in the article frontmatter
  * - the schema simply must not describe it.
  */
-const beritaCollection = defineCollection({
-  schema: ({ image }) =>
+const articleSchema = ({ image }: SchemaContext) =>
     z
       .object({
         /** Full headline. Renders as the <h1> and as the schema.org headline. */
@@ -132,7 +133,23 @@ const beritaCollection = defineCollection({
               'heroImageAlt is required when heroImage is set. Describe what the image shows, not the article title.',
           });
         }
-      }),
+      });
+
+const beritaCollection = defineCollection({ schema: articleSchema });
+
+/**
+ * The drafts waiting to go out, previewed publicly at /pratinjau/<slug>/. Only
+ * the publish queue is loaded, not every folder in drafts/berita.
+ */
+const queued = queuedDraftSlugs();
+const pratinjauCollection = defineCollection({
+  loader: glob({
+    base: './drafts/berita',
+    // glob takes at least one pattern; with nothing queued this one matches nothing.
+    pattern: queued.length ? queued.map((slug) => `${slug}/index.md`) : '__no-queued-drafts__/index.md',
+    generateId: ({ entry }) => entry.split('/')[0],
+  }),
+  schema: articleSchema,
 });
 
 const simplePageSchema = z.object({
@@ -146,6 +163,7 @@ const tentangCollection = defineCollection({ schema: simplePageSchema });
 
 export const collections = {
   berita: beritaCollection,
+  pratinjau: pratinjauCollection,
   layanan: layananCollection,
   produk: produkCollection,
   tentang: tentangCollection,

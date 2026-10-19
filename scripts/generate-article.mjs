@@ -38,12 +38,26 @@ import { join } from 'node:path';
 import { checkSeo, TRUSTED_EXTERNAL } from './lib/seo-rules.mjs';
 import { SONUSHUB_GENERAL, tagSonushubLinks } from './lib/sonushub.mjs';
 import { checkFacts, verifyExternalLinks } from './lib/fact-guard.mjs';
+import { brandByKey, BRANDS_CHECKED } from './lib/brands.mjs';
 import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
 import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
 import { DRAFTS_DIR, draftDir, slugTaken } from './lib/articles.mjs';
+import { record, spentToday } from './lib/spend-guard.mjs';
 
 const BATCH_SIZE = 4;
+/** A call that has not finished by now is abandoned. A pillar is the slow case (up to 32k tokens), so this is generous. */
+const API_TIMEOUT_MS = 5 * 60_000;
+/**
+ * Hard ceiling on DeepSeek tokens per UTC day, counted in data/api-spend.log. A normal batch is
+ * ~60k tokens and the worst case the loop allows (8 topics x 3 attempts) is ~360k; this sits
+ * above both and far below a runaway. Raise it here, on purpose, if the plan outgrows it.
+ */
+const DAILY_TOKEN_CAP = 500_000;
+/** Transient API errors in a row before the run gives up instead of working through the queue. */
+const MAX_API_FAILURES = 2;
+/** A transient API error is retried once, not three times: a busy service answers the same way. */
+const MAX_API_ATTEMPTS = 2;
 /** A topic can fail its gates three times and be marked failed; extra topics keep one bad one from shrinking the week's batch. */
 const MAX_EXTRA_ATTEMPTS = 4;
 const CTA_SOURCE = 'drafts/cta-block.md';
@@ -96,10 +110,12 @@ const modelFor = (topic) => modelOverride || 'deepseek-flash';
 // --- verified facts ---------------------------------------------------------
 /**
  * Every number here came from Solar Nusantara's own published material (the
- * Sonus ID YouTube channel) or from the regulation itself. This block is what
- * separates the output from generic AI filler: an article that cites the real
- * CAPEX band for a 1 MWp system in Indonesia is useful to a buyer, and one that
- * says "solar is a great investment" is not.
+ * Sonus ID YouTube channel) or from the regulation itself.
+ *
+ * No cost figure, on purpose (2026-10-19). The CAPEX band, the module share of
+ * CAPEX and the CAPEX/OPEX example used to be here, and every article repeated
+ * them: a cost figure the company publishes is one it has to answer for, and
+ * these had no audited source. fact-guard now rejects any rupiah figure.
  *
  * Deliberately NOT sourced from DB_PR.csv. That file carries `Pagu` and
  * `Final Price` - internal procurement prices and margin. Publishing supplier
@@ -108,10 +124,6 @@ const modelFor = (topic) => modelOverride || 'deepseek-flash';
  */
 const FACTS = `
 FAKTA TERVERIFIKASI (gunakan yang relevan, jangan mengarang angka lain):
-- CAPEX PLTS 1 MWp di Indonesia: Rp 9-13 miliar (rentang 2024-2025).
-- Modul surya menyumbang sekitar 40% dari total CAPEX sistem 1 MW.
-- Contoh nyata: perusahaan industri memasang PLTS 1 MWp dengan CAPEX Rp 11 miliar
-  dan estimasi OPEX Rp 220 juta per tahun.
 - Permen ESDM No. 2 Tahun 2024: pemasangan PLTS atap tidak lagi dibatasi 100% dari
   daya terpasang pelanggan PLN, melainkan tunduk pada kuota PLN yang tersedia.
 - Skema BOO (Build Own Operate): aset PLTS tetap milik solar developer seterusnya.
@@ -163,7 +175,37 @@ const ANGLE_SHAPE = {
 	perbandingan: 'Buka dengan keputusan yang harus dipilih pembaca. Wajib memuat satu tabel perbandingan berdampingan dan kondisi kapan masing-masing lebih tepat. Tutup dengan rekomendasi sesuai kebutuhan pembeli ini.',
 	pengadaan: 'Buka dengan kesalahan pengadaan yang mahal. Wajib memuat checklist bernomor yang bisa dipakai langsung. Tutup dengan dokumen yang harus diminta dari pemasok sebelum PO diterbitkan.',
 	mutu: 'Buka dengan standar atau persyaratan yang berlaku. Wajib memuat daftar uji atau sertifikat yang harus diminta. Tutup dengan cara memverifikasi klaim pemasok.',
+	pengetahuan: 'Artikel pengetahuan umum tentang jenis material. Buka dengan fungsi material ini di dalam sistem PLTS. Wajib memuat satu tabel jenis-jenisnya: ciri, kelebihan, keterbatasan, dan di mana biasa dipakai. Tutup dengan hal yang perlu dicek saat memilih jenisnya.',
+	merek: 'Artikel pengenalan satu merek. Buka dengan kategori material yang dibuat merek ini. Wajib memuat satu tabel lini produk yang tersedia di SonusHUB, hanya dari daftar FAKTA MEREK. Tutup dengan apa yang harus dicek di datasheet resmi sebelum memesan.',
 };
+
+/**
+ * The facts block and the brand rule for a brand article. A brand article states only what the
+ * SonusHUB catalogue lists for that brand (lib/brands.mjs) and names no other brand: comparing
+ * brands is out of the plan, and fact-guard rejects it.
+ */
+function brandBlock(topic) {
+	const brand = topic.brand ? brandByKey(topic.brand) : null;
+	if (!brand) {
+		return {
+			facts: '',
+			rule: `Jangan menyebut merek produk tertentu, harga satuan, nama calon klien, atau syarat
+    pembayaran perusahaan. Bandingkan kategori dan spesifikasi, bukan merek.`,
+		};
+	}
+	return {
+		facts: `
+FAKTA MEREK ${brand.name.toUpperCase()} (dari katalog SonusHUB per ${BRANDS_CHECKED}; hanya ini yang boleh disebut tentang merek ini):
+${brand.facts.map((f) => `- ${f}`).join('\n')}
+`,
+		rule: `Artikel ini HANYA tentang merek ${brand.name}. DILARANG menyebut merek lain dan DILARANG
+    membandingkan merek (tidak ada "lebih baik dari", "unggul dibanding", peringkat, atau pangsa pasar).
+    Tentang merek ini, sebut hanya lini produk di FAKTA MEREK. Jangan menulis sejarah perusahaan,
+    negara asal, tahun berdiri, efisiensi, garansi, atau angka spesifikasi yang tidak tercantum;
+    untuk itu arahkan pembaca ke datasheet resmi. Jangan menyebut harga satuan, nama calon klien,
+    atau syarat pembayaran perusahaan.`,
+	};
+}
 
 // --- prompt -----------------------------------------------------------------
 /**
@@ -206,6 +248,7 @@ function buildPrompt(topic, previousErrors) {
 	// The second SonusHUB link must be a different page from the product's own.
 	const sonushubOthers = SONUSHUB_GENERAL.filter((u) => u !== topic.sonushubLink);
 	const spec = KIND_SPEC[topic.kind] ?? KIND_SPEC.longtail;
+	const brand = brandBlock(topic);
 
 	const retry = previousErrors?.length
 		? `
@@ -226,7 +269,7 @@ BENTUK ARTIKEL: ${ANGLE_SHAPE[topic.angle]}
 JENIS ARTIKEL: ${spec.shape}
 
 ${FACTS}
-
+${brand.facts}
 ${COMPANY}
 
 ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
@@ -234,10 +277,10 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
    dan semua katanya harus muncul di 150 kata pertama, di minimal satu heading,
    dan di bagian penutup. Jangan diulang berlebihan - maksimal 3 kali seluruhnya.
    PENTING: pencocokan TIDAK peka huruf besar-kecil, jadi tulis akronim dengan
-   kapitalisasi yang wajar - "PLTS", "CAPEX", "OPEX", "ESDM", "TKDN", "kWp",
-   bukan huruf kecil semua. Menulis "payback period plts pabrik" di tengah
-   kalimat terbaca sebagai keyword stuffing, sedangkan "payback period PLTS
-   pabrik" terbaca wajar dan tetap dihitung cocok. Susun kalimatnya agar frasa
+   kapitalisasi yang wajar - "PLTS", "ESDM", "TKDN", "kWp", "MPPT",
+   bukan huruf kecil semua. Menulis "mounting rel plts kontraktor epc" di tengah
+   kalimat terbaca sebagai keyword stuffing, sedangkan "mounting rel PLTS untuk
+   kontraktor EPC" terbaca wajar dan tetap dihitung cocok. Susun kalimatnya agar frasa
    itu mengalir alami, bukan ditempelkan.
 2. Panjang ${spec.words} kata.
 3. Minimal ${spec.headings} heading tingkat "## ". DILARANG memakai heading "# ".
@@ -259,11 +302,12 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
    Gunakan URL beranda domain itu bila tidak yakin URL halamannya. JANGAN mengarang URL.
 8. Jangan menulis heading bernama "Pendahuluan" atau "Kesimpulan" - langsung ke isi.
 9. Jangan mengarang angka, nama klien, atau studi kasus. Pakai hanya fakta di atas.
-   Jika butuh angka lain, sebutkan sebagai asumsi dan jelaskan cara menghitungnya.
-10. Nilai rupiah ditulis "Rp 11 miliar". Jika menulis dolar, tulis "\\$100" dengan
-    garis miring terbalik di depannya.
-11. Jangan menyebut merek produk tertentu, harga satuan, nama calon klien, atau syarat
-    pembayaran perusahaan. Bandingkan kategori dan spesifikasi, bukan merek.
+   Angka teknis yang tidak ada di fakta (misalnya daya atau penampang) boleh ditulis
+   hanya sebagai contoh yang jelas disebut contoh, dan arahkan pembaca ke datasheet.
+10. DILARANG menulis angka biaya atau keuangan: nilai rupiah, harga, CAPEX, OPEX, ROI,
+    payback, LCOE, penghematan, atau persentase biaya. Bahas kriteria teknis dan
+    pengadaan, bukan perhitungan biaya.
+11. ${brand.rule}
 12. Sebut nomor standar (IEC, SNI, EN) hanya jika Anda yakin nomornya benar. Jika ragu,
     sebut jenis standarnya tanpa nomor dan arahkan pembaca memeriksa dokumen aslinya.
 ${retry}
@@ -275,38 +319,77 @@ DESCRIPTION: <satu kalimat meta description, WAJIB antara ${DESC_MIN} dan ${DESC
 }
 
 // --- api --------------------------------------------------------------------
-async function callModel(topic, previousErrors) {
-	const res = await fetch(`${API_BASE}/chat/completions`, {
-		method: 'POST',
-		headers: {
-			'Content-Type': 'application/json',
-			Authorization: `Bearer ${API_KEY}`,
-		},
-		body: JSON.stringify({
-			model: modelFor(topic),
-			messages: [{ role: 'user', content: buildPrompt(topic, previousErrors) }],
-			temperature: 0.6,
-			// Both DeepSeek models reason before answering, and reasoning tokens
-			// come out of this same budget. Measured on this prompt shape:
-			// deepseek-flash burns ~5.5k reasoning of ~7.3k total, deepseek-v4-pro
-			// ~6.2k of ~9.3k. At the old 4000 the article was truncated mid-sentence
-			// every time, which surfaced as three confusing validation errors
-			// (missing closing section, missing list, one internal link) instead of
-			// the one real cause.
-			//
-			// Kind-aware since pillars moved to 1800-2500 words: Indonesian runs
-			// roughly two tokens a word, so a 2,000-word pillar is ~4-5k output
-			// tokens on top of the same 6-8k of reasoning, and 16000 truncated it
-			// on every attempt. Long-tail articles are unchanged.
-			max_tokens: topic.kind === 'pillar' ? 32000 : 16000,
-		}),
-	});
-
-	if (!res.ok) {
-		const detail = await res.text().catch(() => '');
-		throw new Error(`DeepSeek HTTP ${res.status}: ${detail.slice(0, 300)}`);
+/**
+ * A failure of the API itself, not of the article. The topic did nothing wrong, so it must
+ * stay `pending` and be tried again later instead of being marked `failed`.
+ *   transient  429, 5xx, timeout, no connection: it may well work next time
+ *   fatal      other 4xx (bad key, no balance, bad request): retrying cannot help
+ *   budget     our own daily cap is used up
+ */
+class ApiError extends Error {
+	constructor(message, kind) {
+		super(message);
+		this.kind = kind;
 	}
-	const json = await res.json();
+}
+
+async function callModel(topic, previousErrors) {
+	// Both DeepSeek models reason before answering, and reasoning tokens
+	// come out of this same budget. Measured on this prompt shape:
+	// deepseek-flash burns ~5.5k reasoning of ~7.3k total, deepseek-v4-pro
+	// ~6.2k of ~9.3k. At the old 4000 the article was truncated mid-sentence
+	// every time, which surfaced as three confusing validation errors
+	// (missing closing section, missing list, one internal link) instead of
+	// the one real cause.
+	//
+	// Kind-aware since pillars moved to 1800-2500 words: Indonesian runs
+	// roughly two tokens a word, so a 2,000-word pillar is ~4-5k output
+	// tokens on top of the same 6-8k of reasoning, and 16000 truncated it
+	// on every attempt. Long-tail articles are unchanged.
+	const maxTokens = topic.kind === 'pillar' ? 32000 : 16000;
+
+	const spent = spentToday('deepseek');
+	if (spent >= DAILY_TOKEN_CAP) {
+		throw new ApiError(`daily DeepSeek budget used up (${spent} of ${DAILY_TOKEN_CAP} tokens today, UTC)`, 'budget');
+	}
+
+	let json;
+	try {
+		const res = await fetch(`${API_BASE}/chat/completions`, {
+			method: 'POST',
+			headers: {
+				'Content-Type': 'application/json',
+				Authorization: `Bearer ${API_KEY}`,
+			},
+			signal: AbortSignal.timeout(API_TIMEOUT_MS),
+			body: JSON.stringify({
+				model: modelFor(topic),
+				messages: [{ role: 'user', content: buildPrompt(topic, previousErrors) }],
+				temperature: 0.6,
+				max_tokens: maxTokens,
+			}),
+		});
+
+		if (!res.ok) {
+			const detail = await res.text().catch(() => '');
+			// A refused request is not billed, so it is not charged to the budget either.
+			const kind = res.status === 429 || res.status >= 500 ? 'transient' : 'fatal';
+			throw new ApiError(`DeepSeek HTTP ${res.status}: ${detail.slice(0, 300)}`, kind);
+		}
+		json = await res.json();
+	} catch (e) {
+		if (e instanceof ApiError) throw e;
+		if (e.name === 'TimeoutError') {
+			// The request went out and nothing came back: the provider may still have generated, and billed, the answer. Charge the most this call could have cost.
+			record('deepseek', maxTokens, 'timeout');
+			throw new ApiError(`DeepSeek gave no answer within ${API_TIMEOUT_MS / 1000}s`, 'transient');
+		}
+		throw new ApiError(`DeepSeek unreachable: ${e.cause?.code ?? e.message}`, 'transient');
+	}
+
+	// The answer is paid for whatever the gates think of it.
+	record('deepseek', json?.usage?.total_tokens ?? maxTokens, topic.slug);
+
 	const choice = json?.choices?.[0];
 	const text = choice?.message?.content ?? '';
 
@@ -406,7 +489,7 @@ function validate(topic, description, body) {
 	// time. A wrong regulation number is a writing mistake the model can fix when
 	// told about it, and fixing it costs one retry; catching it at publish costs
 	// an article that has to be regenerated anyway, later, with less context.
-	const facts = checkFacts({ body });
+	const facts = checkFacts({ body, brand: topic.brand });
 	errors.push(...facts.errors);
 
 	return { errors, stats: seo.stats, factWarnings: facts.warnings };
@@ -421,6 +504,12 @@ async function generateOne(topic) {
 		try {
 			call = await callModel(topic, previousErrors);
 		} catch (e) {
+			if (e instanceof ApiError) {
+				// Not the article's fault. Retrying a refusal or our own cap cannot help; a transient error gets one more try.
+				if (e.kind !== 'transient' || attempt >= MAX_API_ATTEMPTS) return { ok: false, api: e.kind, reason: e.message };
+				await new Promise((r) => setTimeout(r, 15_000 * attempt));
+				continue;
+			}
 			if (attempt === MAX_ATTEMPTS) return { ok: false, reason: e.message };
 			await new Promise((r) => setTimeout(r, 2000 * attempt));
 			continue;
@@ -517,11 +606,24 @@ if (dryRun) console.log('  --dry-run: nothing will be written\n');
 let done = 0;
 let failed = 0;
 const written = [];
+/** Set when the API itself is the problem; every lane stops taking new topics. */
+let stopReason = null;
+let apiFailures = 0;
 
 async function processTopic(topic) {
+	if (stopReason) return;
 	const started = Date.now();
 	const result = await generateOne(topic);
 	const secs = ((Date.now() - started) / 1000).toFixed(0);
+
+	if (!result.ok && result.api) {
+		// The API failed, not the article: the topic keeps its status and the next run tries it again. A fatal error or our own cap stops the run at once; transient ones need MAX_API_FAILURES in a row.
+		apiFailures += result.api === 'transient' ? 1 : MAX_API_FAILURES;
+		if (apiFailures >= MAX_API_FAILURES) stopReason = result.reason;
+		console.log(`\n  API   ${topic.slug}  (${secs}s)  ${result.reason}  - stays ${topic.status}`);
+		return;
+	}
+	if (result.ok) apiFailures = 0;
 
 	if (!result.ok) {
 		failed += 1;
@@ -580,7 +682,7 @@ async function processTopic(topic) {
 // Fill the batch, not just attempt it: a topic that fails its gates must not shrink the week's four, so keep drawing from the queue until four are written or the extra-attempt allowance is spent.
 let drawn = 0;
 const allowance = target + (onlyId ? 0 : MAX_EXTRA_ATTEMPTS);
-while (done < target && drawn < allowance && drawn < pool.length) {
+while (done < target && drawn < allowance && drawn < pool.length && !stopReason) {
 	const take = Math.min(target - done, allowance - drawn, pool.length - drawn);
 	const round = pool.slice(drawn, drawn + take);
 	drawn += take;
@@ -592,6 +694,10 @@ while (done < target && drawn < allowance && drawn < pool.length) {
 }
 
 console.log(`\ngenerate: ${done} written, ${failed} failed${done < target && !onlyId ? `  (wanted ${target})` : ''}`);
+if (stopReason) {
+	console.log(`generate: stopped early because of the API, not the articles: ${stopReason}`);
+	console.log('  Topics not written keep their status and are tried again on the next run.');
+}
 
 // Push the batch so the stock survives on GitHub, not only on the server's disk. Drafts live outside src/, so this publishes nothing (deploy.yml ignores pushes that touch only drafts/ and data/).
 if (done && !dryRun && !onlyId) {
@@ -606,4 +712,4 @@ if (done && !dryRun && !onlyId) {
 		process.exit(1);
 	}
 }
-process.exit(failed && !done ? 1 : 0);
+process.exit((failed || stopReason) && !done ? 1 : 0);

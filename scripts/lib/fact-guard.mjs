@@ -23,6 +23,8 @@
  * in general, because a guard that flags everything gets switched off.
  */
 
+import { BRANDS, brandByKey } from './brands.mjs';
+
 /**
  * Regulations the generator is allowed to cite, from the FACTS block it is given.
  *
@@ -64,23 +66,17 @@ const CONSTANTS = [
 		tolerance: 0.05,
 		hint: 'faktor emisi grid Indonesia sekitar 0,87 kg CO2 per kWh',
 	},
-	{
-		name: 'porsi modul terhadap CAPEX',
-		re: /modul\s+surya[^.]{0,60}?(\d{1,3})\s*(?:%|persen)[^.]{0,40}?capex/gi,
-		expect: 40,
-		mode: 'near',
-		tolerance: 5,
-		hint: 'modul surya sekitar 40% dari total CAPEX',
-	},
 ];
 
 /**
- * CAPEX for a 1 MWp system. The FACTS block gives Rp 9-13 miliar, with a worked
- * example at Rp 11 miliar. A number outside that band presented as the cost of a
- * 1 MWp system is either a fabrication or a unit slip, and both mislead a buyer
- * building a budget.
+ * Cost figures. The FACTS block used to carry a CAPEX band and a CAPEX/OPEX example, and this
+ * file checked articles against them. Since 2026-10-19 the generator is given no cost figure at
+ * all - nothing the company could stand behind - so every one in an article is unsourced: a
+ * rupiah amount, or a percentage tied to a cost word, is an error.
  */
-const CAPEX_1MWP = { min: 9, max: 13, unit: 'miliar' };
+const RUPIAH = /\brp\.?\s*\d[\d.,]*(?:\s*(?:ribu|rb|juta|jt|miliar|triliun))?/gi;
+const COST_WORDS = 'capex|opex|roi|payback|lcoe|biaya|anggaran|harga|investasi|penghematan';
+const COST_PERCENT = new RegExp(`(?:\\b(?:${COST_WORDS})\\b[^.\\n]{0,50}?\\d{1,3}(?:[.,]\\d+)?\\s*(?:%|persen))|(?:\\d{1,3}(?:[.,]\\d+)?\\s*(?:%|persen)[^.\\n]{0,50}?\\b(?:${COST_WORDS})\\b)`, 'gi');
 
 /** Entities the article may name. Anything else that looks like a client is invented. */
 const KNOWN_ENTITIES = [
@@ -107,12 +103,22 @@ const KNOWN_ENTITIES = [
 ];
 
 /**
- * Product brands the company trades. The articles compare categories and specifications, not
+ * Product brands in the trade. A category article compares categories and specifications, not
  * brands: naming one reads as an endorsement, invites a claim nobody verified, and says which
- * suppliers sit behind the marketplace. Reported as a WARNING, printed in the generate log where a
- * person can decide it is fine, rather than as an error the model cannot reason its way around.
+ * suppliers sit behind the marketplace. There it is a WARNING, printed in the generate log where a
+ * person can decide it is fine, rather than an error the model cannot reason its way around.
+ *
+ * A brand article (topic.brand, lib/brands.mjs) is about one brand, and naming any other one is
+ * the comparison the plan rules out, so there it is an ERROR.
  */
-const PRODUCT_BRANDS = ['tongwei', 'tcl solar', 'aiko', 'haitai', 'trina', 'longi', 'ja solar', 'astronergy', 'solax', 'kstar', 'hopewind', 'sungrow', 'huawei', 'jinko', 'canadian solar', 'jjlapp', 'sunkean', 'helukabel'];
+const PRODUCT_BRANDS = [
+	...new Set([
+		...BRANDS.flatMap((b) => b.aliases),
+		'tongwei', 'tcl solar', 'haitai', 'astronergy', 'canadian solar', 'risen',
+		'solax', 'kstar', 'hopewind', 'sungrow', 'growatt', 'solis', 'luxpower',
+		'jjlapp', 'sunkean', 'helukabel', 'kabelmetal', 'kmi', 'supreme', 'jembo', 'chint', 'schneider',
+	]),
+];
 
 function stripCode(body) {
 	return body.replace(/```[\s\S]*?```/g, ' ').replace(/`[^`]*`/g, ' ');
@@ -124,9 +130,10 @@ const toNumber = (s) => Number(String(s).replace(',', '.'));
 /**
  * @param {object} a
  * @param {string} a.body   markdown body, frontmatter already stripped
+ * @param {string} [a.brand] the topic's brand key, for a brand article
  * @returns {{errors: string[], warnings: string[]}}
  */
-export function checkFacts({ body }) {
+export function checkFacts({ body, brand }) {
 	const errors = [];
 	const warnings = [];
 	const text = stripCode(body);
@@ -169,43 +176,14 @@ export function checkFacts({ body }) {
 		}
 	}
 
-	// --- CAPEX band ---------------------------------------------------------
-	// The number must be anchored to BOTH a 1 MWp system and a capital-cost word,
-	// with no "opex" between them.
-	//
-	// The first version of this only required "1 MWp" within 80 characters, and
-	// it failed on three real articles that say "PLTS 1 MWp dengan CAPEX Rp 11
-	// miliar dan OPEX Rp 220 juta per tahun" - flagging the OPEX figure, which is
-	// correct, as a CAPEX unit error. A guard that fires on correct articles gets
-	// switched off, so the anchor has to be precise.
-	// The exclusion list is the whole rule. Every term here appeared in a real
-	// article, attached to a rupiah figure, in the same clause as the word CAPEX:
-	//   "Dengan CAPEX Rp 11 miliar dibagi penghematan neto Rp 1,46 miliar"
-	//   "Pada rentang CAPEX itu dan penghematan neto Rp 1,46 miliar per tahun"
-	// Both are correct sentences. Without these exclusions the guard reads the
-	// savings figure as the system cost and rejects a good article.
-	const NOT_CAPEX = 'opex|pemeliharaan|penghematan|arus\\s+kas|tarif|pendapatan|hemat|saving';
-	const capexRe = new RegExp(
-		`(?:capex|belanja\\s+modal|biaya\\s+investasi|investasi\\s+awal)((?:(?!${NOT_CAPEX})[^.\\n]){0,70}?)` +
-			`rp\\s*([\\d.,]+)(?:\\s*(?:-|–|—|sampai|hingga)\\s*([\\d.,]+))?\\s*(miliar|juta|triliun)`,
-		'gi',
-	);
-	for (const m of text.matchAll(capexRe)) {
-		const between = m[1];
-		// Only judge it when the same clause is actually about a 1 MWp system.
-		if (!/\b1\s*mwp?\b/i.test(between) && !/\b1\s*mwp?\b/i.test(text.slice(Math.max(0, m.index - 60), m.index))) {
-			continue;
-		}
-		const unit = m[4].toLowerCase();
-		const lo = toNumber(m[2]);
-		const hi = m[3] ? toNumber(m[3]) : lo;
-		if (unit !== CAPEX_1MWP.unit) {
-			errors.push(`CAPEX 1 MWp disebut dalam satuan "${unit}"; fakta terverifikasi memakai miliar (Rp 9-13 miliar)`);
-			continue;
-		}
-		if (lo < CAPEX_1MWP.min - 0.5 || hi > CAPEX_1MWP.max + 0.5) {
-			errors.push(`CAPEX 1 MWp disebut Rp ${m[2]}${m[3] ? `-${m[3]}` : ''} miliar; di luar rentang terverifikasi Rp 9-13 miliar`);
-		}
+	// --- cost figures -------------------------------------------------------
+	// Any rupiah amount, and any percentage in the same clause as a cost word. The second catches
+	// "modul menyumbang sekitar 40% CAPEX" as well as "biaya turun 15%".
+	for (const m of text.matchAll(RUPIAH)) {
+		errors.push(`angka rupiah disebut: "${m[0].trim()}" - artikel tidak memuat angka biaya`);
+	}
+	for (const m of text.matchAll(COST_PERCENT)) {
+		errors.push(`persentase biaya disebut: "${m[0].trim().slice(0, 80)}" - artikel tidak memuat angka biaya`);
 	}
 
 	// --- invented case studies ----------------------------------------------
@@ -275,8 +253,11 @@ export function checkFacts({ body }) {
 
 	// --- product brands -----------------------------------------------------
 	const lower = text.toLowerCase();
-	const named = PRODUCT_BRANDS.filter((b) => new RegExp(`(^|[^a-z0-9])${b}([^a-z0-9]|$)`).test(lower));
-	if (named.length) warnings.push(`merek produk disebut: ${named.join(', ')} - artikel membandingkan kategori, bukan merek`);
+	const own = brand ? brandByKey(brand) : null;
+	if (brand && !own) errors.push(`merek "${brand}" tidak ada di lib/brands.mjs`);
+	const named = PRODUCT_BRANDS.filter((b) => !own?.aliases.includes(b) && new RegExp(`(^|[^a-z0-9])${b}([^a-z0-9]|$)`).test(lower));
+	if (named.length && own) errors.push(`merek lain disebut: ${named.join(', ')} - artikel ini hanya membahas ${own.name}, tanpa membandingkan merek`);
+	else if (named.length) warnings.push(`merek produk disebut: ${named.join(', ')} - artikel membandingkan kategori, bukan merek`);
 
 	return { errors, warnings };
 }

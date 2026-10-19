@@ -57,9 +57,11 @@ interface Props {
    * redefining the publisher inline.
    */
   jsonLd?: Record<string, unknown>[];
+  /** Keep the page out of search results: the public draft previews under /pratinjau/. */
+  noindex?: boolean;
 }
 
-const { headings, frontmatter, title: directTitle, description: directDescription, ogImage, jsonLd = [], needsKatex = false } = Astro.props;
+const { headings, frontmatter, title: directTitle, description: directDescription, ogImage, jsonLd = [], needsKatex = false, noindex = false } = Astro.props;
 
 // Canonical origin + path only, deliberately dropping any querystring or hash.
 // Derived from `site` in astro.config.mjs (exposed as import.meta.env.SITE) so
@@ -233,6 +235,7 @@ const structuredData = {
 			different canonical URL and split the signal for the same page.
 		*/}
 		<link rel="canonical" href={canonicalUrl} />
+		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />
 

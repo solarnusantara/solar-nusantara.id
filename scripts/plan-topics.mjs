@@ -24,6 +24,10 @@
  * content; a 1000-topic plan would be four years of queue and a promise nobody
  * can keep. Add products or buyers here when the first batches show what works.
  *
+ * On top of the matrix, without a buyer axis: material-knowledge articles (KNOWLEDGE) and one
+ * article per brand SonusHUB sells (lib/brands.mjs). Not planned at all: financial-calculation
+ * topics (FINANCIAL_CALC) and anything that compares brands.
+ *
  * Uniqueness is structural: keyphrase = `<stem> <buyer.kw>`, and a stem is unique
  * per (product, angle). The check near the bottom is the safety net.
  *
@@ -37,6 +41,7 @@ import { join } from 'node:path';
 import { containsLoose } from './lib/seo-rules.mjs';
 import { SONUSHUB_PRODUCT } from './lib/sonushub.mjs';
 import { allArticleDirs } from './lib/articles.mjs';
+import { BRANDS } from './lib/brands.mjs';
 
 const OUT = 'data/topics.json';
 const SLUG_MAX = 75;
@@ -171,6 +176,54 @@ const PRODUCTS = [
 ];
 
 for (const p of PRODUCTS) if (!SONUSHUB_PRODUCT[p.key]) throw new Error(`product "${p.key}" has no SonusHUB page in lib/sonushub.mjs`);
+const productByKey = new Map(PRODUCTS.map((p) => [p.key, p]));
+
+// ---------------------------------------------------------------------------
+// Outside the matrix: articles for every buyer at once, so they have no buyer axis.
+//
+// Material knowledge (`pengetahuan`): what each kind of material is and where it is used,
+// the reference a buyer reads before a spec sheet makes sense.
+//
+// Brand articles (`merek`): one per brand SonusHUB sells, stating only what lib/brands.mjs
+// lists. One brand per article and never two side by side - no brand comparisons.
+//
+// rows: [product, title, keyphrase] - the title must contain every keyphrase token
+// ---------------------------------------------------------------------------
+const ALL_BUYERS = { key: 'umum', label: 'Pembeli Material PLTS (pengadaan, project manager, kontraktor)', tag: 'pengetahuan-material' };
+/** Ahead of every matrix row but the two 100s, so these go out first; the batch rule still spreads them across products. */
+const EXTRA_PRIORITY = 95;
+
+const KNOWLEDGE = [
+	['proyek',       'Jenis-Jenis Material PLTS dan Fungsinya',                                    'jenis material plts'],
+	['pv-modul',     'Mengenal Jenis Modul Surya: Monokristalin, Polikristalin, Thin Film',        'jenis modul surya'],
+	['pv-modul',     'Mengenal Teknologi Sel Surya PERC, TOPCon, dan HJT',                         'teknologi sel surya'],
+	['pv-modul',     'Mengenal Modul Surya Bifacial dan Monofacial',                               'modul surya bifacial'],
+	['inverter',     'Mengenal Jenis Inverter PLTS On-Grid, Off-Grid, dan Hybrid',                 'jenis inverter plts'],
+	['inverter',     'Mengenal Perangkat Monitoring PLTS: Datalogger, Smart Meter, dan Optimizer', 'perangkat monitoring plts'],
+	['inverter',     'Mengenal Baterai Lithium untuk PLTS Hybrid',                                 'baterai lithium plts hybrid'],
+	['mounting-rel', 'Mengenal Jenis Mounting PLTS untuk Atap dan Ground Mount',                   'jenis mounting plts'],
+	['mounting-rel', 'Mengenal Komponen Mounting Rel PLTS: Rel, Klem, dan L Feet',                 'komponen mounting rel plts'],
+	['kabel-dc',     'Mengenal Kabel Solar DC dan Konektor MC4 pada PLTS',                         'kabel solar dc konektor mc4'],
+	['kabel-ac',     'Mengenal Jenis Kabel AC PLTS: NYY, NYYHY, NYA, dan N2XY',                    'jenis kabel ac plts'],
+	['kabel-ac',     'Mengenal Kabel Grounding dan Sistem Pembumian PLTS',                         'kabel grounding plts'],
+	['walkway-tray', 'Mengenal Jenis Cable Tray dan Walkway pada PLTS Atap',                       'jenis cable tray walkway'],
+	['walkway-tray', 'Mengenal Pipa HDPE dan Conduit untuk Jalur Kabel PLTS',                      'pipa hdpe conduit kabel plts'],
+];
+
+/** Title and keyphrase per brand, by the product category the brand is sold under. */
+const BRAND_TITLE = {
+	'pv-modul': (b) => [`Mengenal Modul Surya ${b.name}: Lini Produk dan Cara Membaca Spesifikasinya`, `modul surya ${b.name.toLowerCase()}`],
+	inverter: (b) => [`Mengenal Inverter ${b.name}: Lini Produk dan Cara Membaca Spesifikasinya`, `inverter ${b.name.toLowerCase()}`],
+	'kabel-ac': (b) => [`Mengenal Kabel ${b.name}: Jenis Kabel dan Cara Membaca Spesifikasinya`, `kabel ${b.name.toLowerCase()}`],
+};
+
+/**
+ * Articles whose subject is a financial calculation: CAPEX, OPEX, ROI, payback, LCOE, savings,
+ * investment feasibility, capital. Every figure in one is a figure the company has to answer for,
+ * and the generator has no audited source for them, so none is planned. Old rows that match are
+ * dropped rather than kept as legacy, and a new row that matches stops the plan.
+ */
+const FINANCIAL_CALC = /\b(capex|opex|roi|payback|lcoe|irr|npv|penghematan|kelayakan investasi|rincian biaya|biaya dan roi|struktur biaya|estimasi biaya|modal)\b/i;
 
 // ---------------------------------------------------------------------------
 // What is already on the site, so the matrix never collides with it.
@@ -232,6 +285,52 @@ for (const buyer of BUYERS) {
 	}
 }
 
+for (const [productKey, title, keyphrase] of KNOWLEDGE) {
+	const product = productByKey.get(productKey);
+	const pillar = productKey === 'proyek';
+	topics.push({
+		id: `${ALL_BUYERS.key}--pengetahuan--${slugify(keyphrase)}`,
+		kind: pillar ? 'pillar' : 'longtail',
+		status: 'pending',
+		rank: 0,
+		buyer: ALL_BUYERS.key,
+		buyerLabel: ALL_BUYERS.label,
+		product: product.key,
+		angle: 'pengetahuan',
+		title,
+		// The part before the colon is the headline; the rest is what gets truncated.
+		seoTitle: title.length > SEO_TITLE_MAX ? title.replace(/:.*$/, '') : undefined,
+		slug: slugify(title),
+		focusKeyphrase: keyphrase,
+		tags: [ALL_BUYERS.tag, product.tag, pillar ? 'panduan' : 'teknis'],
+		sonushubLink: SONUSHUB_PRODUCT[product.key],
+		priority: EXTRA_PRIORITY,
+	});
+}
+
+for (const brand of BRANDS) {
+	const product = productByKey.get(brand.product);
+	const [title, keyphrase] = BRAND_TITLE[brand.product](brand);
+	topics.push({
+		id: `${ALL_BUYERS.key}--merek--${brand.key}`,
+		kind: 'longtail',
+		status: 'pending',
+		rank: 0,
+		buyer: ALL_BUYERS.key,
+		buyerLabel: ALL_BUYERS.label,
+		product: product.key,
+		angle: 'merek',
+		brand: brand.key,
+		title,
+		seoTitle: title.length > SEO_TITLE_MAX ? title.replace(/:.*$/, '') : undefined,
+		slug: slugify(title),
+		focusKeyphrase: keyphrase,
+		tags: [ALL_BUYERS.tag, product.tag, 'merek', 'teknis'],
+		sonushubLink: SONUSHUB_PRODUCT[product.key],
+		priority: EXTRA_PRIORITY,
+	});
+}
+
 // --- carry over state ---------------------------------------------------------
 // Rows from the previous plan survive only if they already produced an article. A
 // pending row of the old matrix is simply dropped; a generated one becomes
@@ -254,14 +353,20 @@ if (existsSync(OUT)) {
 			carried += 1;
 		}
 
+		let dropped = 0;
 		for (const old of prev.topics ?? []) {
 			if (newIds.has(old.id)) continue;
+			if (FINANCIAL_CALC.test(old.title)) {
+				dropped += 1;
+				continue;
+			}
 			if (old.status === 'generated' || old.status === 'legacy') {
 				topics.push({ ...old, status: 'legacy', legacy: true, rank: 0 });
 				retired += 1;
 			}
 		}
 		if (carried) console.log(`  carried over ${carried} non-pending row(s) from the previous plan`);
+		if (dropped) console.log(`  dropped ${dropped} row(s) of the old plan about financial calculation (CAPEX, ROI, capital)`);
 		if (retired) console.log(`  ${retired} article(s) of the old matrix kept as status "legacy" (on disk, out of the queue)`);
 	} catch {
 		console.log('  previous topics.json was unreadable; starting from a clean state');
@@ -320,6 +425,7 @@ for (const t of live) {
 		problems.push(`${t.id}: title is missing keyphrase token(s) ${missing.map((w) => `"${w}"`).join(', ')} - unwritable by construction`);
 	}
 
+	if (FINANCIAL_CALC.test(t.title)) problems.push(`${t.id}: "${t.title}" is a financial calculation topic - not planned, see FINANCIAL_CALC`);
 	if (t.title.length > TITLE_MAX) problems.push(`${t.id}: title is ${t.title.length} chars (max ${TITLE_MAX})`);
 	if (t.seoTitle && t.seoTitle.length > SEO_TITLE_MAX) problems.push(`${t.id}: seoTitle is ${t.seoTitle.length} chars (max ${SEO_TITLE_MAX})`);
 	if (t.slug.length > SLUG_MAX) problems.push(`${t.id}: slug is ${t.slug.length} chars (max ${SLUG_MAX})`);
@@ -332,6 +438,7 @@ const count = (rows, f) => rows.reduce((m, t) => m.set(t[f], (m.get(t[f]) || 0) 
 const pending = live.filter((t) => t.status === 'pending');
 
 console.log(`\nplan-topics: ${live.length} topics (${BUYERS.length} buyers x ${PRODUCTS.length} products = ${BUYERS.length * PRODUCTS.length} pillars, ${live.filter((t) => t.kind === 'pillar').length} pillars + ${live.filter((t) => t.kind === 'longtail').length} long-tail)`);
+console.log(`  outside the matrix: ${KNOWLEDGE.length} material-knowledge, ${BRANDS.length} brand`);
 console.log(`  ${pending.length} pending = ~${Math.ceil(pending.length / GROUP)} weekly batches of ${GROUP}`);
 console.log(`  seoTitle needed on ${live.filter((t) => t.seoTitle).length} of ${live.length}`);
 console.log(`  existing on site: ${existing.slugs.size} slugs, ${existing.keyphrases.size} keyphrases - checked against`);

@@ -87,7 +87,7 @@ function inspect(topic) {
 	const data = parseFrontmatter(split.frontmatter);
 
 	const seo = checkSeo({ title: data.title || '', focusKeyphrase: data.focusKeyphrase || '', body: split.body, kind: kindFromTags(data.tags) });
-	const facts = checkFacts({ body: split.body });
+	const facts = checkFacts({ body: split.body, brand: topic.brand });
 
 	const heroErrors = [];
 	if (!data.heroImage) heroErrors.push('no heroImage in frontmatter');

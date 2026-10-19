@@ -86,6 +86,8 @@ export default defineConfig({
       injectReset: true,
     }),
     sitemap({
+      // Draft previews are public but unlisted, see src/pages/pratinjau/.
+      filter: (page) => !new URL(page).pathname.startsWith('/pratinjau/'),
       serialize(item) {
         const m = /\/berita\/([^/]+)\/$/.exec(item.url);
         const date = m && ARTICLE_DATES.get(m[1]);

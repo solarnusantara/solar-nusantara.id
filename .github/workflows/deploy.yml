@@ -4,10 +4,7 @@ on:
   # Using a different branch name? Replace `main` with your branch’s name
   push:
     branches: [ main ]
-    # The daily draft push touches only these; the site reads neither, so it needs no rebuild.
-    paths-ignore:
-      - 'drafts/**'
-      - 'data/**'
+    # The daily draft push (drafts/, data/topics.json) redeploys too: /pratinjau/ is built from it.
   # Allows you to run this workflow manually from the Actions tab on GitHub.
   workflow_dispatch:
 
