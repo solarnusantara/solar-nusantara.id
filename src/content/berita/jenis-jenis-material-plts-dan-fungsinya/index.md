@@ -4,9 +4,9 @@ description: "Panduan lengkap jenis material PLTS: fungsi, ciri, kelebihan, kete
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi proyek pemasangan PLTS atap dengan derek dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "jenis material plts"
-pubDate: "2026-10-19"
+pubDate: "2026-10-20"
 tags: ["pengetahuan-material", "proyek-epc", "panduan"]
-draft: true
+draft: false
 ---
 
 Pemilihan jenis material PLTS menentukan apakah sistem dapat bekerja aman, efisien, dan sesuai kebutuhan operasional. Material PLTS mencakup modul, inverter, kabel, rel dan mounting, cable tray, serta perangkat proteksi yang saling terhubung. Bagi pembeli B2B, keputusan material bukan sekadar melengkapi daftar belanja, tetapi memastikan setiap komponen cocok dengan desain, lokasi, dan skema pengadaan proyek.

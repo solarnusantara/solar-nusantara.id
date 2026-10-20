@@ -6133,7 +6133,7 @@
     {
       "id": "umum--pengetahuan--jenis-material-plts",
       "kind": "pillar",
-      "status": "generated",
+      "status": "published",
       "rank": 2,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6149,7 +6149,8 @@
       ],
       "sonushubLink": "https://sonushub.id/kalkulator-panel-surya",
       "priority": 95,
-      "generatedAt": "2026-10-19T08:13:47.678Z"
+      "generatedAt": "2026-10-19T08:13:47.678Z",
+      "publishedAt": "2026-10-20T01:23:09.576Z"
     },
     {
       "id": "umum--pengetahuan--jenis-modul-surya",
