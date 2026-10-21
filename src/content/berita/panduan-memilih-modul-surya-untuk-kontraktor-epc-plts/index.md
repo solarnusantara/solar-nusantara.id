@@ -4,9 +4,9 @@ description: "Panduan memilih modul surya kontraktor EPC: kriteria teknis, tabel
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "modul surya kontraktor epc"
-pubDate: "2026-10-19"
+pubDate: "2026-10-21"
 tags: ["epc", "modul-surya", "pengadaan-material", "panduan"]
-draft: true
+draft: false
 ---
 
 Dalam banyak tender PLTS, keputusan yang paling mengikat justru diambil paling awal: modul mana yang masuk daftar pendek. Bagi kontraktor EPC, pilihan itu menentukan profil produksi energi, kebutuhan luas atap, metode pengangkatan, sampai dokumen yang harus diserahkan saat serah terima. Karena itu, menyusun kriteria modul surya untuk kontraktor EPC sebaiknya selesai sebelum gambar kerja disetujui dan penawaran dikirim. Delapan bagian berikut memandu Anda dari baseline teknis hingga permintaan penawaran yang siap dikirim ke pemasok.

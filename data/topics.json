@@ -120,7 +120,7 @@
     {
       "id": "epc--pv-modul--panduan",
       "kind": "pillar",
-      "status": "generated",
+      "status": "published",
       "rank": 3,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -137,7 +137,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 90,
-      "generatedAt": "2026-10-19T08:16:57.845Z"
+      "generatedAt": "2026-10-19T08:16:57.845Z",
+      "publishedAt": "2026-10-21T01:23:07.241Z"
     },
     {
       "id": "epc--pv-modul--spesifikasi",
