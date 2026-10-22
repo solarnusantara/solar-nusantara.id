@@ -6418,7 +6418,7 @@
     {
       "id": "umum--merek--aiko",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 6,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6437,7 +6437,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 95,
-      "generatedAt": "2026-10-19T08:17:30.713Z"
+      "generatedAt": "2026-10-19T08:17:30.713Z",
+      "publishedAt": "2026-10-22T01:23:07.805Z"
     },
     {
       "id": "umum--merek--jinko",

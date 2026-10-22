@@ -5,9 +5,9 @@ description: "Mengenal modul surya Aiko Solar: lini Neostar Comet dan modul mono
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "modul surya aiko solar"
-pubDate: "2026-10-19"
+pubDate: "2026-10-22"
 tags: ["pengetahuan-material", "modul-surya", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Dalam pengadaan PLTS komersial dan industri, modul surya Aiko Solar termasuk material yang dinilai dari lembar data teknis, bukan dari klaim pemasaran. Di katalog SonusHUB, material ini berada pada kategori modul surya, satu rumpun dengan rel dan mounting PV, cable tray dan walkway, kabel DC dan AC, serta inverter string dan hybrid. Bagi tim pengadaan, project manager, dan kontraktor EPC, langkah pertama adalah mengenali lini produk yang tersedia lalu membaca spesifikasinya dengan urutan yang benar. Artikel turunan ini fokus pada kekhususan tersebut, bukan pada dasar-dasar perencanaan PLTS yang sudah dibahas di artikel pilar.
