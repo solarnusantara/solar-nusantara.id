@@ -1109,7 +1109,7 @@
     {
       "id": "developer--walkway-tray--panduan",
       "kind": "pillar",
-      "status": "generated",
+      "status": "published",
       "rank": 7,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -1127,7 +1127,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
       "priority": 60,
-      "generatedAt": "2026-10-19T08:23:45.465Z"
+      "generatedAt": "2026-10-19T08:23:45.465Z",
+      "publishedAt": "2026-10-23T01:23:07.025Z"
     },
     {
       "id": "developer--walkway-tray--spesifikasi",

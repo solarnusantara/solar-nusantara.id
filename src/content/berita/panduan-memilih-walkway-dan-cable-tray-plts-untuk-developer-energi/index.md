@@ -5,9 +5,9 @@ description: "Panduan walkway cable tray PLTS untuk developer energi terbarukan:
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi cable tray logam dan walkway atap dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "walkway cable tray plts developer energi terbarukan"
-pubDate: "2026-10-19"
+pubDate: "2026-10-23"
 tags: ["developer", "walkway-cable-tray", "pengadaan-material", "panduan"]
-draft: true
+draft: false
 ---
 
 Keputusan pengadaan walkway dan cable tray PLTS biasanya baru diambil setelah layout modul dikunci. Padahal dua komponen ini menentukan kecepatan pemasangan, keamanan lintasan kabel DC, dan kemudahan inspeksi sepanjang usia operasi. Karena itu, standar walkway cable tray PLTS developer energi terbarukan sebaiknya ditetapkan sekali di proyek awal, lalu dipakai ulang pada seluruh portofolio. Artikel pilar ini merangkum kriteria teknis, dokumen pengadaan, dan urutan evaluasi pemasok yang bisa langsung dipakai tim pengadaan.
