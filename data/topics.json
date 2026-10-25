@@ -187,7 +187,7 @@
     {
       "id": "epc--pv-modul--pengadaan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 15,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -204,7 +204,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-10-25T18:10:03.373Z"
     },
     {
       "id": "epc--pv-modul--mutu",
@@ -954,7 +955,7 @@
     {
       "id": "developer--mounting-rel--pengadaan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 13,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -971,7 +972,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-10-25T18:07:55.453Z"
     },
     {
       "id": "developer--mounting-rel--mutu",
@@ -2078,7 +2080,7 @@
     {
       "id": "manufaktur--walkway-tray--mutu",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 12,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2095,7 +2097,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 54
+      "priority": 54,
+      "generatedAt": "2026-10-25T18:08:48.506Z"
     },
     {
       "id": "manufaktur--inverter--panduan",
@@ -6559,7 +6562,7 @@
     {
       "id": "umum--merek--goodwe",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 14,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6577,7 +6580,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-10-25T18:09:39.380Z"
     },
     {
       "id": "umum--merek--deye",
