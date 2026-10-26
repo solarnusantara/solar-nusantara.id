@@ -92,6 +92,16 @@ elif command -v crontab >/dev/null 2>&1; then
 else
 	check "penjadwal" "tidak ditemukan" "FAIL" "tidak ada systemd maupun cron"
 fi
+# A schedule installed before setup.sh added flock keeps running unlocked: setup.sh rewrites it only when re-run.
+# Unlocked, generate and publish can write data/topics.json and push at the same time.
+if crontab -l 2>/dev/null | grep -F '# solar-nusantara-pipeline' | grep -qv flock; then
+	check "jadwal terpasang" "crontab tanpa flock" "WARN" "pasang ulang baris dari setup.sh"
+fi
+for unit in solar-nusantara-generate solar-nusantara-publish; do
+	if systemctl cat "$unit.service" 2>/dev/null | grep '^ExecStart=' | grep -qv flock; then
+		check "jadwal terpasang" "$unit tanpa flock" "WARN" "pasang ulang unit dari setup.sh"
+	fi
+done
 
 # --- privilege --------------------------------------------------------------
 say ""

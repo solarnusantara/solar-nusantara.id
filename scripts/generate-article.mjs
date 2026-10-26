@@ -45,7 +45,8 @@ import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
 import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
 import { DRAFTS_DIR, draftDir, slugTaken } from './lib/articles.mjs';
-import { record, spentToday } from './lib/spend-guard.mjs';
+import { record, spentToday, spentSince } from './lib/spend-guard.mjs';
+import { logRun, pushRunRecord } from './lib/run-log.mjs';
 
 /** Two weeks of publishing (four a week). The Monday run writes whatever is missing: 8 the first time, 4 a week after that. */
 const STOCK_TARGET = 8;
@@ -87,11 +88,23 @@ const concurrency = Math.max(1, Number(flag('concurrency', '2')));
 // jalur normal sebuah URL karangan harus ketahuan di sini, bukan di situs.
 const skipLinkCheck = has('skip-link-check');
 
+const runStart = new Date().toISOString();
+/**
+ * Record this run in data/pipeline-runs.jsonl. The record is pushed on its own unless the batch
+ * commit carries it; a one-topic --id run is manual and rides along with the next commit instead.
+ */
+function finish(outcome, fields = {}, { batchCommit = false } = {}) {
+	if (dryRun) return;
+	logRun('generate', outcome, { ...(onlyId ? { id: onlyId } : {}), ...fields, tokens: spentSince('deepseek', runStart) });
+	if (!batchCommit && !onlyId) pushRunRecord('generate', outcome, { push: !noPush });
+}
+
 const API_KEY = process.env.DEEPSEEK_API_KEY;
 if (!API_KEY) {
 	console.error('DEEPSEEK_API_KEY is not set.');
 	console.error('On the server it comes from /etc/solar-nusantara/env via systemd EnvironmentFile.');
 	console.error('Locally: export DEEPSEEK_API_KEY=... (never commit it)');
+	finish('error', { error: 'DEEPSEEK_API_KEY is not set' });
 	process.exit(1);
 }
 
@@ -587,6 +600,7 @@ function persist() {
 const stock = onlyId ? 0 : readyDrafts(store).length;
 if (!onlyId && stock >= stockTarget) {
 	console.log(`\ngenerate: ${stock} draft(s) waiting in ${DRAFTS_DIR} - the stock is full (${stockTarget}).\n`);
+	finish('stock-full', { stock });
 	process.exit(0);
 }
 
@@ -596,6 +610,7 @@ const pool = onlyId
 
 if (pool.length === 0) {
 	console.log(onlyId ? `no topic with id "${onlyId}"` : 'no pending topics left in the plan');
+	finish('no-topics', { stock });
 	process.exit(0);
 }
 
@@ -607,6 +622,8 @@ if (dryRun) console.log('  --dry-run: nothing will be written\n');
 let done = 0;
 let failed = 0;
 const written = [];
+/** Topics this run marked failed or skipped, with the reason, for the run record. */
+const rejected = [];
 /** Set when the API itself is the problem; every lane stops taking new topics. */
 let stopReason = null;
 let apiFailures = 0;
@@ -630,6 +647,7 @@ async function processTopic(topic) {
 		failed += 1;
 		topic.lastError = result.reason;
 		topic.status = 'failed';
+		rejected.push({ slug: topic.slug, reason: result.reason });
 		console.log(`\n  FAIL  ${topic.slug}  (${secs}s)  ${result.reason}`);
 		for (const e of (result.errors || []).slice(0, 6)) console.log(`          x ${e}`);
 		persist();
@@ -641,6 +659,7 @@ async function processTopic(topic) {
 		failed += 1;
 		topic.status = 'skipped';
 		topic.lastError = 'directory already exists';
+		rejected.push({ slug: topic.slug, reason: topic.lastError });
 		console.log(`\n  SKIP  ${topic.slug}  already exists`);
 		persist();
 		return;
@@ -700,8 +719,13 @@ if (stopReason) {
 	console.log('  Topics not written keep their status and are tried again on the next run.');
 }
 
-// Push the batch so the stock survives on GitHub, not only on the server's disk. Drafts live outside src/, so this publishes nothing (deploy.yml ignores pushes that touch only drafts/ and data/).
-if (done && !dryRun && !onlyId) {
+const outcome = stopReason ? 'api-stopped' : done >= target ? 'ok' : done ? 'partial' : 'failed';
+const summary = { stock, target, written, rejected, ...(stopReason ? { error: stopReason } : {}) };
+const batchCommit = done > 0 && !dryRun && !onlyId;
+finish(outcome, summary, { batchCommit });
+
+// Push the batch so the stock survives on GitHub, not only on the server's disk. Drafts live outside src/, so this publishes nothing on the site; it does rebuild /pratinjau/.
+if (batchCommit) {
 	try {
 		const git = (args) => execFileSync('git', args, { encoding: 'utf8', stdio: 'pipe' });
 		git(['add', 'drafts', 'data']);
@@ -709,6 +733,7 @@ if (done && !dryRun && !onlyId) {
 		if (!noPush) git(['push']);
 		console.log(noPush ? '  committed locally (--no-push).' : '  pushed.');
 	} catch (e) {
+		// The drafts are on disk and marked generated either way, so the record stays true; the next batch commit carries both.
 		console.error(`\ncould not commit/push the batch:\n${e.stdout || ''}${e.stderr || ''}`);
 		process.exit(1);
 	}

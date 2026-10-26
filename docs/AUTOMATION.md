@@ -78,6 +78,26 @@ empat tertulis (dengan batas tambahan).
 | `drafts/berita/<slug>/` | draft: `index.md` (`draft: true`) dan `hero.webp` | tidak |
 | `src/content/berita/<slug>/` | artikel yang tayang | ya |
 | `data/failed/<slug>.md` | draft yang ditolak gate tiga kali, untuk diagnosis | tidak |
+| `data/pipeline-runs.jsonl` | satu baris per run generate/publish, termasuk yang gagal | tidak |
+
+**Catatan run** (`data/pipeline-runs.jsonl`) ditulis oleh setiap run yang bukan `--dry-run`, lalu
+ikut di-commit dan di-push. Run yang menerbitkan atau menulis draft membawanya di commit-nya sendiri;
+run lain membuat commit kecil `pipeline: <job> <hasil>` yang hanya berisi `data/`. ERPSonus
+membacanya dari GitHub, jadi Senin tanpa baris `generate` berarti run itu tidak pernah jalan
+(cron mati, `git pull` gagal, atau server mati), bukan run yang sepi.
+
+```
+{"t":"2026-10-27T19:07:02Z","job":"generate","outcome":"ok","stock":4,"target":4,"written":[...],"rejected":[],"tokens":41230}
+```
+
+| `job` | `outcome` |
+|---|---|
+| `generate` | `ok`, `partial` (kurang dari target), `failed` (nol tertulis karena gate), `api-stopped`, `stock-full`, `no-topics`, `error` |
+| `publish` | `ok`, `held` (`PUBLISH_NOT_BEFORE`), `empty` (stok kosong), `gate-failed`, `check-failed`, `error` |
+
+`tokens` adalah token DeepSeek run itu, dari `data/api-spend.log`. Repo publik, jadi baris ini hanya
+memuat yang memang publik: slug, angka, hasil, dan pesan error gate atau status API, tidak pernah key.
+Setiap commit ke `main` membangun ulang situs, jadi run yang hanya mencatat juga memicu satu build.
 
 Melihat stok yang akan terbit berikutnya cukup `ls drafts/berita`. Artikel pertama yang
 dikerjakan manual (`npm run new-article`) juga lahir di `drafts/berita/`.
@@ -332,6 +352,7 @@ masih di hari UTC yang sama, jadi bisa ikut terhenti). Itu bukan kegagalan artik
 | Generate: "stopped early because of the API" | DeepSeek sibuk (503/429), timeout, key salah atau saldo habis (401/402), atau batas harian | topik **tidak** ditandai `failed`; tidak ada yang perlu dipulihkan, run berikutnya mencoba lagi. 401/402: periksa key dan saldo |
 | Banyak topik berstatus `failed` berturut-turut | gate menolak isi artikel (prompt atau gate bermasalah); gangguan API tidak lagi menyebabkan ini | set `PUBLISH_NOT_BEFORE`, baca `data/failed/`, cari sebabnya |
 | Push sukses tapi situs tidak berubah | Actions gagal | tab Actions di GitHub |
+| Tidak ada baris baru di `data/pipeline-runs.jsonl` setelah jadwalnya | run tidak jalan sama sekali, atau push-nya gagal | `crontab -l` / `systemctl list-timers`, lalu `~/sn-*.log` atau `journalctl` |
 
 **Gangguan API tidak membakar antrean.** Error 429, 5xx, timeout, dan "tidak tersambung" ditangani
 sebagai masalah penyedia: topik tetap `pending`, dicoba satu kali lagi, dan setelah dua topik
@@ -346,6 +367,10 @@ draft. Itu berhenti dengan sendirinya, tetapi pelan; periksa log bila stok tidak
 keduanya dibungkus `flock` pada `.pipeline.lock` di folder clone. Generate yang menemukan kunci
 terpakai melewatkan run-nya; publish menunggu sampai satu jam supaya artikel hari itu tidak
 hilang karena generate masih berjalan.
+
+Jadwal yang dipasang sebelum `setup.sh` memakai `flock` tetap berjalan tanpa kunci, karena
+`setup.sh` hanya menulis jadwal saat dijalankan. `detect.sh` memberi `WARN` "tanpa flock" untuk
+jadwal seperti itu; pasang ulang baris crontab atau unit systemd dari `setup.sh`.
 
 ---
 
