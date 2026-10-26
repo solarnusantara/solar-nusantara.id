@@ -23,6 +23,7 @@ import { checkFacts } from './lib/fact-guard.mjs';
 import { writeHero } from './lib/thumbnail.mjs';
 import { loadStore, saveStore, readyDrafts } from './lib/topic-store.mjs';
 import { DRAFTS_DIR, draftDir, liveDir } from './lib/articles.mjs';
+import { logRun, pushRunRecord, retractLastRun } from './lib/run-log.mjs';
 
 /** Four a week: the timer fires Tuesday to Friday and each run publishes one. */
 const DEFAULT_BATCH = 1;
@@ -40,6 +41,13 @@ const limit = Number(flag('limit', String(DEFAULT_BATCH)));
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: 'pipe' });
 
+/** Record a run that publishes nothing, and push the record on its own. A successful run's record rides in its publish commit instead. */
+function finish(outcome, fields = {}) {
+	if (dryRun) return;
+	logRun('publish', outcome, fields);
+	pushRunRecord('publish', outcome, { push: !noPush });
+}
+
 // --- publication hold -------------------------------------------------------
 /** Hold publishing until a date without holding generation - the window you publish into is a real variable, and a spam-update rollout is a bad one. */
 const notBeforeRaw = flag('not-before', process.env.PUBLISH_NOT_BEFORE || null);
@@ -48,6 +56,7 @@ if (notBeforeRaw) {
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(notBeforeRaw.trim())) {
 		console.error(`--not-before / PUBLISH_NOT_BEFORE must be YYYY-MM-DD, got "${notBeforeRaw}".`);
 		console.error('Refusing to publish rather than ignoring a hold that may have been intended.');
+		finish('error', { error: `invalid PUBLISH_NOT_BEFORE "${notBeforeRaw}"` });
 		process.exit(1);
 	}
 	const today = new Date().toISOString().slice(0, 10);
@@ -59,6 +68,7 @@ if (notBeforeRaw) {
 		console.log('    sistem: /etc/solar-nusantara/env');
 		console.log('    user:   ~/.config/solar-nusantara/env');
 		console.log('');
+		finish('held', { until: notBeforeRaw.trim() });
 		// Exit 0, not 1: a hold is the intended outcome, and a daily non-zero oneshot reads as a broken timer.
 		process.exit(0);
 	}
@@ -70,6 +80,7 @@ const store = loadStore();
 const ready = readyDrafts(store);
 if (ready.length === 0) {
 	console.log(`\npublish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.\n`);
+	finish('empty');
 	process.exit(0);
 }
 
@@ -130,9 +141,11 @@ if (!dryRun) {
 	}
 	if (failedNow) saveStore(store);
 }
+const heldRecord = held.map((a) => ({ slug: a.slug, reason: a.errors[0] }));
 
 if (picked.length === 0) {
 	console.log(`\nNo waiting draft passed the gates. Drafts that failed on content are marked failed and stay in ${DRAFTS_DIR}; the rest are retried next run.\n`);
+	finish('gate-failed', { held: heldRecord });
 	process.exit(held.length ? 1 : 0);
 }
 
@@ -180,8 +193,9 @@ for (const [label, args] of [
 if (failed) {
 	restore();
 	console.error(`\n${failed.label} FAILED. ${picked.length} article(s) reverted to draft.`);
-	console.error('Nothing was committed and nothing was pushed.\n');
+	console.error('No article was committed; only the run record in data/ is pushed.\n');
 	console.error(failed.output.split('\n').slice(-30).join('\n'));
+	finish('check-failed', { slugs, held: heldRecord, error: `${failed.label} failed` });
 	process.exit(1);
 }
 
@@ -190,6 +204,7 @@ for (const a of picked) {
 	a.topic.publishedAt = new Date().toISOString();
 }
 saveStore(store);
+logRun('publish', 'ok', { published: slugs, held: heldRecord });
 
 // --- commit and push --------------------------------------------------------
 try {
@@ -200,12 +215,21 @@ try {
 	console.log(`\n  committed: ${subject}`);
 } catch (e) {
 	const out = `${e.stdout || ''}${e.stderr || ''}`;
+	// Unstage too: `git add` already staged the move into src/content/berita, and the next commit would otherwise publish it.
+	try {
+		run('git', ['reset', '-q', '--', 'src/content/berita', 'drafts', 'data']);
+	} catch {
+		/* reported below with the commit error */
+	}
 	restore();
 	for (const a of picked) {
 		a.topic.status = 'generated';
 		delete a.topic.publishedAt;
 	}
 	saveStore(store);
+	// The 'ok' record is now false. git is what failed, so the corrected record is not pushed; the next run's commit carries it.
+	retractLastRun();
+	logRun('publish', 'error', { slugs, held: heldRecord, error: 'git commit failed; articles reverted to draft' });
 	console.error(`\ngit commit failed, articles reverted to draft:\n${out}`);
 	process.exit(1);
 }
