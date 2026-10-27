@@ -4,9 +4,9 @@ description: "Panduan memilih inverter PLTS industri manufaktur: kriteria teknis
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter plts industri manufaktur"
-pubDate: "2026-10-19"
+pubDate: "2026-10-27"
 tags: ["manufaktur", "inverter", "pengadaan-material", "panduan"]
-draft: true
+draft: false
 ---
 
 Pengadaan inverter untuk PLTS atap pabrik bukan sekadar membeli kotak elektronik. Keputusan ini menentukan seberapa besar energi surya yang bisa dikonversi menjadi listrik siap pakai di lini produksi, sekaligus memengaruhi keandalan pasokan bertahun-tahun ke depan. Tim pengadaan di industri manufaktur perlu memilih inverter PLTS industri manufaktur dengan mempertimbangkan profil beban, regulasi kuota PLN, skema kepemilikan aset, hingga standar dan TKDN. Panduan ini merangkum kriteria teknis dan tahapan pengadaan yang bisa langsung dipakai saat menyusun spesifikasi dan membandingkan pemasok.

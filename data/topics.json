@@ -2103,7 +2103,7 @@
     {
       "id": "manufaktur--inverter--panduan",
       "kind": "pillar",
-      "status": "generated",
+      "status": "published",
       "rank": 8,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2120,7 +2120,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
       "priority": 45,
-      "generatedAt": "2026-10-19T08:19:08.126Z"
+      "generatedAt": "2026-10-19T08:19:08.126Z",
+      "publishedAt": "2026-10-27T01:23:09.714Z"
     },
     {
       "id": "manufaktur--inverter--spesifikasi",
