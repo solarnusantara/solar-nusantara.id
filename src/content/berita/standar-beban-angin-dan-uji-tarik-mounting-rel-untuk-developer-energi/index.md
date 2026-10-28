@@ -5,9 +5,9 @@ description: "Panduan teknis beban angin mounting rel developer energi terbaruka
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi rel mounting aluminium dan braket atap dengan stempel sertifikasi dan kaca pembesar"
 focusKeyphrase: "beban angin mounting rel developer energi terbarukan"
-pubDate: "2026-10-19"
+pubDate: "2026-10-28"
 tags: ["developer", "mounting", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Dalam proyek PLTS atap skala komersial, beban angin mounting rel developer energi terbarukan harus diperlakukan sebagai input desain struktural, bukan sekadar spesifikasi katalog. Permen ESDM No. 2 Tahun 2024 mengubah batas kapasitas PLTS atap menjadi tunduk pada kuota PLN, sehingga desain mounting perlu siap lebih awal. Developer perlu meminta perhitungan beban angin per lokasi, uji tarik komponen, dan dokumentasi material sebelum menyetujui sistem pemasangan.
