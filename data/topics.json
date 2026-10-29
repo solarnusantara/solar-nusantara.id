@@ -6588,7 +6588,7 @@
     {
       "id": "umum--merek--deye",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 10,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6607,7 +6607,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
       "priority": 95,
-      "generatedAt": "2026-10-19T08:24:50.405Z"
+      "generatedAt": "2026-10-19T08:24:50.405Z",
+      "publishedAt": "2026-10-29T01:23:06.275Z"
     },
     {
       "id": "umum--merek--kabelindo",

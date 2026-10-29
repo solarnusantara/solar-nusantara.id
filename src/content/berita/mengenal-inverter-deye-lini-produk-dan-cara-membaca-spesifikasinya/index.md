@@ -5,9 +5,9 @@ description: "Lini inverter Deye untuk PLTS on-grid dan hybrid di SonusHUB, plus
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter deye"
-pubDate: "2026-10-19"
+pubDate: "2026-10-29"
 tags: ["pengetahuan-material", "inverter", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Deye memproduksi inverter untuk sistem tenaga surya, dan lini produknya terbagi menjadi dua keluarga besar: inverter on-grid (string) serta inverter hybrid yang mendukung bank baterai. Bagi pembeli material PLTS, keduanya sering masuk dalam satu daftar permintaan pengadaan, padahal cara membaca spesifikasinya berbeda. Tulisan ini memetakan lini inverter Deye yang tercatat di katalog SonusHUB dan menunjukkan bagian datasheet mana yang perlu diperiksa sebelum pesanan dikirim ke pemasok.
