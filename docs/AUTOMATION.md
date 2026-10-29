@@ -3,9 +3,9 @@
 Cara kerja pabrik artikel di server dan ritme terbitnya. Pasar yang dituju dibahas di
 `docs/MARKET.md`.
 
-Diperbarui 2026-10-15. Perubahan dari versi sebelumnya: **tidak ada lagi review dan
-persetujuan manusia.** Artikel yang lolos gate mesin terbit sendiri, empat per minggu.
-Draft sekarang tinggal di folder tersendiri, `drafts/berita/`.
+Diperbarui 2026-10-29. Perubahan dari versi sebelumnya: **ada review manusia lagi** di antara
+generate dan publish (bagian 2b). Artikel harus lolos gate mesin *dan* disetujui reviewer di
+ERPSonus sebelum terbit, empat per minggu. Draft tinggal di folder tersendiri, `drafts/berita/`.
 
 ---
 
@@ -50,8 +50,8 @@ topik pending -> draft di drafts/berita/ -> artikel di src/content/berita/
    generate            publish
 ```
 
-Empat terbit per minggu, satu per hari kerja Selasa sampai Jumat. Tidak ada langkah manusia
-di antaranya.
+Empat terbit per minggu, satu per hari kerja Selasa sampai Jumat. Di antara generate dan
+publish ada review manusia (2b).
 
 Dua hal membuat ritme ini bertahan sendiri:
 
@@ -66,6 +66,34 @@ Dua hal membuat ritme ini bertahan sendiri:
 
 Satu topik yang gagal gate tidak memperkecil batch: generate menarik topik berikutnya sampai
 empat tertulis (dengan batas tambahan).
+
+---
+
+## 2b. Review manusia
+
+```
+generate (Senin 02:07)   draft lahir; sinkronisasi ERPSonus 10:00 WIB memunculkannya di tab Review
+reviewer                 ERPSonus > SEO Marketing > Review: baca draft, Setujui atau Tolak (admin)
+publish (Selasa-Jumat)   menarik keputusan dari ERPSonus, lalu:
+```
+
+| Keputusan | Akibatnya |
+|---|---|
+| disetujui | draft boleh terbit, urutan tetap menurut `rank` |
+| belum diputuskan | tidak terbit. Run dicatat `awaiting-review`; tab Ringkasan memperingatkan |
+| ditolak | topik kembali `pending`, folder draft dihapus (commit `review: ...`), alasan disimpan di `reviewNote` dan dimasukkan ke prompt generate berikutnya |
+
+Keputusan disimpan di tabel `seo_reviews` ERPSonus dan ditarik lewat
+`GET /api/seo/review-decisions` (bearer `SEO_REVIEW_TOKEN`). Setelah dijalankan pipeline
+mengirim ack, sehingga draft baru dengan slug yang sama mulai dari "menunggu". `generate` juga
+menjalankan penolakan di awal run supaya draft yang ditolak dihitung sebagai stok yang kurang.
+
+- **Gagal tertutup.** Kalau ERPSonus tidak terjangkau atau token salah, publish tidak
+  menerbitkan apa pun (outcome `review-unavailable`, exit 1). Generate tetap jalan.
+- **Alasan penolakan tampil di repo publik** (`reviewNote` di `data/topics.json`).
+- Env di server: `SEO_REVIEW_TOKEN` (nilai sama dengan env ERPSonus), opsional
+  `SEO_REVIEW_URL` untuk mengganti host (default `https://app.sonus.id/api/seo/review-decisions`).
+- Draft yang sudah ada saat gerbang ini dipasang dianggap disetujui (migrasi ERPSonus 252).
 
 ---
 
@@ -127,8 +155,8 @@ foldernya dari `drafts/berita/` ke `src/content/berita/`, lalu `npm run check` d
 
 ## 4. Gate mesin
 
-Tidak ada manusia yang membaca artikel sebelum terbit. **Gate adalah satu-satunya
-penjaga**, dan ada di dua tempat: di dalam loop generate dan sekali lagi saat publish.
+Reviewer manusia memutuskan di ERPSonus (2b), tetapi reviewer tidak diminta menggantikan
+gate: **gate mesin tetap penjaga yang menolak pelanggaran aturan**, dan ada di dua tempat: di dalam loop generate dan sekali lagi saat publish.
 
 **Gate 1 - struktur** (`npm run check`, juga `prebuild`). Slug, panjang description,
 duplikat metadata, `$` tanpa escape, alt gambar, dan **hero**: artikel yang tayang wajib punya
@@ -287,8 +315,8 @@ sampai tanggal itu. Hapus barisnya untuk melepas.
 | Tanggal tidak valid | **menolak terbit** (status 1); menganggap tahanan rusak sebagai "tidak ada tahanan" berarti menerbitkan tepat saat tahanan salah tulis |
 | Tahanan lewat | lanjut normal |
 
-Karena tidak ada review, tahanan ini juga satu-satunya rem darurat: kalau Anda melihat
-artikel bermasalah, set tanggalnya, perbaiki, baru lepas.
+Tahanan ini rem darurat di atas review (2b), yang hanya menyaring draft satu per satu: kalau
+Anda melihat artikel bermasalah yang sudah tayang, set tanggalnya, perbaiki, baru lepas.
 
 Menerbitkan ke dalam rollout *spam update* Google yang menyasar konten skala besar
 adalah sebuah pilihan; pilihan itu harus dibuat sadar.
