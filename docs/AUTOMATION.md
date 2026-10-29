@@ -95,6 +95,21 @@ menjalankan penolakan di awal run supaya draft yang ditolak dihitung sebagai sto
   `SEO_REVIEW_URL` untuk mengganti host (default `https://app.sonus.id/api/seo/review-decisions`).
 - Draft yang sudah ada saat gerbang ini dipasang dianggap disetujui (migrasi ERPSonus 252).
 
+## 2c. Menghapus artikel yang sudah tayang
+
+Admin meminta penghapusan di ERPSonus (SEO Marketing > Artikel > buka artikel > Kelola artikel > Hapus).
+ERP hanya mencatat permintaan di `seo_takedowns`; pipeline menjalankannya di awal run **generate
+(Senin) dan publish (Selasa-Jumat)** lewat `GET /api/seo/takedowns` (bearer yang sama dengan review),
+jadi hapus terjadi paling lambat di run kerja berikutnya, lalu situs menjawab 404 setelah deploy.
+
+| Hasil | Akibatnya |
+|---|---|
+| `removed` | folder dihapus dari `src/content/berita`, topiknya (kalau ada) jadi `removed` dan tidak pernah ditulis ulang, commit `takedown: ...` |
+| `blocked` | tidak dihapus: file lain di `src/` atau `drafts/` masih menyebut slug-nya, atau `check-content` gagal tanpa artikel itu. Alasan dikirim ke ERP; perbaiki penyebabnya lalu minta lagi |
+
+Slug dari jaringan divalidasi (`[a-z0-9-]`) sebelum dipakai sebagai path. Kegagalan mengambil
+permintaan tidak menghentikan publish. Artikel yang dihapus tetap ada di riwayat git.
+
 ---
 
 ## 3. Folder dan status
