@@ -44,6 +44,7 @@ import { brandByKey, BRANDS_CHECKED } from './lib/brands.mjs';
 import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
 import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
+import { syncReviews } from './lib/review-gate.mjs';
 import { DRAFTS_DIR, draftDir, slugTaken } from './lib/articles.mjs';
 import { record, spentToday, spentSince } from './lib/spend-guard.mjs';
 import { logRun, pushRunRecord } from './lib/run-log.mjs';
@@ -266,6 +267,13 @@ function buildPrompt(topic, previousErrors) {
 	const spec = KIND_SPEC[topic.kind] ?? KIND_SPEC.longtail;
 	const brand = brandBlock(topic);
 
+	const review = topic.reviewNote
+		? `
+DRAF SEBELUMNYA UNTUK TOPIK INI DITOLAK REVIEWER MANUSIA. Alasannya, dan harus diperbaiki di artikel baru:
+${topic.reviewNote}
+`
+		: '';
+
 	const retry = previousErrors?.length
 		? `
 PERCOBAAN SEBELUMNYA DITOLAK. Perbaiki tepat pada poin berikut, jangan ubah yang lain:
@@ -326,7 +334,7 @@ ATURAN WAJIB - artikel ditolak otomatis jika dilanggar:
 11. ${brand.rule}
 12. Sebut nomor standar (IEC, SNI, EN) hanya jika Anda yakin nomornya benar. Jika ragu,
     sebut jenis standarnya tanpa nomor dan arahkan pembaca memeriksa dokumen aslinya.
-${retry}
+${review}${retry}
 FORMAT KELUARAN - ikuti persis, tanpa teks pembuka atau penutup:
 
 DESCRIPTION: <satu kalimat meta description, WAJIB antara ${DESC_MIN} dan ${DESC_MAX} karakter, memuat kata kunci fokus, tanpa tanda kutip>
@@ -596,6 +604,18 @@ function persist() {
 	if (!dryRun) saveStore(store);
 }
 
+// Carry out the reviewers' rejections first, so a rejected draft counts as missing stock and is regenerated with the reviewer's note. If ERPSonus is unreachable generation still goes on: the publish run is what refuses unreviewed drafts.
+if (!onlyId) {
+	try {
+		const { sent } = await syncReviews(store, { dryRun, noPush });
+		if (sent.length) console.log(`
+generate: ${sent.length} rejected draft(s) sent back to pending`);
+	} catch (e) {
+		console.error(`
+generate: review decisions unavailable (${e.message}); continuing.`);
+	}
+}
+
 // Write only what the stock is short of, so generation never runs more than two weeks ahead of publishing.
 const stock = onlyId ? 0 : readyDrafts(store).length;
 if (!onlyId && stock >= stockTarget) {
@@ -670,6 +690,7 @@ async function processTopic(topic) {
 		mkdirSync(dir, { recursive: true });
 		writeFileSync(join(dir, 'index.md'), buildFile(topic, result.description, result.body), 'utf8');
 		topic.status = 'generated';
+		delete topic.reviewNote;
 		topic.generatedAt = new Date().toISOString();
 		delete topic.lastError;
 	}
