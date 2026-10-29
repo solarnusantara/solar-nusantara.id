@@ -45,6 +45,7 @@ import { execFileSync } from 'node:child_process';
 import { writeHero } from './lib/thumbnail.mjs';
 import { readyDrafts, loadStore, saveStore } from './lib/topic-store.mjs';
 import { syncReviews } from './lib/review-gate.mjs';
+import { applyTakedowns } from './lib/takedown.mjs';
 import { DRAFTS_DIR, draftDir, slugTaken } from './lib/articles.mjs';
 import { record, spentToday, spentSince } from './lib/spend-guard.mjs';
 import { logRun, pushRunRecord } from './lib/run-log.mjs';
@@ -606,6 +607,11 @@ function persist() {
 
 // Carry out the reviewers' rejections first, so a rejected draft counts as missing stock and is regenerated with the reviewer's note. If ERPSonus is unreachable generation still goes on: the publish run is what refuses unreviewed drafts.
 if (!onlyId) {
+	try {
+		for (const r of await applyTakedowns(store, { dryRun, noPush })) console.log(`generate: takedown ${r.outcome}: ${r.slug}${r.detail ? ` (${r.detail})` : ''}`);
+	} catch (e) {
+		console.error(`\ngenerate: takedowns unavailable (${e.message}); continuing.`);
+	}
 	try {
 		const { sent } = await syncReviews(store, { dryRun, noPush });
 		if (sent.length) console.log(`

@@ -23,6 +23,7 @@ import { checkFacts } from './lib/fact-guard.mjs';
 import { writeHero } from './lib/thumbnail.mjs';
 import { loadStore, saveStore, readyDrafts } from './lib/topic-store.mjs';
 import { syncReviews, ackDecisions } from './lib/review-gate.mjs';
+import { applyTakedowns } from './lib/takedown.mjs';
 import { DRAFTS_DIR, draftDir, liveDir } from './lib/articles.mjs';
 import { logRun, pushRunRecord, retractLastRun } from './lib/run-log.mjs';
 
@@ -77,6 +78,13 @@ if (notBeforeRaw) {
 
 // --- what is waiting -------------------------------------------------------
 const store = loadStore();
+
+// Removals requested in ERPSonus go first, so a draft is never published into a site that is mid-removal. A failure here must not block publishing.
+try {
+	for (const r of await applyTakedowns(store, { dryRun, noPush })) console.log(`publish-drip: takedown ${r.outcome}: ${r.slug}${r.detail ? ` (${r.detail})` : ''}`);
+} catch (e) {
+	console.error(`publish-drip: takedowns unavailable (${e.message}); continuing.`);
+}
 
 // A reviewer decides in ERPSonus. Only an approved draft may go out; if the decisions cannot be read, nothing goes out.
 let reviews;
