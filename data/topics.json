@@ -210,7 +210,7 @@
     {
       "id": "epc--pv-modul--mutu",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 11,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -228,7 +228,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 90,
-      "generatedAt": "2026-10-19T08:27:08.868Z"
+      "generatedAt": "2026-10-19T08:27:08.868Z",
+      "publishedAt": "2026-10-30T01:23:09.386Z"
     },
     {
       "id": "epc--walkway-tray--panduan",
