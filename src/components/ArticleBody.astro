@@ -17,6 +17,11 @@ const { data, body, related } = Astro.props;
 // Organization fallback in articleSchema.ts so byline and JSON-LD agree.
 const authorName = data.author ?? SITE_CONFIG.title;
 
+// Shown only for a real revision: an updatedDate on the same calendar day as
+// pubDate is the publish itself, not an update.
+const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+const showUpdated = !!data.updatedDate && dayKey(data.updatedDate) > dayKey(data.pubDate);
+
 // Calculate reading time
 const wordsPerMinute = 200;
 const wordCount = body.split(/\s+/g).length;
@@ -27,6 +32,15 @@ const readingTime = Math.ceil(wordCount / wordsPerMinute);
   <time datetime={data.pubDate.toISOString()} class="whitespace-nowrap">
     {data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
   </time>
+  {showUpdated && data.updatedDate && (
+    <span class="whitespace-nowrap">
+      <span class="text-gray-400">&bull;</span>
+      <span>Diperbarui </span>
+      <time datetime={data.updatedDate.toISOString()}>
+        {data.updatedDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+      </time>
+    </span>
+  )}
   <span class="whitespace-nowrap">
     <span class="text-gray-400">&bull;</span>
     {data.author && data.authorUrl ? (
