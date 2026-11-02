@@ -2,6 +2,7 @@
 import { Image } from 'astro:assets';
 import RelatedArticles from './RelatedArticles.astro';
 import type { Article } from '../utils/articles';
+import { SITE_CONFIG } from '../config';
 
 /**
  * Everything an article shows inside the Layout: the date line, the hero, the
@@ -11,6 +12,10 @@ import type { Article } from '../utils/articles';
 type Props = { data: Article['data']; body: string; related: Article[] };
 
 const { data, body, related } = Astro.props;
+
+// Articles without a named author are credited to the site, matching the
+// Organization fallback in articleSchema.ts so byline and JSON-LD agree.
+const authorName = data.author ?? SITE_CONFIG.title;
 
 // Calculate reading time
 const wordsPerMinute = 200;
@@ -22,21 +27,19 @@ const readingTime = Math.ceil(wordCount / wordsPerMinute);
   <time datetime={data.pubDate.toISOString()} class="whitespace-nowrap">
     {data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
   </time>
-  {data.author && (
-    <span class="whitespace-nowrap">
-      <span class="text-gray-400">&bull;</span>
-      {data.authorUrl ? (
-        <>
-          <span>Oleh </span>
-          <a href={data.authorUrl} target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-blue-600 hover:underline transition-colors">
-            {data.author}
-          </a>
-        </>
-      ) : (
-        <span>Oleh {data.author}</span>
-      )}
-    </span>
-  )}
+  <span class="whitespace-nowrap">
+    <span class="text-gray-400">&bull;</span>
+    {data.author && data.authorUrl ? (
+      <>
+        <span>Oleh </span>
+        <a href={data.authorUrl} target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-blue-600 hover:underline transition-colors">
+          {authorName}
+        </a>
+      </>
+    ) : (
+      <span>Oleh {authorName}</span>
+    )}
+  </span>
   <span class="whitespace-nowrap">
     <span class="text-gray-400">&bull;</span>
     <span>{readingTime} menit baca</span>

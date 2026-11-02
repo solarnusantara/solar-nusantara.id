@@ -69,15 +69,17 @@ export function buildArticleSchema(input: ArticleSchemaInput): Record<string, un
 	const origin = baseUrl.replace(/\/$/, '');
 
 	// `author` is required by Google for Article. When the frontmatter names a
-	// person, credit the person; otherwise fall back to the organisation by @id
-	// rather than inventing a byline.
+	// person, credit the person; otherwise credit the site as an Organization
+	// named exactly as the visible byline ("Oleh Solar Nusantara"). It carries
+	// its own name because an @id reference would resolve to the legal name
+	// "PT Tripower Solar Nusantara", which would disagree with the byline.
 	const author = authorName
 		? {
 				'@type': 'Person',
 				name: authorName,
 				...(authorUrl ? { url: authorUrl } : {}),
 			}
-		: { '@id': `${origin}/#organization` };
+		: { '@type': 'Organization', name: 'Solar Nusantara', url: `${origin}/` };
 
 	const article: Record<string, unknown> = {
 		'@type': 'BlogPosting',
