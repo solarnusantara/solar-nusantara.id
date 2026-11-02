@@ -17,20 +17,23 @@ import { execFileSync } from 'node:child_process';
 import { saveStore } from './topic-store.mjs';
 import { draftDir } from './articles.mjs';
 
-const REVIEW_URL = process.env.SEO_REVIEW_URL || 'https://app.sonus.id/api/seo/review-decisions';
+export const REVIEW_URL = process.env.SEO_REVIEW_URL || 'https://app.sonus.id/api/seo/review-decisions';
 const TIMEOUT_MS = 20_000;
 
-async function call(path, init = {}) {
+/** One authenticated call to ERPSonus; anything but a 2xx throws. Shared with takedown.mjs. */
+export async function callErp(url, init = {}) {
 	const token = process.env.SEO_REVIEW_TOKEN;
 	if (!token) throw new Error('SEO_REVIEW_TOKEN is not set');
-	const res = await fetch(`${REVIEW_URL}${path}`, {
+	const res = await fetch(url, {
 		...init,
 		headers: { authorization: `Bearer ${token}`, 'content-type': 'application/json' },
 		signal: AbortSignal.timeout(TIMEOUT_MS),
 	});
-	if (!res.ok) throw new Error(`ERPSonus ${path || '/'}: HTTP ${res.status}`);
+	if (!res.ok) throw new Error(`ERPSonus ${new URL(url).pathname}: HTTP ${res.status}`);
 	return res.json();
 }
+
+const call = (path, init) => callErp(`${REVIEW_URL}${path}`, init);
 
 /** @returns {Promise<{approved: Set<string>, rejected: Map<string,string>}>} */
 export async function fetchDecisions() {
