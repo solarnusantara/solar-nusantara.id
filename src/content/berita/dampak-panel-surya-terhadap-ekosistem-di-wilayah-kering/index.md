@@ -5,6 +5,7 @@ description: "Energi surya tidak hanya mendukung transisi energi, tetapi juga me
 heroImage: "./image.jpg"
 author: "Farros"
 authorUrl: "https://farros.co"
+updatedDate: "2026-11-02"
 heroImageAlt: "Ilustrasi dua turbin angin dan deretan panel surya di atas lahan hijau dengan matahari di latar belakang"
 focusKeyphrase: "dampak panel surya terhadap ekosistem"
 tags: ["lingkungan", "panel-surya"]
@@ -21,7 +22,15 @@ Kondisi tersebut memungkinkan mikroorganisme tanah berkembang lebih baik. Dalam 
 
 ## Bukti dari Studi Lapangan
 
-Penelitian yang dilakukan di salah satu pembangkit listrik tenaga surya terbesar di wilayah gurun China menunjukkan perbedaan signifikan antara area di bawah panel, zona transisi, dan gurun alami di sekitarnya. Area yang terlindungi panel menunjukkan tingkat kesehatan ekologi yang lebih baik dibandingkan wilayah gurun yang tidak tersentuh.
+Penelitian ini dilakukan di Gonghe Photovoltaic Park di Provinsi Qinghai, China, pembangkit tenaga surya berkapasitas sekitar satu gigawatt. Tim peneliti dari Xi'an University of Technology menilai kondisi ekologi dengan kerangka DPSIR dan 57 indikator, termasuk kimia tanah, suhu, kelembapan, dan keanekaragaman hayati. Hasilnya, area yang terlindungi panel menunjukkan tingkat kesehatan ekologi yang lebih baik dibandingkan wilayah gurun yang tidak tersentuh:
+
+| Zona | Skor kesehatan ekologi umum |
+|---|---|
+| Di bawah panel surya | 0,4393 |
+| Zona transisi antara panel dan gurun | 0,2858 |
+| Gurun alami di sekitarnya | 0,2802 |
+
+Studi ini mengukur satu lokasi, sehingga hasilnya belum tentu berlaku di gurun dengan kondisi berbeda.
 
 Hasil ini mengindikasikan bahwa, dengan perencanaan yang tepat, pembangkit listrik tenaga surya dapat memberikan dampak lingkungan yang netral bahkan positif; bukan sekadar “mengambil ruang” dari alam.
 
@@ -39,4 +48,8 @@ Ke depan, pengembangan energi surya berpotensi menjadi solusi ganda: menyediakan
 
 ## Referensi
 
-[Futura Sciences](https://www.futura-sciences.com/en/they-thought-they-were-just-producing-energy-but-the-solar-panels-awakened-the-desert_22223/) – artikel yang membahas penelitian dampak pembangkit listrik tenaga surya terhadap ekosistem gurun di China.
+[Assessment of the ecological and environmental effects of large-scale photovoltaic development in desert areas](https://www.nature.com/articles/s41598-024-72860-8) – makalah penelitian di *Scientific Reports* (2024), sumber primer studi ini.
+
+[pv magazine](https://www.pv-magazine.com/2024/10/10/large-scale-pv-has-positive-environmental-effect-on-desert-areas/) – liputan atas makalah tersebut.
+
+[Futura Sciences](https://www.futura-sciences.com/en/they-thought-they-were-just-producing-energy-but-the-solar-panels-awakened-the-desert_22223/) – artikel yang membahas penelitian dampak pembangkit listrik tenaga surya terhadap ekosistem gurun di China, sumber angka skor di atas.

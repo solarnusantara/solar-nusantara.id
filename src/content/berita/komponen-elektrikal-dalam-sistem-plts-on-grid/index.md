@@ -3,7 +3,8 @@ title: Komponen Elektrikal dalam Sistem PLTS On-Grid
 pubDate: "2026-03-06"
 description: "Penjelasan komponen elektrikal pada sistem PLTS on-grid mulai dari panel surya, inverter, disconnect switch hingga integrasi dengan panel listrik bangunan."
 heroImage: "./1.webp"
-heroImageAlt: "AI Generated Image"
+heroImageAlt: "Diagram alur PLTS on-grid: modul surya, kotak penggabung, sakelar DC, inverter, sakelar AC, panel listrik utama, meteran, jaringan listrik, dan monitoring"
+updatedDate: "2026-11-02"
 author: "Farros"
 authorUrl: "https://farros.co"
 focusKeyphrase: "komponen plts on grid"
@@ -13,6 +14,18 @@ tags: ["plts", "komponen"]
 Sistem **Pembangkit Listrik Tenaga Surya (PLTS)** tidak hanya terdiri dari panel surya. Dalam praktiknya, sebuah sistem photovoltaic (PV) terdiri dari berbagai komponen elektrikal yang bekerja bersama untuk mengubah energi matahari menjadi listrik yang dapat digunakan oleh bangunan atau disalurkan ke jaringan listrik.
 
 ---
+
+## Ringkasan Komponen dan Urutannya
+
+| No | Komponen | Fungsi utama | Letak dalam rangkaian |
+|---|---|---|---|
+| 1 | Photovoltaic module | Menghasilkan listrik DC dari cahaya matahari | Sumber energi awal, tersusun dalam string dan PV array |
+| 2 | Combiner box | Menggabungkan string panel dan menyediakan fuse protection | Sebelum inverter, pada sistem dengan banyak string |
+| 3 | DC disconnect | Memutus aliran DC untuk keselamatan dan maintenance | Sebelum inverter |
+| 4 | Solar inverter | Mengubah DC menjadi AC, sinkronisasi dengan grid, monitoring, anti-islanding | Antara sisi DC dan sisi AC |
+| 5 | AC disconnect | Memutus koneksi PLTS dari jaringan listrik | Di antara inverter dan panel listrik utama |
+| 6 | Main electrical panel | Mendistribusikan listrik ke beban bangunan | Setelah AC disconnect, terhubung ke grid |
+| 7 | Monitoring system | Memantau produksi energi, tegangan, arus, dan status inverter | Mengawasi seluruh sistem |
 
 ## 1. Photovoltaic Module (Solar Panel)
 
