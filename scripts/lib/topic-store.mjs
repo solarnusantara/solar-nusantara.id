@@ -6,7 +6,8 @@
  *   legacy                           (articles of the old matrix, outside the queue)
  *
  * `generated` means a finished draft is waiting in drafts/berita for its publish slot.
- * There is no human step in between: the gates in generate-article.mjs and publish-drip.mjs decide.
+ * A reviewer approves or rejects it in ERPSonus before it may publish (lib/review-gate.mjs); the gates in
+ * generate-article.mjs and publish-drip.mjs still apply.
  */
 import { readFileSync, writeFileSync } from 'node:fs';
 

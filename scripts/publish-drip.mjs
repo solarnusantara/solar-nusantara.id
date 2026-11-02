@@ -8,7 +8,7 @@
  *   npm run publish -- --no-push          # commit locally
  *   npm run publish -- --not-before 2026-11-02
  *
- * Nobody reads a draft before it goes out, so the machine gates are the whole gate:
+ * Only a draft a reviewer approved in ERPSonus may go out (lib/review-gate.mjs), and it must still pass the machine gates:
  * the SEO gate, the fact gate and the hero image here, then check-content and
  * check-seo on the real site after the article has been moved into src/content/berita.
  * A draft that fails stays in drafts/berita and is tried again next run; if it still
@@ -22,6 +22,7 @@ import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './li
 import { checkFacts } from './lib/fact-guard.mjs';
 import { writeHero } from './lib/thumbnail.mjs';
 import { loadStore, saveStore, readyDrafts } from './lib/topic-store.mjs';
+import { syncReviews, ackDecisions } from './lib/review-gate.mjs';
 import { DRAFTS_DIR, draftDir, liveDir } from './lib/articles.mjs';
 import { logRun, pushRunRecord, retractLastRun } from './lib/run-log.mjs';
 
@@ -77,10 +78,35 @@ if (notBeforeRaw) {
 // --- what is waiting -------------------------------------------------------
 const store = loadStore();
 
-const ready = readyDrafts(store);
+// A reviewer decides in ERPSonus. Only an approved draft may go out; if the decisions cannot be read, nothing goes out.
+let reviews;
+try {
+	reviews = await syncReviews(store, { dryRun, noPush });
+} catch (e) {
+	console.error(`
+publish-drip: review decisions unavailable (${e.message}). Publishing nothing.
+`);
+	finish('review-unavailable', { error: e.message });
+	process.exit(1);
+}
+if (reviews.sent.length) console.log(`
+publish-drip: ${reviews.sent.length} rejected draft(s) sent back to pending`);
+
+const allDrafts = readyDrafts(store);
+const ready = allDrafts.filter((t) => reviews.approved.has(t.slug));
+const awaiting = allDrafts.filter((t) => !reviews.approved.has(t.slug)).map((t) => t.slug);
 if (ready.length === 0) {
-	console.log(`\npublish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.\n`);
-	finish('empty');
+	if (awaiting.length) {
+		console.log(`
+publish-drip: ${awaiting.length} draft(s) wait for review in ERPSonus; none is approved, nothing goes out.
+`);
+		finish('awaiting-review', { awaiting, rejected: reviews.sent });
+	} else {
+		console.log(`
+publish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.
+`);
+		finish('empty', { rejected: reviews.sent });
+	}
 	process.exit(0);
 }
 
@@ -124,7 +150,7 @@ for (const topic of ready) {
 	else picked.push(a);
 }
 
-console.log(`\npublish-drip: ${picked.length} of ${ready.length} waiting draft(s) go out now`);
+console.log(`\npublish-drip: ${picked.length} of ${ready.length} approved draft(s) go out now (${awaiting.length} more await review)`);
 for (const a of picked) console.log(`  -> /berita/${a.slug}/`);
 for (const a of held) {
 	console.log(`  HELD  ${a.slug}`);
@@ -204,7 +230,7 @@ for (const a of picked) {
 	a.topic.publishedAt = new Date().toISOString();
 }
 saveStore(store);
-logRun('publish', 'ok', { published: slugs, held: heldRecord });
+logRun('publish', 'ok', { published: slugs, held: heldRecord, awaiting, rejected: reviews.sent });
 
 // --- commit and push --------------------------------------------------------
 try {
