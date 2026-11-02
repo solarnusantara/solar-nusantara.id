@@ -1,0 +1,78 @@
+# Solar Nusantara
+
+> PT Tripower Solar Nusantara (SONUS) adalah perusahaan EPC PLTS, manajemen energi, dan penyedia produk panel surya serta bahan bakar biomassa untuk segmen residensial, komersial, dan industri di Indonesia.
+
+## Layanan
+
+- [Layanan](https://solar-nusantara.id/layanan/): Ringkasan layanan EPC sistem tenaga surya dan manajemen energi.
+- [Sistem Tenaga Surya EPC](https://solar-nusantara.id/layanan/sistem-tenaga-surya-epc/): EPC PLTS dari rancangan sampai konstruksi untuk tiga segmen: C&I, Solar Home System, dan PJUTS.
+- [EPC Segmen C&I](https://solar-nusantara.id/layanan/epc/segmen-ci/): Rancang bangun, pengadaan, dan konstruksi PLTS skala bisnis untuk sektor komersial dan industri.
+- [EPC Segmen SHS](https://solar-nusantara.id/layanan/epc/segmen-shs/): Solar Home System untuk rumah tangga dan daerah yang belum terjangkau jaringan PLN.
+- [Sistem PJUTS](https://solar-nusantara.id/layanan/epc/sistem-pjuts/): Penerangan jalan umum bertenaga surya yang dapat dipasang tanpa jaringan listrik.
+- [Manajemen Energi](https://solar-nusantara.id/layanan/manajemen-energi/): Pemantauan energi, otomasi bangunan, manajemen armada, dan penangkapan karbon untuk menekan biaya operasional.
+- [Sistem Pemantauan Energi untuk C&I](https://solar-nusantara.id/layanan/manajemen-energi/sistem-pemantauan-energi-ci/): Memantau, mengendalikan, dan mengoptimalkan konsumsi energi perusahaan.
+- [Sistem Otomasi Bangunan](https://solar-nusantara.id/layanan/manajemen-energi/sistem-otomasi-bangunan/): EMAS dan BAS, pemantauan energi real-time plus otomasi pencahayaan dan suhu.
+- [Sistem Manajemen Armada](https://solar-nusantara.id/layanan/manajemen-energi/sistem-manajemen-armada/): Visibilitas digital operasional forklift untuk menekan biaya dan waktu operasi.
+- [Sistem Penangkapan Karbon](https://solar-nusantara.id/layanan/manajemen-energi/carbon-capture-system/): Penangkapan dan penyimpanan emisi CO2 industri sesuai profil emisi tiap klien.
+- [Sistem Rumah Pintar](https://solar-nusantara.id/layanan/manajemen-energi/sistem-rumah-pintar/): Rumah pintar bertenaga surya untuk memangkas tagihan listrik rumah tangga.
+
+## Produk
+
+- [Produk](https://solar-nusantara.id/produk/): Panel surya TKDN dan impor, inverter, sistem baterai, ekosistem EV, dan biomassa.
+- [Panel TKDN](https://solar-nusantara.id/produk/sistem-panel-surya/panel-surya/panel-tkdn/): Panel surya dengan nilai TKDN 43,50 persen dan garansi usia teknis 20 tahun.
+- [Panel Impor](https://solar-nusantara.id/produk/sistem-panel-surya/panel-surya/panel-impor/): Panel surya impor dari pemasok yang dikurasi SONUS.
+- [Inverter On-Grid](https://solar-nusantara.id/produk/sistem-panel-surya/inverter/on-grid/): Mengalirkan kelebihan daya panel surya kembali ke jaringan listrik.
+- [Inverter Off-Grid](https://solar-nusantara.id/produk/sistem-panel-surya/inverter/off-grid/): Untuk sistem panel surya mandiri tanpa jaringan PLN.
+- [Sistem Baterai](https://solar-nusantara.id/produk/sistem-panel-surya/sistem-baterai/): Penyimpanan daya panel surya untuk kebutuhan residensial, komersial, dan industri.
+- [Sistem Pemasangan](https://solar-nusantara.id/produk/sistem-panel-surya/sistem-pemasangan/): Rangka baja MAC dengan ground screw atau pondasi beton untuk lahan miring maupun datar.
+- [Sistem Pengkabelan](https://solar-nusantara.id/produk/sistem-panel-surya/sistem-pengkabelan/): Kabel surya tembaga single-core dan multi-core berlapis PVC.
+- [SPKL Pengisian Daya EV](https://solar-nusantara.id/produk/ekosistem-ev/spkl/): Infrastruktur pengisian kendaraan listrik didukung panel surya dan baterai.
+- [Seri 50100 FG](https://solar-nusantara.id/produk/seri-50100-fg/): Pembangkit surya portabel berbentuk kontainer, tanpa bahan bakar, untuk lokasi terpencil dan daya cadangan.
+- [Pelet Kayu](https://solar-nusantara.id/produk/energi-biomassa/pelet-kayu/): Bahan bakar biomassa dari limbah kayu terkompresi dengan emisi karbon rendah.
+- [RDF](https://solar-nusantara.id/produk/energi-biomassa/rdf/): Refuse-Derived Fuel dari sampah padat perkotaan untuk kiln semen, pembangkit listrik, dan boiler.
+- [SRF](https://solar-nusantara.id/produk/energi-biomassa/srf/): Solid Recovered Fuel dari limbah non-daur ulang berjejak karbon rendah.
+
+## Tentang Perusahaan
+
+- [Tentang Solar Nusantara](https://solar-nusantara.id/tentang/tentang-solar-nusantara/): Profil PT Tripower Solar Nusantara beserta kebijakan K3L dan keselamatan kerja.
+- [Visi dan Misi](https://solar-nusantara.id/tentang/visi-dan-misi/): Menjadi perusahaan terdepan dalam transisi menuju Energi Baru Indonesia.
+- [Tim Kita](https://solar-nusantara.id/tentang/tim-kita/): Jajaran direksi dan tim inti perusahaan.
+- [Nilai Sonusian](https://solar-nusantara.id/tentang/nilai-sonusian/): Prinsip kerja perusahaan.
+- [SonusHUB](https://solar-nusantara.id/tentang/sonushub/): Platform terpadu yang menghubungkan pemangku kepentingan energi terbarukan dan menyediakan material proyek surya.
+- [Mitra Bisnis](https://solar-nusantara.id/tentang/kolaborasi/mitra-bisnis/): Produsen dan distributor teknologi surya mitra SONUS.
+- [Mitra Suplier](https://solar-nusantara.id/tentang/kolaborasi/mitra-suplier/): Pemasok material dan komponen panel surya.
+- [PINTAR](https://solar-nusantara.id/pintar/): Program SonusID untuk membawa akses listrik ke daerah yang belum terjangkau jaringan.
+
+## Berita dan Wawasan
+
+- [Berita & Wawasan Energi Surya](https://solar-nusantara.id/berita/): Artikel dan panduan teknis: perhitungan sistem PLTS, efisiensi panel, komponen, dan industri fotovoltaik.
+- [Analisis Kelayakan Investasi PLTS untuk Pabrik Kelapa Sawit](https://solar-nusantara.id/berita/analisis-kelayakan-investasi-plts-untuk-pabrik-kelapa-sawit/): CAPEX, payback, dan faktor yang mengubah angkanya.
+- [Analisis Profil Beban Listrik Harian di Gedung Pemerintah](https://solar-nusantara.id/berita/analisis-profil-beban-listrik-harian-di-gedung-pemerintah/): Menentukan kapasitas PLTS, CAPEX, dan skema pengadaan.
+- [Apa Itu SonusHUB?](https://solar-nusantara.id/berita/apa-itu-sonushub-platform-terpadu-untuk-kebutuhan-energi-surya-anda/): Platform B2B dan B2G untuk kebutuhan material dan komponen proyek surya.
+
+## Optional
+
+- [Karir](https://solar-nusantara.id/tentang/karir/): Lowongan di Solar Nusantara.
+- [Tentang Website](https://solar-nusantara.id/tentang/tentang-website/): Ekosistem digital SonusHUB, Sonus EPC, dan Indonesia Terang.
+- [Kebijakan K3L dan Sosial](https://solar-nusantara.id/tentang/tentang-solar-nusantara/kebijakan-k3l-dan-sosial/): Kebijakan K3L dan sosial yang mengikat manajemen, karyawan, mitra, dan pemasok.
+- [Kebijakan Pencegahan Terjatuh](https://solar-nusantara.id/tentang/tentang-solar-nusantara/kebijakan-pencegahan-terjatuh/): Pedoman keselamatan kerja di ketinggian untuk konstruksi dan pemeliharaan PLTS.
+
+## Key Facts
+
+- Nama legal: PT Tripower Solar Nusantara (nama dagang: Solar Nusantara, SONUS, Sonus EPC)
+- Pendiri: Tedi Wintoko
+- Kantor pusat: Gandaria Office 8 Tower lantai 8, Jl. Sultan Iskandar Muda No. 8, Kebayoran Lama, Jakarta Selatan 12240, Indonesia
+- Bidang usaha: EPC PLTS, manajemen energi, produk panel surya, biomassa (pelet kayu, RDF, SRF)
+- Segmen layanan: komersial dan industri (C&I), Solar Home System (SHS), PJUTS
+- Bahasa situs: Indonesia
+
+## Contact
+
+- Website: https://solar-nusantara.id
+- Email: busdev.sonus@solar-nusantara.id
+- Telepon: +62 821 7000 0575
+- Jam kerja: Senin-Jumat, 09.00-17.00 WIB
+- Halaman kontak: https://solar-nusantara.id/kontak/
+- LinkedIn: https://www.linkedin.com/company/solar-nusantara/
+- YouTube: https://www.youtube.com/@Sonus.ID_
+- Instagram: https://instagram.com/solar_nusantara

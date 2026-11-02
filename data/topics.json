@@ -165,7 +165,7 @@
     {
       "id": "epc--pv-modul--perbandingan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 19,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -182,7 +182,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 90
+      "priority": 90,
+      "generatedAt": "2026-11-01T18:09:31.724Z"
     },
     {
       "id": "epc--pv-modul--pengadaan",
@@ -210,7 +211,7 @@
     {
       "id": "epc--pv-modul--mutu",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 11,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -228,7 +229,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 90,
-      "generatedAt": "2026-10-19T08:27:08.868Z"
+      "generatedAt": "2026-10-19T08:27:08.868Z",
+      "publishedAt": "2026-10-30T01:23:09.386Z"
     },
     {
       "id": "epc--walkway-tray--panduan",
@@ -933,7 +935,7 @@
     {
       "id": "developer--mounting-rel--perbandingan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 17,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -950,7 +952,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "generatedAt": "2026-11-01T18:08:15.017Z"
     },
     {
       "id": "developer--mounting-rel--pengadaan",
@@ -2059,7 +2062,7 @@
     {
       "id": "manufaktur--walkway-tray--pengadaan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 16,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2076,7 +2079,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 54
+      "priority": 54,
+      "generatedAt": "2026-11-01T18:09:24.657Z"
     },
     {
       "id": "manufaktur--walkway-tray--mutu",
@@ -6541,7 +6545,7 @@
     {
       "id": "umum--merek--huawei",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 18,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6559,7 +6563,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-11-01T18:13:03.436Z"
     },
     {
       "id": "umum--merek--goodwe",
