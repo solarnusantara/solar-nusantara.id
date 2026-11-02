@@ -5,6 +5,8 @@ import MobileHeader from '../components/MobileHeader.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { SITE_CONFIG } from '../config';
+import { navLinks } from '../data/navLinks';
+import { navTrail, buildBreadcrumb } from '../utils/breadcrumb';
 
 interface Heading {
   depth: number;
@@ -112,6 +114,14 @@ const baseUrl = Astro.site ? Astro.site.origin : SITE_CONFIG.url;
 // logo of at least 112x112; the favicon SVG it replaced does not qualify.
 const logoUrl = new URL('/logo-schema.png', baseUrl).href;
 
+// Pages that sit in the navigation get a BreadcrumbList derived from it, unless
+// the page supplied its own (articles: Beranda > Berita > title).
+const hasOwnBreadcrumb = jsonLd.some((node) => node['@type'] === 'BreadcrumbList');
+const navBreadcrumb = hasOwnBreadcrumb
+  ? undefined
+  : buildBreadcrumb(canonicalUrl, baseUrl, navTrail(navLinks, Astro.url.pathname));
+const pageNodes = navBreadcrumb ? [...jsonLd, navBreadcrumb] : jsonLd;
+
 const structuredData = {
   "@context": "https://schema.org",
   "@graph": [
@@ -213,7 +223,7 @@ const structuredData = {
     // FAQPage, ...). Merged into THIS graph on purpose so the page emits one
     // script tag, and so those nodes can reference #organization / #website by
     // @id instead of restating the publisher.
-    ...jsonLd,
+    ...pageNodes,
   ]
 };
 ---

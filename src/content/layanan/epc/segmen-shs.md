@@ -14,22 +14,22 @@ description: "Layanan EPC Solar Home System dari SONUS untuk kebutuhan listrik r
 
   <!-- Slides -->
   <div class="slide" id="shs-slide1">
-    <img src="/images/layanan/shs-image.png" alt="SHS Image 1">
+    <img src="/images/layanan/shs-image.png" alt="SHS Image 1" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide2">
-    <img src="/images/layanan/shs-image-1.png" alt="SHS Image 2">
+    <img src="/images/layanan/shs-image-1.png" alt="SHS Image 2" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide3">
-    <img src="/images/layanan/shs-image-2.png" alt="SHS Image 3">
+    <img src="/images/layanan/shs-image-2.png" alt="SHS Image 3" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide4">
-    <img src="/images/layanan/shs-image-3.png" alt="SHS Image 4">
+    <img src="/images/layanan/shs-image-3.png" alt="SHS Image 4" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide5">
-    <img src="/images/layanan/shs-image-4.png" alt="SHS Image 5">
+    <img src="/images/layanan/shs-image-4.png" alt="SHS Image 5" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide6">
-    <img src="/images/layanan/shs-image-5.png" alt="SHS Image 6">
+    <img src="/images/layanan/shs-image-5.png" alt="SHS Image 6" width="810" height="537">
   </div>
 
   <!-- Navigation -->
