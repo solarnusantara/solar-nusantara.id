@@ -108,7 +108,9 @@ const ogImageUrl = new URL(imageSrc, canonicalUrl).href;
 const hasHeadings = headings && headings.length > 0;
 
 const baseUrl = Astro.site ? Astro.site.origin : SITE_CONFIG.url;
-const logoUrl = new URL('/favicon.svg', baseUrl).href;
+// Square raster (1024x1024, logo centred on white). Google asks for a raster
+// logo of at least 112x112; the favicon SVG it replaced does not qualify.
+const logoUrl = new URL('/logo-schema.png', baseUrl).href;
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -122,8 +124,8 @@ const structuredData = {
       "logo": {
         "@type": "ImageObject",
         "url": logoUrl,
-        "width": 112,
-        "height": 112
+        "width": 1024,
+        "height": 1024
       },
       "founder": {
         "@type": "Person",
