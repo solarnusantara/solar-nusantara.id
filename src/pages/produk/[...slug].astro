@@ -74,9 +74,14 @@ if (type === 'content') {
   menuItems = hubLink.children || [];
   // Hub pages have no body text to summarise, so the description is built
   // from what the page actually lists. Unique per hub, and accurate.
-  const names = menuItems.map((i: NavLink) => i.text).slice(0, 4).join(', ');
-  description = names
-    ? `Daftar ${title} dari Solar Nusantara: ${names}. Solusi energi surya untuk kebutuhan residensial, komersial, dan industri di Indonesia.`
+  // Names are dropped from the end until the whole description fits what a
+  // search result shows (160 characters), rather than being cut mid-word.
+  const SUFFIX = 'Solusi energi surya untuk residensial, komersial, dan industri.';
+  const names = menuItems.map((i: NavLink) => i.text).slice(0, 4);
+  const build = (list: string[]) => `Daftar ${title} dari Solar Nusantara: ${list.join(', ')}. ${SUFFIX}`;
+  while (names.length > 1 && build(names).length > 160) names.pop();
+  description = names.length
+    ? build(names)
     : `${title} dari Solar Nusantara, penyedia solusi energi surya untuk kebutuhan residensial, komersial, dan industri di Indonesia.`;
 }
 ---

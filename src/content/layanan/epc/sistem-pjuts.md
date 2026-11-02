@@ -12,16 +12,16 @@ description: "Sistem PJUTS dari SONUS: penerangan jalan umum bertenaga surya yan
 
   <!-- Slides -->
   <div class="slide" id="pjuts-slide1">
-    <img src="/images/layanan/pjuts-image.png" alt="PJUTS Image 1">
+    <img src="/images/layanan/pjuts-image.png" alt="PJUTS Image 1" width="810" height="537">
   </div>
   <div class="slide" id="pjuts-slide2">
-    <img src="/images/layanan/pjuts-image-1.png" alt="PJUTS Image 2">
+    <img src="/images/layanan/pjuts-image-1.png" alt="PJUTS Image 2" width="810" height="537">
   </div>
   <div class="slide" id="pjuts-slide3">
-    <img src="/images/layanan/pjuts-image-2.png" alt="PJUTS Image 3">
+    <img src="/images/layanan/pjuts-image-2.png" alt="PJUTS Image 3" width="810" height="537">
   </div>
   <div class="slide" id="pjuts-slide4">
-    <img src="/images/layanan/pjuts-image-3.png" alt="PJUTS Image 4">
+    <img src="/images/layanan/pjuts-image-3.png" alt="PJUTS Image 4" width="810" height="537">
   </div>
 
   <!-- Navigation -->

@@ -12,16 +12,16 @@ description: "Layanan EPC PLTS SONUS untuk segmen komersial dan industri: rancan
 
   <!-- Slides -->
   <div class="slide" id="slide1">
-    <img src="/images/layanan/image.png" alt="Teknisi SONUS memasang panel surya di atap pabrik berpanel logam">
+    <img src="/images/layanan/image.png" alt="Teknisi SONUS memasang panel surya di atap pabrik berpanel logam" width="810" height="537">
   </div>
   <div class="slide" id="slide2">
-    <img src="/images/layanan/image-1.png" alt="Dua teknisi berhelm mengangkat modul surya saat pemasangan di atap gedung">
+    <img src="/images/layanan/image-1.png" alt="Dua teknisi berhelm mengangkat modul surya saat pemasangan di atap gedung" width="810" height="537">
   </div>
   <div class="slide" id="slide3">
-    <img src="/images/layanan/image-2.png" alt="Tampak atas teknisi memeriksa deretan panel surya yang terpasang di atap">
+    <img src="/images/layanan/image-2.png" alt="Tampak atas teknisi memeriksa deretan panel surya yang terpasang di atap" width="810" height="537">
   </div>
   <div class="slide" id="slide4">
-    <img src="/images/layanan/image-3.png" alt="Tampak udara PLTS atap dengan barisan panel surya di atap pabrik">
+    <img src="/images/layanan/image-3.png" alt="Tampak udara PLTS atap dengan barisan panel surya di atap pabrik" width="810" height="537">
   </div>
 
   <!-- Navigation -->

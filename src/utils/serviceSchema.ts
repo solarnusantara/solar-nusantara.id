@@ -1,10 +1,11 @@
 /**
- * Service + breadcrumb schema for the `layanan` collection.
+ * Service schema for the `layanan` collection.
  *
  * Same contract as articleSchema.ts: the nodes returned here are passed to
  * Layout.astro's `jsonLd` prop and merged into the page's single @graph, so
  * they reference the provider by @id (`#organization`) instead of restating it.
- * The layanan route calls this; nothing writes Service JSON-LD inline.
+ * The layanan route calls this; nothing writes Service JSON-LD inline. The page's
+ * BreadcrumbList is added by Layout.astro from the navigation (utils/breadcrumb.ts).
  */
 
 export interface ServiceSchemaInput {
@@ -31,16 +32,5 @@ export function buildServiceSchema(input: ServiceSchemaInput): Record<string, un
 		areaServed: { '@type': 'Country', name: 'Indonesia' },
 	};
 
-	// Last crumb carries no `item`: it is the current page (see articleSchema.ts).
-	const breadcrumb = {
-		'@type': 'BreadcrumbList',
-		'@id': `${url}#breadcrumb`,
-		itemListElement: [
-			{ '@type': 'ListItem', position: 1, name: 'Beranda', item: `${origin}/` },
-			{ '@type': 'ListItem', position: 2, name: 'Layanan', item: `${origin}/layanan/` },
-			{ '@type': 'ListItem', position: 3, name: title },
-		],
-	};
-
-	return [service, breadcrumb];
+	return [service];
 }
