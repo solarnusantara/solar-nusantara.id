@@ -2,19 +2,28 @@
 title: "Sistem Tenaga Surya EPC"
 description: "Layanan EPC sistem tenaga surya SONUS mencakup tiga segmen: komersial dan industri, Solar Home System, serta PJUTS, dari rancangan sampai konstruksi."
 ---
-Selamat datang di layanan Engineering, Procurement, and Construction (EPC) Sistem Tenaga Surya dari SONUS. Kami berdedikasi untuk menyediakan solusi energi bersih yang disesuaikan dengan kebutuhan spesifik Anda, baik untuk skala besar maupun kecil.
+**EPC (Engineering, Procurement, Construction) sistem tenaga surya** adalah layanan rancang bangun PLTS secara menyeluruh: SONUS merancang sistem, mengadakan komponen, membangun, lalu menyerahkannya siap pakai. PT Tripower Solar Nusantara, berdiri sejak 2019, melayani tiga segmen: komersial dan industri (C&I), Solar Home System (SHS) untuk rumah tangga dan daerah yang belum terjangkau jaringan PLN, serta penerangan jalan umum tenaga surya (PJUTS).
 
-Kami memahami bahwa setiap klien memiliki tantangan unik. Oleh karena itu, kami merancang layanan EPC kami untuk mencakup tiga segmen utama, memastikan solusi yang kami tawarkan tidak hanya efisien tetapi juga relevan dengan tujuan Anda.
+## Tiga Segmen Layanan EPC
 
-## Tiga Pilar Layanan EPC Kami
+| Segmen | Untuk siapa | Cakupan layanan |
+|---|---|---|
+| [Komersial & Industri (C&I)](/layanan/epc/segmen-ci) | Perusahaan dan industri: manufaktur, kesehatan, hospitality | Desain, engineering, pengadaan, konstruksi, commissioning, dan pemeliharaan sistem Solar PV |
+| [Solar Home System (SHS)](/layanan/epc/segmen-shs) | Rumah tangga dan daerah yang belum terjangkau jaringan PLN | PLTS atap dengan manajemen energi cerdas untuk memantau dan mengoptimalkan konsumsi listrik, instalasi profesional, dan layanan purna jual |
+| [Penerangan Jalan Umum Tenaga Surya (PJUTS)](/layanan/epc/sistem-pjuts) | Jalan umum, taman, dan area komersial | Lampu jalan bertenaga surya yang dapat dipasang tanpa jaringan listrik, dengan perawatan minimal |
 
-1. **[Segmen Komersial & Industri (C&I)](/layanan/epc/segmen-ci)**
-    Solusi turnkey kami untuk perusahaan dan industri mencakup segalanya mulai dari desain, pengadaan, hingga pemeliharaan. Kami fokus pada ROI yang cepat dan sistem yang andal untuk mendukung operasional bisnis Anda.
+## Tahapan Kerja EPC
 
-2. **[Segmen Smart Home System (SHS)](/layanan/epc/segmen-shs)**
-    Bawa energi bersih ke rumah Anda dengan sistem pintar kami. Kurangi tagihan listrik, tingkatkan nilai properti, dan nikmati kemandirian energi dengan solusi SHS yang terintegrasi.
+1. **Survei lokasi dan desain sistem**: menilai kebutuhan listrik dan kondisi lokasi, lalu merancang sistem yang sesuai.
+2. **Pengadaan peralatan**: panel surya, inverter, sistem baterai, sistem pemasangan, dan pengkabelan (lihat [produk SONUS](/produk/sistem-panel-surya)).
+3. **Instalasi dan konstruksi**: pemasangan sistem oleh tim SONUS.
+4. **Commissioning**: pengujian sampai sistem siap beroperasi.
+5. **Pemeliharaan dan purna jual**: perawatan berkala setelah sistem berjalan.
 
-3. **[Sistem Penerangan Jalan Umum Tenaga Surya (PJUTS)](/layanan/epc/sistem-pjuts)**
-    Solusi penerangan untuk ruang publik yang efisien, mandiri, dan ramah lingkungan. PJUTS kami dirancang untuk keandalan jangka panjang dengan perawatan minimal, ideal untuk jalan, taman, dan area komersial.
+## Segmen Mana yang Cocok?
 
-Jelajahi setiap layanan kami untuk menemukan bagaimana SONUS dapat membantu Anda mencapai tujuan energi terbarukan Anda.
+- **Perusahaan atau pabrik yang ingin menekan biaya listrik** memilih [Segmen C&I](/layanan/epc/segmen-ci).
+- **Rumah tangga yang ingin menurunkan tagihan listrik, atau tinggal di area tanpa jaringan PLN,** memilih [Solar Home System](/layanan/epc/segmen-shs).
+- **Pemerintah daerah, pengelola kawasan, atau pengembang yang membutuhkan penerangan ruang publik** memilih [PJUTS](/layanan/epc/sistem-pjuts).
+
+Untuk konsultasi proyek, hubungi kami melalui halaman [Kontak](/kontak).
