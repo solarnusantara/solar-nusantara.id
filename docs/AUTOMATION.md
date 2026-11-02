@@ -91,7 +91,8 @@ menjalankan penolakan di awal run supaya draft yang ditolak dihitung sebagai sto
 - **Gagal tertutup.** Kalau ERPSonus tidak terjangkau atau token salah, publish tidak
   menerbitkan apa pun (outcome `review-unavailable`, exit 1). Generate tetap jalan.
 - **Alasan penolakan tampil di repo publik** (`reviewNote` di `data/topics.json`).
-- Env di server: `SEO_REVIEW_TOKEN` (nilai sama dengan env ERPSonus), opsional
+- Env di server: `SEO_REVIEW_TOKEN`, nilainya sama dengan token yang diisi admin di ERPSonus
+  (SEO Marketing > Pengaturan > Token pipeline artikel; tidak perlu akses root), opsional
   `SEO_REVIEW_URL` untuk mengganti host (default `https://app.sonus.id/api/seo/review-decisions`).
 - Draft yang sudah ada saat gerbang ini dipasang dianggap disetujui (migrasi ERPSonus 252).
 
