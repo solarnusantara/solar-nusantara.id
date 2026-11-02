@@ -5,9 +5,9 @@ description: "Syarat TKDN modul surya kontraktor EPC: daftar uji, sertifikat yan
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan stempel sertifikasi dan kaca pembesar"
 focusKeyphrase: "tkdn modul surya kontraktor epc"
-pubDate: "2026-10-19"
+pubDate: "2026-10-30"
 tags: ["epc", "modul-surya", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Sejak Permen ESDM No. 2 Tahun 2024 berlaku, pemasangan PLTS atap tidak lagi dibatasi 100% dari daya terpasang pelanggan PLN, melainkan tunduk pada kuota PLN yang tersedia. Relaksasi ini memperbanyak proyek, tetapi memindahkan beban pembuktian ke tahap pengadaan. Di titik itulah syarat TKDN modul surya kontraktor EPC menjadi penentu: modul yang lolos spesifikasi teknis belum tentu lolos verifikasi kandungan dalam negeri. Uraian berikut fokus pada dokumen yang harus Anda minta ke pemasok, bukan pada dasar-dasar TKDN yang sudah dibahas di artikel pilar.
