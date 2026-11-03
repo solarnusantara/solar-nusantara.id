@@ -29,5 +29,6 @@ data/review/
 data/approved.txt
 data/*.log
 data/failed/
+data/audit/
 
 .pipeline.lock

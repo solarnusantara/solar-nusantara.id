@@ -10,6 +10,8 @@
     "check": "node scripts/check-content.mjs",
     "check-seo": "node scripts/check-seo.mjs",
     "audit": "node scripts/audit-site.mjs",
+    "audit:routine": "node scripts/audit-routine.mjs",
+    "test:audit": "node --test scripts/lib/audit-report.test.mjs",
     "new-article": "node scripts/new-article.mjs",
     "plan-topics": "node scripts/plan-topics.mjs",
     "generate": "node scripts/generate-article.mjs",
