@@ -418,7 +418,39 @@ jadwal seperti itu; pasang ulang baris crontab atau unit systemd dari `setup.sh`
 
 ---
 
-## 10. Batas keamanan data
+## 10. Audit mingguan
+
+`scripts/audit-routine.mjs` jalan tiap **Minggu 03:41** (cron, `flock -w` pada kunci yang sama).
+Ia **hanya melapor**: tidak menahan publish dan tidak mengubah artikel. Hasilnya dikirim ke
+ERPSonus (SEO Marketing > **Audit**), yang menampilkan apa yang baru muncul, sudah beres, dan
+masih terbuka dibanding minggu lalu. Salinan ada di `data/audit/<tanggal>.json` (tidak di-commit).
+
+| Pemeriksaan | Isi |
+|---|---|
+| content | `check-content`, dan aturan `check-seo` untuk setiap artikel yang tayang (satu temuan per artikel) |
+| site | `astro build`, lalu `audit-site --json` atas `dist/` (404 internal, duplikat, canonical, JSON-LD, ...) |
+| live | 80 URL sitemap di situs yang tayang, `/pratinjau/` tetap noindex, `robots.txt` (bot AI), `llms.txt`, JSON-LD Organization |
+| links | tautan eksternal semua artikel. Hanya 404/410 yang disebut mati; 403/429/5xx hanya info |
+| pipeline | token ERPSonus masih diterima, stok draf, topik `failed`, umur artikel terakhir, disk |
+
+Kritis: token ERPSonus hilang atau ditolak (publish berhenti diam-diam), stok draf nol, `/pratinjau/`
+bisa terindeks, build atau beranda gagal. Run menyala-merah di log (`exit 1`) bila ada temuan kritis
+atau pengiriman ke ERPSonus gagal.
+
+```bash
+npm run audit:routine -- --dry-run      # jalankan semua pemeriksaan, cetak temuan, tidak mengirim/menulis
+node scripts/audit-routine.mjs --skip-build --skip-live --skip-links   # hanya yang lokal
+tail -30 ~/sn-audit.log
+```
+
+Token memakai `SEO_REVIEW_TOKEN` yang sama dengan review. `geo_subset_score` hanya subset yang bisa
+dicek mesin (bot AI di robots, llms.txt, schema, sitemap); bandingkan dengan dirinya sendiri dari
+minggu ke minggu, bukan dengan skor `/geo` penuh. Jadwal ini hanya terpasang oleh `setup.sh` mode
+cron; di mode systemd belum ada unit-nya.
+
+---
+
+## 11. Batas keamanan data
 
 Repo ini **publik**. `DB_PR.csv` di proyek ERP memuat `Pagu` dan `Final Price` (harga
 pengadaan internal dan margin); generator tidak pernah membacanya. Berkas pasar internal

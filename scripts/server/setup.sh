@@ -230,23 +230,26 @@ else
 
 	GEN_LINE="7 2 * * 1 cd $CLONE && ${GEN_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/generate-article.mjs' >> \$HOME/sn-generate.log 2>&1 $MARKER"
 	PUB_LINE="23 9 * * 2-5 cd $CLONE && ${PUB_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/publish-drip.mjs' >> \$HOME/sn-publish.log 2>&1 $MARKER"
+	# Weekly audit, Sunday: reports only (see scripts/audit-routine.mjs). Waits for the pipeline lock like publish does. Cron mode only; the systemd branch above does not install it.
+	AUD_LINE="41 3 * * 0 cd $CLONE && ${PUB_LOCK}/bin/sh -c 'git pull --rebase --autostash && set -a && . $ENV_FILE && set +a && $NODE_BIN scripts/audit-routine.mjs' >> \$HOME/sn-audit.log 2>&1 $MARKER"
 
 	CRON_TMP="$(mktemp)"
 	crontab -l 2>/dev/null | grep -vF "$MARKER" > "$CRON_TMP" || true
 	printf '%s
 %s
-' "$GEN_LINE" "$PUB_LINE" >> "$CRON_TMP"
+%s
+' "$GEN_LINE" "$PUB_LINE" "$AUD_LINE" >> "$CRON_TMP"
 	if crontab "$CRON_TMP"; then
-		say "  crontab user terpasang (generate Senin 02:07, publish Selasa-Jumat 09:23)"
+		say "  crontab user terpasang (generate Senin 02:07, publish Selasa-Jumat 09:23, audit Minggu 03:41)"
 		say ""
 		crontab -l | grep -F "$MARKER" | sed 's/^/    /' | cut -c1-110
 	else
 		say "  PERINGATAN: gagal memasang crontab. Pasang manual:"
-		say "    crontab -e   lalu tambahkan dua baris dari $CRON_TMP"
+		say "    crontab -e   lalu tambahkan tiga baris dari $CRON_TMP"
 	fi
 	rm -f "$CRON_TMP"
 	say ""
-	say "  Log: \$HOME/sn-generate.log dan \$HOME/sn-publish.log"
+	say "  Log: \$HOME/sn-generate.log, \$HOME/sn-publish.log dan \$HOME/sn-audit.log"
 	say "  (mode user tidak punya journald, jadi log ke file)"
 fi
 
