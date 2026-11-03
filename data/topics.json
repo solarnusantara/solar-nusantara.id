@@ -2085,7 +2085,7 @@
     {
       "id": "manufaktur--walkway-tray--mutu",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 12,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2103,7 +2103,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
       "priority": 54,
-      "generatedAt": "2026-10-25T18:08:48.506Z"
+      "generatedAt": "2026-10-25T18:08:48.506Z",
+      "publishedAt": "2026-11-03T01:23:06.608Z"
     },
     {
       "id": "manufaktur--inverter--panduan",

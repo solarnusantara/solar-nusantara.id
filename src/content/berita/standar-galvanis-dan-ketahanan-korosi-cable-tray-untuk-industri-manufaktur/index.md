@@ -5,9 +5,9 @@ description: "Panduan standar galvanis cable tray industri manufaktur: uji, sert
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi cable tray logam dan walkway atap dengan stempel sertifikasi dan kaca pembesar"
 focusKeyphrase: "galvanis cable tray industri manufaktur"
-pubDate: "2026-10-25"
+pubDate: "2026-11-03"
 tags: ["manufaktur", "walkway-cable-tray", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Pengadaan cable tray untuk lantai produksi tidak cukup dinilai dari tebal plat saja. Standar galvanis cable tray industri manufaktur menuntut kesesuaian sistem, mutu pelapisan, dan bukti uji yang dapat ditelusuri. Rujukan yang lazim dipakai adalah standar sistem cable tray seperti IEC 61537, standar pelapisan seng panas untuk produk fabrikasi baja seperti ASTM A123, serta pedoman perlindungan korosi seperti ISO 12944. Pembeli perlu memastikan bahwa spesifikasi yang diminta memang dapat diverifikasi lewat dokumen, bukan hanya lewat pernyataan pemasok.
