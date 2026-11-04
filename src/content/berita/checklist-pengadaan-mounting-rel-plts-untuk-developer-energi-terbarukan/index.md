@@ -5,9 +5,9 @@ description: "Checklist pengadaan mounting rel developer energi terbarukan: veri
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi rel mounting aluminium dan braket atap dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
 focusKeyphrase: "pengadaan mounting rel developer energi terbarukan"
-pubDate: "2026-10-25"
+pubDate: "2026-11-04"
 tags: ["developer", "mounting", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan yang paling mahal di proyek PLTS jarang berupa salah hitung jumlah batang rel. Yang lebih sering terjadi adalah rel tiba di lokasi, tetapi profilnya tidak cocok dengan modul yang dipilih, jarak antar-penopang tidak sesuai beban angin di site, dan dokumen material belum lengkap saat audit. Pada titik itu pekerjaan instalasi berhenti sementara, dan jadwal commissioning bergeser. Checklist pengadaan mounting rel developer energi terbarukan di bawah ini disusun agar situasi tersebut tidak terulang.
