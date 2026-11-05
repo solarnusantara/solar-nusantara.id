@@ -5,9 +5,9 @@ description: "Panduan mengenal inverter GoodWe: lini on-grid, hybrid, baterai, d
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter goodwe"
-pubDate: "2026-10-25"
+pubDate: "2026-11-05"
 tags: ["pengetahuan-material", "inverter", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Di kategori material kelistrikan PLTS, GoodWe memproduksi inverter string dan hybrid, baterai penyimpanan, serta smart meter. Ketiga kelompok produk itu saling terkait: inverter menentukan konfigurasi string DC dan keluaran AC, baterai menentukan apakah sistem berarsitektur hybrid, dan smart meter menutup kebutuhan pengukuran energi. Bagi tim pengadaan, pemilihan seri yang tepat berawal dari cara membaca spesifikasi inverter GoodWe secara berurutan, dimulai dari arsitektur sistem.
