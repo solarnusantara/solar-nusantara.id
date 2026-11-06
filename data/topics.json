@@ -188,7 +188,7 @@
     {
       "id": "epc--pv-modul--pengadaan",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 15,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -206,7 +206,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 90,
-      "generatedAt": "2026-10-25T18:10:03.373Z"
+      "generatedAt": "2026-10-25T18:10:03.373Z",
+      "publishedAt": "2026-11-06T01:23:06.510Z"
     },
     {
       "id": "epc--pv-modul--mutu",

@@ -5,9 +5,9 @@ description: "Checklist pengadaan modul surya kontraktor EPC: verifikasi teknis,
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
 focusKeyphrase: "pengadaan modul surya kontraktor epc"
-pubDate: "2026-10-25"
+pubDate: "2026-11-06"
 tags: ["epc", "modul-surya", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan yang paling mahal biasanya tidak terlihat saat negosiasi, tetapi muncul di lapangan: modul tiba dengan dimensi berbeda dari rel yang sudah dipesan, atau tegangan string tidak cocok dengan jendela MPPT inverter. Dalam pengadaan modul surya kontraktor EPC, satu lembar datasheet yang tidak dibaca sampai habis bisa memaksa perubahan struktur, kabel, dan jadwal commissioning. Artikel ini tidak mengulang dasar-dasar PLTS, melainkan langsung ke hal spesifik yang perlu Anda periksa sebelum mengirim inquiry dan sebelum menerbitkan PO.
