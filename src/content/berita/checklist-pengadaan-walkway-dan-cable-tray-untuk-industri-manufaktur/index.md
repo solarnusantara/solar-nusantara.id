@@ -5,9 +5,9 @@ description: "Checklist pengadaan walkway cable tray industri manufaktur untuk m
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi cable tray logam dan walkway atap dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
 focusKeyphrase: "pengadaan walkway cable tray industri manufaktur"
-pubDate: "2026-11-01"
+pubDate: "2026-11-10"
 tags: ["manufaktur", "walkway-cable-tray", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Kesalahan pengadaan walkway cable tray industri manufaktur yang paling mahal sering terjadi karena komponen ini dianggap pelengkap, bukan bagian dari sistem yang menentukan keselamatan dan keandalan operasi. Spesifikasi yang tidak cocok dengan beban kabel, lingkungan korosif, atau rute pemeliharaan baru ketahuan setelah instalasi berjalan. Dampaknya bukan hanya pekerjaan bongkar-pasang, tetapi juga gangguan jadwal produksi dan penundaan commissioning. Artikel turunan ini langsung membahas checklist praktis untuk tim pengadaan, project manager, dan direksi di industri manufaktur.

@@ -2067,7 +2067,7 @@
     {
       "id": "manufaktur--walkway-tray--pengadaan",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 16,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2085,7 +2085,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
       "priority": 54,
-      "generatedAt": "2026-11-01T18:09:24.657Z"
+      "generatedAt": "2026-11-01T18:09:24.657Z",
+      "publishedAt": "2026-11-10T01:23:15.755Z"
     },
     {
       "id": "manufaktur--walkway-tray--mutu",
