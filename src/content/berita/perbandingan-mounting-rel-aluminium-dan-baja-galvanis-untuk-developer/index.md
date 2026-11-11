@@ -5,9 +5,9 @@ description: "Perbandingan teknis mounting rel aluminium galvanis developer ener
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi dua varian rel mounting aluminium dan braket atap berdampingan dengan timbangan di antaranya"
 focusKeyphrase: "mounting rel aluminium galvanis developer energi terbarukan"
-pubDate: "2026-11-01"
+pubDate: "2026-11-11"
 tags: ["developer", "mounting", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Keputusan pertama dalam desain struktur PLTS adalah menetapkan apakah rel mounting memakai aluminium atau baja galvanis. Perbandingan mounting rel aluminium galvanis developer energi terbarukan sebaiknya tidak dibaca sebagai satu material, melainkan dua jalur yang harus diuji terhadap beban atap, korosi, bentang, dan metode pemasangan. Developer perlu mengunci kriteria ini sebelum gambar for construction dan pengadaan dikeluarkan. Tanpa keputusan awal, spesifikasi dapat berubah di tengah proses dan memperpanjang review teknis.

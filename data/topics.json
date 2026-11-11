@@ -938,7 +938,7 @@
     {
       "id": "developer--mounting-rel--perbandingan",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 17,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -956,7 +956,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
       "priority": 100,
-      "generatedAt": "2026-11-01T18:08:15.017Z"
+      "generatedAt": "2026-11-01T18:08:15.017Z",
+      "publishedAt": "2026-11-11T01:23:11.088Z"
     },
     {
       "id": "developer--mounting-rel--pengadaan",
