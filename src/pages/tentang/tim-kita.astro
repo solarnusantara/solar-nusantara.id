@@ -101,7 +101,9 @@ const groups = [
   { title: 'Dewan Direksi', people: directors, grid: 'sm:grid-cols-2 max-w-4xl' },
   { title: 'Manajemen', people: management, grid: 'sm:grid-cols-2 lg:grid-cols-3 max-w-7xl' },
   { title: 'Regional Manager', people: regional, grid: 'sm:grid-cols-2 max-w-4xl' },
-  { title: 'Tim Redaksi', people: editorial, grid: 'sm:grid-cols-2 max-w-4xl' },
+  // Tim Redaksi disembunyikan dari tampilan (hidden: true). Datanya tetap dipakai
+  // untuk JSON-LD supaya @id penulis di artikel tetap ter-resolve.
+  { title: 'Tim Redaksi', people: editorial, grid: 'sm:grid-cols-2 max-w-4xl', hidden: true },
 ];
 
 const slugify = (name: string) =>
@@ -144,7 +146,7 @@ const jsonLd = people.map((p) => ({
         <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight">Tim Kami</h1>
       </div>
 
-      {groups.map((group) => (
+      {groups.filter((g) => !g.hidden).map((group) => (
         <section class="mb-20">
           <h2 class="text-3xl font-bold text-center mb-12">{group.title}</h2>
           <div class={`grid grid-cols-1 gap-10 md:gap-12 mx-auto ${group.grid}`}>
