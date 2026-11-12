@@ -24,6 +24,7 @@
     "astro": "astro"
   },
   "dependencies": {
+    "@astrojs/rss": "^4.0.19",
     "@astrojs/sitemap": "^3.6.0",
     "astro": "^5.15.6",
     "gsap": "^3.14.2",

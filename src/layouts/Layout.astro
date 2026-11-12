@@ -129,7 +129,7 @@ const structuredData = {
       "@type": "Organization",
       "@id": `${baseUrl}/#organization`,
       "name": "PT Tripower Solar Nusantara",
-      "alternateName": ["Solar Nusantara", "SONUS", "Sonus EPC"],
+      "alternateName": ["Solar Nusantara", "SONUS", "Sonus EPC", "SonusHUB"],
       "url": baseUrl,
       "logo": {
         "@type": "ImageObject",
@@ -137,22 +137,47 @@ const structuredData = {
         "width": 1024,
         "height": 1024
       },
+      "foundingDate": "2019",
       "founder": {
         "@type": "Person",
-        "name": "Tedi Wintoko"
+        "name": "Tedi Wintoko",
+        "url": `${baseUrl}/tentang/tim-kita/#tedi-s-wintoko`
+      },
+      "knowsAbout": [
+        "PLTS atap dan EPC PLTS",
+        "Manajemen energi",
+        "Inverter surya",
+        "Modul surya ber-TKDN",
+        "Sistem mounting PLTS",
+        "SPKL dan stasiun pengisian kendaraan listrik (EV charging)",
+        "Biomassa: pelet, RDF, dan SRF",
+        "Penerangan jalan umum tenaga surya (PJUTS)",
+        "Carbon capture"
+      ],
+      "brand": {
+        "@type": "Brand",
+        "name": "SonusHUB",
+        "url": "https://sonushub.id"
       },
       "contactPoint": {
         "@type": "ContactPoint",
         "telephone": "+62 821 7000 0575",
-        "contactType": "technical support",
+        "contactType": "sales",
         "email": "busdev.sonus@solar-nusantara.id",
         "areaServed": "ID",
-        "availableLanguage": "Indonesian"
+        "availableLanguage": "Indonesian",
+        "hoursAvailable": {
+          "@type": "OpeningHoursSpecification",
+          "dayOfWeek": ["Monday", "Tuesday", "Wednesday", "Thursday", "Friday"],
+          "opens": "09:00",
+          "closes": "17:00"
+        }
       },
       "sameAs": [
         "https://instagram.com/solar_nusantara",
         "https://www.youtube.com/@Sonus.ID_",
-        "https://www.linkedin.com/company/solar-nusantara/"
+        "https://www.linkedin.com/company/solar-nusantara/",
+        "https://sonushub.id"
       ]
     },
     {
@@ -251,6 +276,7 @@ const structuredData = {
 			different canonical URL and split the signal for the same page.
 		*/}
 		<link rel="canonical" href={canonicalUrl} />
+		<link rel="alternate" type="application/rss+xml" title="Berita Solar Nusantara" href="/rss.xml" />
 		{noindex && <meta name="robots" content="noindex, nofollow" />}
 		<meta name="description" content={description} />
 		<meta name="generator" content={Astro.generator} />

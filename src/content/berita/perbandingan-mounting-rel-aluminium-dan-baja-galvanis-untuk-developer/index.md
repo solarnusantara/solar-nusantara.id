@@ -6,6 +6,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi dua varian rel mounting aluminium dan braket atap berdampingan dengan timbangan di antaranya"
 focusKeyphrase: "mounting rel aluminium galvanis developer energi terbarukan"
 pubDate: "2026-11-11"
+updatedDate: "2026-11-12"
 tags: ["developer", "mounting", "pengadaan-material", "teknis"]
 draft: false
 ---
@@ -67,6 +68,13 @@ Dokumen-dokumen itu lebih penting daripada klaim umum di brosur. Jika ada ketida
 
 ## Rekomendasi untuk developer energi terbarukan
 Rekomendasi praktisnya: tetapkan aluminium sebagai kandidat utama bila beban atap dan kemudahan handling menjadi kendala, dan baja galvanis sebagai kandidat utama bila kekakuan serta bentang lebih menentukan. Untuk keputusan yang dapat dipertanggungjawabkan, mounting rel aluminium galvanis developer energi terbarukan harus dinilai lewat perhitungan struktur, data korosi lokasi, dan verifikasi dokumen pengadaan. Buka [katalog SonusHUB](https://sonushub.id/products?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=mounting-rel&utm_content=perbandingan-mounting-rel-aluminium-dan-baja-galvanis-untuk-developer&utm_term=isi), bandingkan kategori yang tersedia, lalu kirim inquiry melalui keranjang inquiry atau Chat Sales SonusHUB.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Badan Standardisasi Nasional](https://www.bsn.go.id/main) — BSN, penerbit SNI sebagai acuan standar mutu dan desain di Indonesia.
+- [Solar Photovoltaic System Design Basics](https://www.energy.gov/eere/solar/solar-photovoltaic-system-design-basics) — U.S. Department of Energy, dasar desain sistem PV termasuk pemasangan dan faktor lingkungan.
 
 ---
 

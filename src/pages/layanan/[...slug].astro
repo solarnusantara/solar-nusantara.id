@@ -4,6 +4,8 @@ import Layout from '../../layouts/Layout.astro';
 import IntroPageMenu from '../../components/IntroPageMenu.astro';
 import { navLinks, type NavLink } from '../../data/navLinks';
 import { buildServiceSchema } from '../../utils/serviceSchema';
+import { buildFaqSchema } from '../../utils/faqSchema';
+import FaqSection from '../../components/FaqSection.astro';
 import { SITE_CONFIG } from '../../config';
 
 export async function getStaticPaths() {
@@ -86,13 +88,18 @@ if (type === 'content') {
 
 // Only pages with real body content describe a service. Hub pages are menus.
 const baseUrl = Astro.site ? Astro.site.origin : SITE_CONFIG.url;
+const pageUrl = new URL(Astro.url.pathname, baseUrl).href;
+const faq = type === 'content' ? entry.data.faq ?? [] : [];
 const jsonLd = type === 'content'
-  ? buildServiceSchema({
-      url: new URL(Astro.url.pathname, baseUrl).href,
-      baseUrl,
-      title,
-      description,
-    })
+  ? [
+      ...buildServiceSchema({
+        url: pageUrl,
+        baseUrl,
+        title,
+        description,
+      }),
+      ...buildFaqSchema(pageUrl, faq),
+    ]
   : [];
 ---
 
@@ -102,6 +109,8 @@ const jsonLd = type === 'content'
       <article class="prose prose-lg max-w-4xl mx-auto">
         <h1>{title}</h1>
         <Content />
+
+        <FaqSection items={faq} />
         
         {menuItems.length > 0 && (
           <div class="mt-16 pt-8 border-t">

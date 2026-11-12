@@ -5,6 +5,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "modul surya kontraktor epc"
 pubDate: "2026-10-21"
+updatedDate: "2026-11-12"
 tags: ["epc", "modul-surya", "pengadaan-material", "panduan"]
 draft: false
 ---
@@ -107,6 +108,14 @@ Evaluasi akan jauh lebih cepat bila semua pemasok menjawab format yang sama. Pen
 Pada akhirnya, pemilihan modul surya kontraktor EPC adalah soal disiplin dokumen: baseline yang jelas, kriteria yang terukur, dan pertanyaan yang sama untuk semua pemasok. Dengan begitu, keputusan pengadaan berhenti menjadi soal selera dan berubah menjadi keputusan teknis yang bisa dipertanggungjawabkan.
 
 Untuk mempercepat langkah pertama, buka [katalog SonusHUB](https://sonushub.id/products?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=pv-modul&utm_content=panduan-memilih-modul-surya-untuk-kontraktor-epc-plts&utm_term=isi) dan bandingkan kategori modul surya beserta komponen pendukungnya. Kalkulator panel surya di [halaman kalkulator](https://sonushub.id/kalkulator-panel-surya?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=pv-modul&utm_content=panduan-memilih-modul-surya-untuk-kontraktor-epc-plts&utm_term=isi) dapat dipakai tanpa mendaftar untuk memperkirakan kebutuhan awal proyek. Setelah shortlist terbentuk, kirim inquiry melalui keranjang inquiry atau hubungi Chat Sales SonusHUB agar tim dapat merespons dengan spesifikasi yang sesuai.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [IEC 61215-1:2021, kualifikasi desain modul PV](https://webstore.iec.ch/en/publication/61345) — International Electrotechnical Commission, persyaratan uji kualifikasi desain modul fotovoltaik.
+- [Solar Photovoltaic Performance and Efficiency Basics](https://www.energy.gov/eere/solar/solar-performance-and-efficiency) — U.S. Department of Energy, penjelasan efisiensi dan faktor yang memengaruhi kinerja PV.
+- [Informasi ketenagalistrikan dan layanan pelanggan](https://www.pln.co.id) — PT PLN (Persero), rujukan resmi untuk interkoneksi dan ketentuan kuota PLTS atap.
 
 ---
 

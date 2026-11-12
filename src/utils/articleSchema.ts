@@ -13,6 +13,9 @@
  * the same organisation.
  */
 
+/** Frontmatter dates are date-only (parsed as UTC midnight); emit them as that calendar day in WIB. */
+const toWib = (d: Date) => `${d.toISOString().slice(0, 10)}T00:00:00+07:00`;
+
 export interface ArticleSchemaInput {
 	/** Canonical absolute URL of the article. */
 	url: string;
@@ -104,11 +107,11 @@ export function buildArticleSchema(input: ArticleSchemaInput): Record<string, un
 		name: title,
 		description,
 		inLanguage: 'id-ID',
-		datePublished: datePublished.toISOString(),
+		datePublished: toWib(datePublished),
 		// Google reads dateModified to judge freshness. With no explicit update
 		// date, publication date is the honest answer - never "now", which would
 		// falsely claim every article was revised on every build.
-		dateModified: (dateModified ?? datePublished).toISOString(),
+		dateModified: toWib(dateModified ?? datePublished),
 		author,
 		publisher: { '@id': `${origin}/#organization` },
 		...(imageUrl ? { image: imageUrl } : {}),

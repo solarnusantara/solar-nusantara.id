@@ -6,6 +6,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter deye"
 pubDate: "2026-10-29"
+updatedDate: "2026-11-12"
 tags: ["pengetahuan-material", "inverter", "merek", "teknis"]
 draft: false
 ---
@@ -69,6 +70,13 @@ Sebelum pesanan dikirim, mintalah datasheet resmi untuk kode model yang persis, 
 8. Kondisi lingkungan: suhu operasi, derating, dan kelas proteksi IP.
 
 Dengan memeriksa daftar tersebut pada datasheet resmi inverter Deye, tim pengadaan dapat menutup celah kesalahan model sebelum barang dikirim. Langkah berikutnya ada di platform: buka [katalog material SonusHUB](https://sonushub.id/products?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=inverter&utm_content=mengenal-inverter-deye-lini-produk-dan-cara-membaca-spesifikasinya&utm_term=isi), bandingkan spesifikasi unit yang masuk daftar pendek, lalu kirim inquiry lewat keranjang inquiry atau hubungi Chat Sales SonusHUB.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Informasi ketenagalistrikan dan layanan pelanggan](https://www.pln.co.id) — PT PLN (Persero), rujukan resmi untuk interkoneksi dan ketentuan kuota PLTS atap.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Solar Integration: Inverters and Grid Services Basics](https://www.energy.gov/eere/solar/solar-integration-inverters-and-grid-services-basics) — U.S. Department of Energy, fungsi inverter dan layanan jaringan.
 
 ---
 

@@ -93,7 +93,7 @@ export default defineConfig({
       serialize(item) {
         const m = /\/berita\/([^/]+)\/$/.exec(item.url);
         const date = m && ARTICLE_DATES.get(m[1]);
-        if (date) item.lastmod = date.toISOString();
+        if (date) item.lastmod = `${date.toISOString().slice(0, 10)}T00:00:00+07:00`;
         return item;
       },
     }),
