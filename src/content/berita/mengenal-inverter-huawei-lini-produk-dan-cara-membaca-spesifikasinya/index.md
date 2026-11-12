@@ -5,9 +5,9 @@ description: "Panduan mengenal inverter Huawei, lini produk di SonusHUB, dan car
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter huawei"
-pubDate: "2026-11-01"
+pubDate: "2026-11-12"
 tags: ["pengetahuan-material", "inverter", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Bagi tim pengadaan PLTS, inverter Huawei adalah kategori material yang perlu dibaca sebagai sistem, bukan sekadar kotak konversi daya. Keputusan memilih model biasanya dimulai dari konfigurasi string, fase jaringan, dan fitur monitoring yang diminta desain. Karena itu, pengenalan lini produk sebaiknya langsung diikuti cara membaca datasheet resmi. Artikel ini membahas keduanya untuk kebutuhan pengadaan B2B.

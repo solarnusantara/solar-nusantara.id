@@ -6555,7 +6555,7 @@
     {
       "id": "umum--merek--huawei",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 18,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6574,7 +6574,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
       "priority": 95,
-      "generatedAt": "2026-11-01T18:13:03.436Z"
+      "generatedAt": "2026-11-01T18:13:03.436Z",
+      "publishedAt": "2026-11-12T01:23:08.296Z"
     },
     {
       "id": "umum--merek--goodwe",
