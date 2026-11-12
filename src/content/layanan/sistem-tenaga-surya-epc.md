@@ -1,6 +1,17 @@
 ---
 title: "Sistem Tenaga Surya EPC"
 description: "Layanan EPC sistem tenaga surya SONUS mencakup tiga segmen: komersial dan industri, Solar Home System, serta PJUTS, dari rancangan sampai konstruksi."
+faq:
+  - q: "Apa yang dimaksud EPC sistem tenaga surya?"
+    a: "EPC (Engineering, Procurement, Construction) adalah layanan rancang bangun PLTS secara menyeluruh. SONUS merancang sistem, mengadakan komponen seperti panel surya, inverter, sistem baterai, sistem pemasangan, dan pengkabelan, membangunnya, lalu menyerahkannya siap pakai. Seluruh rangkaian pekerjaan ditangani satu penyedia, bukan dipecah ke beberapa vendor."
+  - q: "Apa saja tahapan proyek EPC PLTS dari survei sampai beroperasi?"
+    a: "Ada lima tahap: survei lokasi dan desain sistem, pengadaan peralatan, instalasi dan konstruksi oleh tim SONUS, commissioning atau pengujian sampai sistem siap beroperasi, lalu pemeliharaan dan purna jual. Survei di awal menilai kebutuhan listrik dan kondisi lokasi, sehingga sistem dirancang sesuai kebutuhan nyata."
+  - q: "Segmen apa saja yang dilayani EPC SONUS?"
+    a: "SONUS melayani tiga segmen. Komersial dan industri (C&I) untuk perusahaan seperti manufaktur, kesehatan, dan hospitality. Solar Home System (SHS) untuk rumah tangga dan daerah yang belum terjangkau jaringan PLN. Penerangan jalan umum tenaga surya (PJUTS) untuk jalan umum, taman, dan area komersial."
+  - q: "Berapa kisaran biaya PLTS 100 kWp untuk pabrik?"
+    a: "Untuk sistem on-grid tanpa baterai, estimasi CAPEX PLTS 100 kWp pabrik manufaktur berada di kisaran Rp 900 juta sampai Rp 1,3 miliar, atau sekitar Rp 9 juta hingga Rp 13 juta per kWp. Angka ini perkiraan anggaran awal, bukan penawaran final. Biaya bergantung pada skema kepemilikan, kuota PLN, spesifikasi komponen, dan kondisi atap."
+  - q: "Apakah SONUS menyediakan perawatan setelah sistem terpasang?"
+    a: "Ya. Pemeliharaan dan purna jual merupakan tahap terakhir dalam alur kerja EPC SONUS. Segmen C&I mencakup pemeliharaan sistem Solar PV, Solar Home System mencakup layanan purna jual, dan PJUTS dirancang dengan perawatan minimal. Untuk cakupan kontrak pemeliharaan proyek Anda, silakan konsultasikan melalui halaman Kontak."
 ---
 **EPC (Engineering, Procurement, Construction) sistem tenaga surya** adalah layanan rancang bangun PLTS secara menyeluruh: SONUS merancang sistem, mengadakan komponen, membangun, lalu menyerahkannya siap pakai. PT Tripower Solar Nusantara, berdiri sejak 2019, melayani tiga segmen: komersial dan industri (C&I), Solar Home System (SHS) untuk rumah tangga dan daerah yang belum terjangkau jaringan PLN, serta penerangan jalan umum tenaga surya (PJUTS).
 

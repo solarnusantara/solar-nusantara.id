@@ -6,6 +6,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi rel mounting aluminium dan braket atap dalam peti kayu di atas palet dengan papan jepit berisi daftar centang"
 focusKeyphrase: "pengadaan mounting rel developer energi terbarukan"
 pubDate: "2026-11-04"
+updatedDate: "2026-11-12"
 tags: ["developer", "mounting", "pengadaan-material", "teknis"]
 draft: false
 ---
@@ -66,6 +67,13 @@ Sebelum PO terbit, tim pengadaan sebaiknya menahan proses sampai berkas berikut 
 - Pernyataan kompatibilitas dengan dimensi modul dan struktur atap yang dipakai proyek.
 
 Dengan berkas itu, pengadaan mounting rel developer energi terbarukan berpindah dari negosiasi klaim menjadi verifikasi dokumen. Langkah berikutnya sederhana: buka [katalog SonusHUB](https://sonushub.id/categories?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=mounting-rel&utm_content=checklist-pengadaan-mounting-rel-plts-untuk-developer-energi-terbarukan&utm_term=isi), bandingkan spesifikasi yang tersedia, lalu kirim inquiry lewat keranjang atau hubungi Chat Sales untuk meminta kelengkapan dokumen di atas.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Badan Standardisasi Nasional](https://www.bsn.go.id/main) — BSN, penerbit SNI sebagai acuan standar mutu dan desain di Indonesia.
+- [Solar Photovoltaic System Design Basics](https://www.energy.gov/eere/solar/solar-photovoltaic-system-design-basics) — U.S. Department of Energy, dasar desain sistem PV termasuk pemasangan dan faktor lingkungan.
 
 ---
 

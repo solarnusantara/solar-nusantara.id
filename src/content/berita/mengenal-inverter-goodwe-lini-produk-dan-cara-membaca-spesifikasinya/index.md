@@ -6,6 +6,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter goodwe"
 pubDate: "2026-11-05"
+updatedDate: "2026-11-12"
 tags: ["pengetahuan-material", "inverter", "merek", "teknis"]
 draft: false
 ---
@@ -80,6 +81,13 @@ Sebelum inquiry dikirim, tim pengadaan sebaiknya memverifikasi beberapa hal seca
 Untuk penyaringan awal, katalog [inverter string dan hybrid di SonusHUB](https://sonushub.id/category/inx-string-hybrid-inverters-sh?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=inverter&utm_content=mengenal-inverter-goodwe-lini-produk-dan-cara-membaca-spesifikasinya&utm_term=isi) dapat dipakai untuk melihat varian yang tersedia sebelum meminta datasheet. Bila proyek mencakup pekerjaan pemasangan, koordinasi dengan tim [layanan EPC sistem tenaga surya](/layanan/sistem-tenaga-surya-epc/) membantu memastikan spesifikasi inverter selaras dengan desain keseluruhan.
 
 Langkah terakhir sederhana: buka [katalog SonusHUB](https://sonushub.id/products?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=inverter&utm_content=mengenal-inverter-goodwe-lini-produk-dan-cara-membaca-spesifikasinya&utm_term=isi), bandingkan seri yang relevan, lalu kirim inquiry lewat keranjang atau hubungi Chat Sales. Dengan urutan pemeriksaan di atas, keputusan atas inverter GoodWe dapat diambil berdasarkan dokumen resmi, bukan asumsi.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Informasi ketenagalistrikan dan layanan pelanggan](https://www.pln.co.id) — PT PLN (Persero), rujukan resmi untuk interkoneksi dan ketentuan kuota PLTS atap.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Solar Integration: Inverters and Grid Services Basics](https://www.energy.gov/eere/solar/solar-integration-inverters-and-grid-services-basics) — U.S. Department of Energy, fungsi inverter dan layanan jaringan.
 
 ---
 

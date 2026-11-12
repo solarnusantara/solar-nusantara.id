@@ -5,6 +5,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter plts industri manufaktur"
 pubDate: "2026-10-27"
+updatedDate: "2026-11-12"
 tags: ["manufaktur", "inverter", "pengadaan-material", "panduan"]
 draft: false
 ---
@@ -106,6 +107,14 @@ Untuk mempercepat proses, susun daftar pemasok dan lakukan shortlisting berdasar
 Bila pabrik membutuhkan dukungan teknis lebih lanjut, [layanan EPC PLTS](/layanan/sistem-tenaga-surya-epc/) bisa membantu menyusun spesifikasi dan mengevaluasi penawaran. Untuk proyek yang memerlukan integrasi dengan sistem eksisting, pertimbangkan untuk melibatkan tim EPC sejak tahap penyusunan spesifikasi. Keterlibatan lebih awal bisa mencegah kesalahan konfigurasi string dan mempercepat proses perizinan.
 
 Sebagai langkah penutup, ingat bahwa pemilihan inverter PLTS industri manufaktur adalah keputusan teknis yang berdampak jangka panjang. Spesifikasi yang jelas, verifikasi kuota, dan dokumen pengadaan yang rapi akan memudahkan evaluasi penawaran. Mulai dari data beban, susun kriteria, dan kirim permintaan penawaran ke pemasok yang masuk shortlist.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Informasi ketenagalistrikan dan layanan pelanggan](https://www.pln.co.id) — PT PLN (Persero), rujukan resmi untuk interkoneksi dan ketentuan kuota PLTS atap.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Solar Integration: Inverters and Grid Services Basics](https://www.energy.gov/eere/solar/solar-integration-inverters-and-grid-services-basics) — U.S. Department of Energy, fungsi inverter dan layanan jaringan.
+- [Solar Photovoltaic Performance and Efficiency Basics](https://www.energy.gov/eere/solar/solar-performance-and-efficiency) — U.S. Department of Energy, penjelasan efisiensi dan faktor yang memengaruhi kinerja PV.
 
 ---
 

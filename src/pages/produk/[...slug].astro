@@ -4,6 +4,8 @@ import Layout from '../../layouts/Layout.astro';
 import IntroPageMenu from '../../components/IntroPageMenu.astro';
 import { navLinks, type NavLink } from '../../data/navLinks';
 import { buildProductSchema } from '../../utils/productSchema';
+import { buildFaqSchema } from '../../utils/faqSchema';
+import FaqSection from '../../components/FaqSection.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('produk');
@@ -52,6 +54,7 @@ let description = '';
 let menuItems = [];
 let Content = null;
 let jsonLd = [];
+let faq = [];
 
 if (type === 'content') {
   const rendered = await entry.render();
@@ -69,6 +72,8 @@ if (type === 'content') {
     description,
     properties: entry.data.properties,
   });
+  faq = entry.data.faq ?? [];
+  jsonLd = [...jsonLd, ...buildFaqSchema(new URL(Astro.url.pathname, baseUrl).href, faq)];
   
   const fullPath = `/produk/${slug}`;
   const findInNav = (links: NavLink[]): NavLink | undefined => {
@@ -105,6 +110,8 @@ if (type === 'content') {
       <article class="prose prose-lg max-w-4xl mx-auto">
         <h1>{title}</h1>
         <Content />
+
+        <FaqSection items={faq} />
         
         {menuItems.length > 0 && (
           <div class="mt-16 pt-8 border-t">

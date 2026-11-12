@@ -157,7 +157,14 @@ const simplePageSchema = z.object({
   description: z.string().optional(),
 });
 
-const layananCollection = defineCollection({ schema: simplePageSchema });
+/**
+ * Optional visible FAQ block + FAQPage JSON-LD (see components/FaqSection.astro
+ * and utils/faqSchema.ts). Plain text only; answers should repeat facts the site
+ * already states.
+ */
+const faqSchema = z.array(z.object({ q: z.string().min(1), a: z.string().min(1) })).max(8).optional();
+
+const layananCollection = defineCollection({ schema: simplePageSchema.extend({ faq: faqSchema }) });
 
 /**
  * Facts a product page states in its copy, repeated here as data so the page's
@@ -165,6 +172,7 @@ const layananCollection = defineCollection({ schema: simplePageSchema });
  * the page text already says - a figure that is not on the page does not belong.
  */
 const produkSchema = simplePageSchema.extend({
+  faq: faqSchema,
   properties: z
     .array(z.object({ name: z.string(), value: z.union([z.string(), z.number()]), unit: z.string().optional() }))
     .optional(),

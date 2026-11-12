@@ -6,6 +6,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "inverter huawei"
 pubDate: "2026-11-12"
+updatedDate: "2026-11-12"
 tags: ["pengetahuan-material", "inverter", "merek", "teknis"]
 draft: false
 ---
@@ -80,6 +81,13 @@ Permen ESDM No. 2 Tahun 2024 membuat pemasangan PLTS atap tunduk pada kuota PLN,
 ## Yang Harus Dicek di Datasheet Resmi Sebelum Memesan
 
 Sebelum memesan inverter Huawei, tim pengadaan sebaiknya memverifikasi datasheet resmi untuk model yang tepat. Cek konfigurasi fase dan daya, jumlah MPPT, rentang tegangan input, arus maksimum, serta fitur proteksi. Untuk proyek yang memakai optimizer, baterai, atau monitoring, validasi kompatibilitas dan kode aksesori pada dokumen resmi. Langkah terakhir, buka [katalog produk SonusHUB](https://sonushub.id/products?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=inverter&utm_content=mengenal-inverter-huawei-lini-produk-dan-cara-membaca-spesifikasinya&utm_term=isi), bandingkan model, lalu kirim inquiry atau hubungi Chat Sales SonusHUB.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Informasi ketenagalistrikan dan layanan pelanggan](https://www.pln.co.id) — PT PLN (Persero), rujukan resmi untuk interkoneksi dan ketentuan kuota PLTS atap.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Solar Integration: Inverters and Grid Services Basics](https://www.energy.gov/eere/solar/solar-integration-inverters-and-grid-services-basics) — U.S. Department of Energy, fungsi inverter dan layanan jaringan.
 
 ---
 

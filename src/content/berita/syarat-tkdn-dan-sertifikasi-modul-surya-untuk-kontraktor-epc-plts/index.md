@@ -6,6 +6,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan stempel sertifikasi dan kaca pembesar"
 focusKeyphrase: "tkdn modul surya kontraktor epc"
 pubDate: "2026-10-30"
+updatedDate: "2026-11-12"
 tags: ["epc", "modul-surya", "pengadaan-material", "teknis"]
 draft: false
 ---
@@ -62,6 +63,14 @@ Verifikasi bukan soal curiga, melainkan soal memastikan dokumen bisa dipertanggu
 Bila pemasok menawarkan modul berkualifikasi TKDN, [panel surya berkualifikasi TKDN](/produk/sistem-panel-surya/panel-surya/panel-tkdn/) dapat menjadi pembanding awal sebelum Anda meminta dokumen lengkap. Lakukan pengecekan ini pada setiap batch pengiriman, bukan hanya pada pengiriman pertama. Konsistensi antar batch adalah indikator paling jujur atas disiplin pemasok.
 
 Dengan begitu, syarat TKDN modul surya kontraktor EPC tidak berhenti sebagai formalitas berkas. Anda bisa melihat [katalog SonusHUB](https://sonushub.id/categories?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=pv-modul&utm_content=syarat-tkdn-dan-sertifikasi-modul-surya-untuk-kontraktor-epc-plts&utm_term=isi), membandingkan spesifikasi antar kategori, lalu mengirim inquiry lewat keranjang inquiry atau menghubungi Chat Sales SonusHUB. Untuk kebutuhan pendampingan teknis, [layanan EPC PLTS](/layanan/sistem-tenaga-surya-epc/) dapat dipakai sebagai rujukan penyusunan lingkup kerja.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Pusat P3DN, layanan TKDN](https://tkdn.kemenperin.go.id/) — Kementerian Perindustrian, rujukan resmi sertifikasi dan verifikasi TKDN.
+- [Badan Standardisasi Nasional](https://www.bsn.go.id/main) — BSN, penerbit SNI sebagai acuan standar mutu dan desain di Indonesia.
+- [IEC 61215-1:2021, kualifikasi desain modul PV](https://webstore.iec.ch/en/publication/61345) — International Electrotechnical Commission, persyaratan uji kualifikasi desain modul fotovoltaik.
+- [IEC 61215-2:2021, prosedur uji modul PV](https://webstore.iec.ch/en/publication/61350) — International Electrotechnical Commission, prosedur pengujian untuk kualifikasi modul.
 
 ---
 

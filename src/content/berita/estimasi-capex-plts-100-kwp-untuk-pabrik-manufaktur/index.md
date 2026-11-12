@@ -5,6 +5,7 @@ heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi grafik batang yang naik, tumpukan koin, dan satu panel surya"
 focusKeyphrase: "capex plts 100 kwp pabrik manufaktur"
 pubDate: "2026-10-09"
+updatedDate: "2026-11-12"
 tags: ["manufaktur", "biaya-roi", "plts", "teknis"]
 draft: false
 ---
@@ -82,6 +83,13 @@ Rentang Rp 900 juta hingga Rp 1,3 miliar dapat bergeser karena sejumlah variabel
 Setiap variabel tersebut memengaruhi CAPEX maupun nilai penghematan yang dihasilkan selama masa operasi.
 
 Secara ringkas, rentang investasi CAPEX PLTS 100 kWp pabrik manufaktur tetap berada di kisaran Rp 900 juta hingga Rp 1,3 miliar untuk sistem on-grid, dengan OPEX tahunan yang relatif kecil dibanding potensi penghematan tagihan listrik. Untuk memperoleh angka yang presisi sesuai kondisi atap dan profil beban pabrik, [layanan EPC untuk segmen industri](/layanan/epc/segmen-ci/) dapat melakukan survei lokasi dan menyusun studi kelayakan.
+
+## Sumber
+
+- [Peraturan Menteri ESDM No. 2 Tahun 2024 dan produk hukum ESDM lainnya](https://jdih.esdm.go.id) — JDIH Kementerian ESDM, basis data resmi regulasi PLTS atap dan kuota PLN.
+- [Direktorat Jenderal EBTKE](https://ebtke.esdm.go.id) — Kementerian ESDM, kebijakan dan data pengembangan energi baru terbarukan.
+- [Informasi ketenagalistrikan dan layanan pelanggan](https://www.pln.co.id) — PT PLN (Persero), rujukan resmi untuk interkoneksi dan ketentuan kuota PLTS atap.
+- [Solar Photovoltaic Performance and Efficiency Basics](https://www.energy.gov/eere/solar/solar-performance-and-efficiency) — U.S. Department of Energy, penjelasan efisiensi dan faktor yang memengaruhi kinerja PV.
 
 ---
 

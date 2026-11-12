@@ -1,6 +1,17 @@
 ---
 title: "Segmen C & I"
 description: "Layanan EPC PLTS SONUS untuk segmen komersial dan industri: rancang bangun, pengadaan, dan konstruksi sistem tenaga surya skala bisnis."
+faq:
+  - q: "Apa saja yang tercakup dalam layanan EPC SONUS untuk segmen C&I?"
+    a: "Layanan mencakup desain, engineering, pengadaan, konstruksi, commissioning, dan pemeliharaan sistem Solar PV. SONUS menawarkan turnkey solution, yaitu pengadaan, pembangunan, hingga commissioning dalam satu paket. Tim SONUS bekerja langsung dengan klien untuk memahami kebutuhan khusus. Pengalaman proyeknya meliputi sektor manufaktur, kesehatan, hospitality, dan industri lainnya."
+  - q: "Berapa biaya PLTS 100 kWp untuk pabrik manufaktur?"
+    a: "Untuk sistem on-grid tanpa baterai, estimasi CAPEX berada di kisaran Rp 900 juta sampai Rp 1,3 miliar, setara sekitar Rp 9 juta hingga Rp 13 juta per kWp. Biaya operasional tahunan diperkirakan sekitar Rp 22 juta. Semua angka ini perkiraan proporsional untuk anggaran awal, bukan penawaran; angka presisi diperoleh setelah survei lokasi."
+  - q: "Skema kepemilikan apa yang umum dipertimbangkan pabrik?"
+    a: "Tiga skema yang umum dipertimbangkan adalah CAPEX penuh, BOO (Build Own Operate), dan BOT (Build Operate Transfer). Pada CAPEX penuh perusahaan memiliki aset sejak awal. Pada BOO aset tetap milik developer seterusnya, dan pada BOT aset menjadi milik pemilik gedung setelah masa kontrak berakhir. Pilihan skema memengaruhi harga dan pencatatan biaya energi."
+  - q: "Data apa yang perlu disiapkan sebelum survei lokasi?"
+    a: "Siapkan tagihan listrik 12 bulan terakhir untuk melihat pola konsumsi siang hari, serta informasi luas atap dan daya dukung strukturnya. Dari dua data itu tim teknis memperkirakan rasio pemakaian sendiri dan kapasitas yang benar-benar dibutuhkan. Ketersediaan kuota PLN juga perlu diperiksa karena memengaruhi jadwal dan kapasitas akhir proyek."
+  - q: "Apakah SONUS pernah mengerjakan proyek C&I berskala besar?"
+    a: "Ya. Salah satunya PLTS atap sekitar 3,9 MWp di Otsuka, Sukabumi, Jawa Barat, dengan lingkup EPC penuh pada 2024 sampai 2025. Atapnya berjenis logam dan dibagi dua paket, 1,35 MWp dan 2,51 MWp. Survei lokasi dilakukan pada 11 September 2024, dan material dikirim bertahap dari Jakarta."
 ---
 
 <div class="slider-with-nav">
