@@ -7,6 +7,7 @@ heroImageAlt: "Kartu judul artikel Apa itu SonusHUB dengan logo Solar Nusantara 
 seoTitle: "Apa Itu SonusHUB? Platform Energi Surya B2B dan B2G"
 focusKeyphrase: "apa itu sonushub"
 tags: ["sonushub", "platform-b2b"]
+updatedDate: "2026-11-02"
 ---
 
 ## Memperkenalkan SonusHUB: Solusi Satu Pintu untuk Industri Fotovoltaik
@@ -18,6 +19,14 @@ Seiring dengan pesatnya pertumbuhan industri energi surya di Indonesia, kebutuha
 **SonusHUB** adalah platform digital yang dirancang khusus untuk mempermudah para integrator sistem, kontraktor, pengembang proyek, dan instansi pemerintah dalam mendapatkan semua kebutuhan material untuk proyek Pembangkit Listrik Tenaga Surya (PLTS).
 
 Berbeda dengan penawaran instalasi lengkap yang tersedia di [solar-nusantara.id](https://solar-nusantara.id), SonusHUB berfokus pada penyediaan komponen dan material secara terpisah. Ini memberikan fleksibilitas bagi Anda yang sudah memiliki tim teknis sendiri dan hanya membutuhkan pasokan produk berkualitas untuk proyek Anda.
+
+### SonusHUB dan Solar Nusantara: Apa Bedanya?
+
+| | Solar Nusantara | SonusHUB |
+|---|---|---|
+| Fokus | Penawaran instalasi lengkap | Penyediaan komponen dan material secara terpisah |
+| Alamat | [solar-nusantara.id](https://solar-nusantara.id) | [sonushub.id](https://sonushub.id) |
+| Cocok bagi | Pihak yang membutuhkan instalasi lengkap | Pihak yang sudah memiliki tim teknis sendiri dan hanya butuh pasokan produk |
 
 ## Untuk Siapa SonusHUB Dibuat?
 

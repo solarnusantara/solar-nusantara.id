@@ -8,7 +8,7 @@
  *   npm run publish -- --no-push          # commit locally
  *   npm run publish -- --not-before 2026-11-02
  *
- * Nobody reads a draft before it goes out, so the machine gates are the whole gate:
+ * Only a draft a reviewer approved in ERPSonus may go out (lib/review-gate.mjs), and it must still pass the machine gates:
  * the SEO gate, the fact gate and the hero image here, then check-content and
  * check-seo on the real site after the article has been moved into src/content/berita.
  * A draft that fails stays in drafts/berita and is tried again next run; if it still
@@ -22,7 +22,10 @@ import { checkSeo, splitFrontmatter, parseFrontmatter, kindFromTags } from './li
 import { checkFacts } from './lib/fact-guard.mjs';
 import { writeHero } from './lib/thumbnail.mjs';
 import { loadStore, saveStore, readyDrafts } from './lib/topic-store.mjs';
+import { syncReviews, ackDecisions } from './lib/review-gate.mjs';
+import { applyTakedowns } from './lib/takedown.mjs';
 import { DRAFTS_DIR, draftDir, liveDir } from './lib/articles.mjs';
+import { logRun, pushRunRecord, retractLastRun } from './lib/run-log.mjs';
 
 /** Four a week: the timer fires Tuesday to Friday and each run publishes one. */
 const DEFAULT_BATCH = 1;
@@ -40,6 +43,13 @@ const limit = Number(flag('limit', String(DEFAULT_BATCH)));
 
 const run = (cmd, args) => execFileSync(cmd, args, { encoding: 'utf8', stdio: 'pipe' });
 
+/** Record a run that publishes nothing, and push the record on its own. A successful run's record rides in its publish commit instead. */
+function finish(outcome, fields = {}) {
+	if (dryRun) return;
+	logRun('publish', outcome, fields);
+	pushRunRecord('publish', outcome, { push: !noPush });
+}
+
 // --- publication hold -------------------------------------------------------
 /** Hold publishing until a date without holding generation - the window you publish into is a real variable, and a spam-update rollout is a bad one. */
 const notBeforeRaw = flag('not-before', process.env.PUBLISH_NOT_BEFORE || null);
@@ -48,6 +58,7 @@ if (notBeforeRaw) {
 	if (!/^\d{4}-\d{2}-\d{2}$/.test(notBeforeRaw.trim())) {
 		console.error(`--not-before / PUBLISH_NOT_BEFORE must be YYYY-MM-DD, got "${notBeforeRaw}".`);
 		console.error('Refusing to publish rather than ignoring a hold that may have been intended.');
+		finish('error', { error: `invalid PUBLISH_NOT_BEFORE "${notBeforeRaw}"` });
 		process.exit(1);
 	}
 	const today = new Date().toISOString().slice(0, 10);
@@ -59,6 +70,7 @@ if (notBeforeRaw) {
 		console.log('    sistem: /etc/solar-nusantara/env');
 		console.log('    user:   ~/.config/solar-nusantara/env');
 		console.log('');
+		finish('held', { until: notBeforeRaw.trim() });
 		// Exit 0, not 1: a hold is the intended outcome, and a daily non-zero oneshot reads as a broken timer.
 		process.exit(0);
 	}
@@ -67,9 +79,42 @@ if (notBeforeRaw) {
 // --- what is waiting -------------------------------------------------------
 const store = loadStore();
 
-const ready = readyDrafts(store);
+// Removals requested in ERPSonus go first, so a draft is never published into a site that is mid-removal. A failure here must not block publishing.
+try {
+	for (const r of await applyTakedowns(store, { dryRun, noPush })) console.log(`publish-drip: takedown ${r.outcome}: ${r.slug}${r.detail ? ` (${r.detail})` : ''}`);
+} catch (e) {
+	console.error(`publish-drip: takedowns unavailable (${e.message}); continuing.`);
+}
+
+// A reviewer decides in ERPSonus. Only an approved draft may go out; if the decisions cannot be read, nothing goes out.
+let reviews;
+try {
+	reviews = await syncReviews(store, { dryRun, noPush });
+} catch (e) {
+	console.error(`
+publish-drip: review decisions unavailable (${e.message}). Publishing nothing.
+`);
+	finish('review-unavailable', { error: e.message });
+	process.exit(1);
+}
+if (reviews.sent.length) console.log(`
+publish-drip: ${reviews.sent.length} rejected draft(s) sent back to pending`);
+
+const allDrafts = readyDrafts(store);
+const ready = allDrafts.filter((t) => reviews.approved.has(t.slug));
+const awaiting = allDrafts.filter((t) => !reviews.approved.has(t.slug)).map((t) => t.slug);
 if (ready.length === 0) {
-	console.log(`\npublish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.\n`);
+	if (awaiting.length) {
+		console.log(`
+publish-drip: ${awaiting.length} draft(s) wait for review in ERPSonus; none is approved, nothing goes out.
+`);
+		finish('awaiting-review', { awaiting, rejected: reviews.sent });
+	} else {
+		console.log(`
+publish-drip: no draft is waiting in ${DRAFTS_DIR}. generate-article.mjs refills it.
+`);
+		finish('empty', { rejected: reviews.sent });
+	}
 	process.exit(0);
 }
 
@@ -113,7 +158,7 @@ for (const topic of ready) {
 	else picked.push(a);
 }
 
-console.log(`\npublish-drip: ${picked.length} of ${ready.length} waiting draft(s) go out now`);
+console.log(`\npublish-drip: ${picked.length} of ${ready.length} approved draft(s) go out now (${awaiting.length} more await review)`);
 for (const a of picked) console.log(`  -> /berita/${a.slug}/`);
 for (const a of held) {
 	console.log(`  HELD  ${a.slug}`);
@@ -130,9 +175,11 @@ if (!dryRun) {
 	}
 	if (failedNow) saveStore(store);
 }
+const heldRecord = held.map((a) => ({ slug: a.slug, reason: a.errors[0] }));
 
 if (picked.length === 0) {
 	console.log(`\nNo waiting draft passed the gates. Drafts that failed on content are marked failed and stay in ${DRAFTS_DIR}; the rest are retried next run.\n`);
+	finish('gate-failed', { held: heldRecord });
 	process.exit(held.length ? 1 : 0);
 }
 
@@ -180,8 +227,9 @@ for (const [label, args] of [
 if (failed) {
 	restore();
 	console.error(`\n${failed.label} FAILED. ${picked.length} article(s) reverted to draft.`);
-	console.error('Nothing was committed and nothing was pushed.\n');
+	console.error('No article was committed; only the run record in data/ is pushed.\n');
 	console.error(failed.output.split('\n').slice(-30).join('\n'));
+	finish('check-failed', { slugs, held: heldRecord, error: `${failed.label} failed` });
 	process.exit(1);
 }
 
@@ -190,6 +238,7 @@ for (const a of picked) {
 	a.topic.publishedAt = new Date().toISOString();
 }
 saveStore(store);
+logRun('publish', 'ok', { published: slugs, held: heldRecord, awaiting, rejected: reviews.sent });
 
 // --- commit and push --------------------------------------------------------
 try {
@@ -200,12 +249,21 @@ try {
 	console.log(`\n  committed: ${subject}`);
 } catch (e) {
 	const out = `${e.stdout || ''}${e.stderr || ''}`;
+	// Unstage too: `git add` already staged the move into src/content/berita, and the next commit would otherwise publish it.
+	try {
+		run('git', ['reset', '-q', '--', 'src/content/berita', 'drafts', 'data']);
+	} catch {
+		/* reported below with the commit error */
+	}
 	restore();
 	for (const a of picked) {
 		a.topic.status = 'generated';
 		delete a.topic.publishedAt;
 	}
 	saveStore(store);
+	// The 'ok' record is now false. git is what failed, so the corrected record is not pushed; the next run's commit carries it.
+	retractLastRun();
+	logRun('publish', 'error', { slugs, held: heldRecord, error: 'git commit failed; articles reverted to draft' });
 	console.error(`\ngit commit failed, articles reverted to draft:\n${out}`);
 	process.exit(1);
 }

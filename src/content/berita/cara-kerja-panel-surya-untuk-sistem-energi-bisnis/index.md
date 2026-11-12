@@ -3,7 +3,8 @@ title: "Cara Kerja Panel Surya untuk Sistem Energi Bisnis"
 pubDate: "2026-03-12"
 description: "Penjelasan cara kerja panel surya dari proses fotovoltaik hingga konversi listrik AC untuk kebutuhan operasional bisnis dan industri."
 heroImage: "./1.png"
-heroImageAlt: "AI Generated Image"
+heroImageAlt: "Ilustrasi enam modul panel surya terpasang pada rangka mounting, dengan judul artikel dan logo Solar Nusantara"
+updatedDate: "2026-11-02"
 focusKeyphrase: "cara kerja panel surya"
 tags: ["panel-surya", "bisnis"]
 ---
@@ -41,6 +42,16 @@ Tergantung konfigurasi sistem, energi yang dihasilkan dapat dimanfaatkan dengan 
 
 * **Sistem on grid**
   Energi yang tidak digunakan dapat dialirkan ke jaringan listrik PLN dan tercatat pada sistem ekspor impor energi.
+
+## Ringkasan Alur Konversi Energi
+
+| Tahap | Proses | Jenis listrik |
+|---|---|---|
+| 1. Penyerapan | Sel surya silikon menyerap foton dari cahaya matahari | belum berupa arus |
+| 2. Pelepasan elektron | Energi foton memisahkan elektron dari atom silikon | DC (arus searah) |
+| 3. Konversi | Inverter mengubah arus DC menjadi AC | AC (arus bolak-balik) |
+| 4. Distribusi | Listrik AC disalurkan ke mesin produksi, pendingin, pencahayaan, dan perangkat elektronik | AC |
+| 5. Penyimpanan atau ekspor | Kelebihan energi disimpan di baterai, atau dialirkan ke jaringan PLN pada sistem on grid | AC (ke jaringan) atau DC (ke baterai) |
 
 ## Komponen Utama Sistem Panel Surya
 

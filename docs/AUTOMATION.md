@@ -3,9 +3,9 @@
 Cara kerja pabrik artikel di server dan ritme terbitnya. Pasar yang dituju dibahas di
 `docs/MARKET.md`.
 
-Diperbarui 2026-10-15. Perubahan dari versi sebelumnya: **tidak ada lagi review dan
-persetujuan manusia.** Artikel yang lolos gate mesin terbit sendiri, empat per minggu.
-Draft sekarang tinggal di folder tersendiri, `drafts/berita/`.
+Diperbarui 2026-10-29. Perubahan dari versi sebelumnya: **ada review manusia lagi** di antara
+generate dan publish (bagian 2b). Artikel harus lolos gate mesin *dan* disetujui reviewer di
+ERPSonus sebelum terbit, empat per minggu. Draft tinggal di folder tersendiri, `drafts/berita/`.
 
 ---
 
@@ -50,8 +50,8 @@ topik pending -> draft di drafts/berita/ -> artikel di src/content/berita/
    generate            publish
 ```
 
-Empat terbit per minggu, satu per hari kerja Selasa sampai Jumat. Tidak ada langkah manusia
-di antaranya.
+Empat terbit per minggu, satu per hari kerja Selasa sampai Jumat. Di antara generate dan
+publish ada review manusia (2b).
 
 Dua hal membuat ritme ini bertahan sendiri:
 
@@ -69,6 +69,50 @@ empat tertulis (dengan batas tambahan).
 
 ---
 
+## 2b. Review manusia
+
+```
+generate (Senin 02:07)   draft lahir; sinkronisasi ERPSonus 10:00 WIB memunculkannya di tab Review
+reviewer                 ERPSonus > SEO Marketing > Review: baca draft, Setujui atau Tolak (admin)
+publish (Selasa-Jumat)   menarik keputusan dari ERPSonus, lalu:
+```
+
+| Keputusan | Akibatnya |
+|---|---|
+| disetujui | draft boleh terbit, urutan tetap menurut `rank` |
+| belum diputuskan | tidak terbit. Run dicatat `awaiting-review`; tab Ringkasan memperingatkan |
+| ditolak | topik kembali `pending`, folder draft dihapus (commit `review: ...`), alasan disimpan di `reviewNote` dan dimasukkan ke prompt generate berikutnya |
+
+Keputusan disimpan di tabel `seo_reviews` ERPSonus dan ditarik lewat
+`GET /api/seo/review-decisions` (bearer `SEO_REVIEW_TOKEN`). Setelah dijalankan pipeline
+mengirim ack, sehingga draft baru dengan slug yang sama mulai dari "menunggu". `generate` juga
+menjalankan penolakan di awal run supaya draft yang ditolak dihitung sebagai stok yang kurang.
+
+- **Gagal tertutup.** Kalau ERPSonus tidak terjangkau atau token salah, publish tidak
+  menerbitkan apa pun (outcome `review-unavailable`, exit 1). Generate tetap jalan.
+- **Alasan penolakan tampil di repo publik** (`reviewNote` di `data/topics.json`).
+- Env di server: `SEO_REVIEW_TOKEN`, nilainya sama dengan token yang diisi admin di ERPSonus
+  (SEO Marketing > Pengaturan > Token pipeline artikel; tidak perlu akses root), opsional
+  `SEO_REVIEW_URL` untuk mengganti host (default `https://app.sonus.id/api/seo/review-decisions`).
+- Draft yang sudah ada saat gerbang ini dipasang dianggap disetujui (migrasi ERPSonus 252).
+
+## 2c. Menghapus artikel yang sudah tayang
+
+Admin meminta penghapusan di ERPSonus (SEO Marketing > Artikel > buka artikel > Kelola artikel > Hapus).
+ERP hanya mencatat permintaan di `seo_takedowns`; pipeline menjalankannya di awal run **generate
+(Senin) dan publish (Selasa-Jumat)** lewat `GET /api/seo/takedowns` (bearer yang sama dengan review),
+jadi hapus terjadi paling lambat di run kerja berikutnya, lalu situs menjawab 404 setelah deploy.
+
+| Hasil | Akibatnya |
+|---|---|
+| `removed` | folder dihapus dari `src/content/berita`, topiknya (kalau ada) jadi `removed` dan tidak pernah ditulis ulang, commit `takedown: ...` |
+| `blocked` | tidak dihapus: file lain di `src/` atau `drafts/` masih menyebut slug-nya, atau `check-content` gagal tanpa artikel itu. Alasan dikirim ke ERP; perbaiki penyebabnya lalu minta lagi |
+
+Slug dari jaringan divalidasi (`[a-z0-9-]`) sebelum dipakai sebagai path. Kegagalan mengambil
+permintaan tidak menghentikan publish. Artikel yang dihapus tetap ada di riwayat git.
+
+---
+
 ## 3. Folder dan status
 
 **Folder adalah statusnya.** Draft tidak bercampur dengan artikel yang sudah tayang.
@@ -78,6 +122,26 @@ empat tertulis (dengan batas tambahan).
 | `drafts/berita/<slug>/` | draft: `index.md` (`draft: true`) dan `hero.webp` | tidak |
 | `src/content/berita/<slug>/` | artikel yang tayang | ya |
 | `data/failed/<slug>.md` | draft yang ditolak gate tiga kali, untuk diagnosis | tidak |
+| `data/pipeline-runs.jsonl` | satu baris per run generate/publish, termasuk yang gagal | tidak |
+
+**Catatan run** (`data/pipeline-runs.jsonl`) ditulis oleh setiap run yang bukan `--dry-run`, lalu
+ikut di-commit dan di-push. Run yang menerbitkan atau menulis draft membawanya di commit-nya sendiri;
+run lain membuat commit kecil `pipeline: <job> <hasil>` yang hanya berisi `data/`. ERPSonus
+membacanya dari GitHub, jadi Senin tanpa baris `generate` berarti run itu tidak pernah jalan
+(cron mati, `git pull` gagal, atau server mati), bukan run yang sepi.
+
+```
+{"t":"2026-10-27T19:07:02Z","job":"generate","outcome":"ok","stock":4,"target":4,"written":[...],"rejected":[],"tokens":41230}
+```
+
+| `job` | `outcome` |
+|---|---|
+| `generate` | `ok`, `partial` (kurang dari target), `failed` (nol tertulis karena gate), `api-stopped`, `stock-full`, `no-topics`, `error` |
+| `publish` | `ok`, `held` (`PUBLISH_NOT_BEFORE`), `empty` (stok kosong), `gate-failed`, `check-failed`, `error` |
+
+`tokens` adalah token DeepSeek run itu, dari `data/api-spend.log`. Repo publik, jadi baris ini hanya
+memuat yang memang publik: slug, angka, hasil, dan pesan error gate atau status API, tidak pernah key.
+Setiap commit ke `main` membangun ulang situs, jadi run yang hanya mencatat juga memicu satu build.
 
 Melihat stok yang akan terbit berikutnya cukup `ls drafts/berita`. Artikel pertama yang
 dikerjakan manual (`npm run new-article`) juga lahir di `drafts/berita/`.
@@ -107,8 +171,8 @@ foldernya dari `drafts/berita/` ke `src/content/berita/`, lalu `npm run check` d
 
 ## 4. Gate mesin
 
-Tidak ada manusia yang membaca artikel sebelum terbit. **Gate adalah satu-satunya
-penjaga**, dan ada di dua tempat: di dalam loop generate dan sekali lagi saat publish.
+Reviewer manusia memutuskan di ERPSonus (2b), tetapi reviewer tidak diminta menggantikan
+gate: **gate mesin tetap penjaga yang menolak pelanggaran aturan**, dan ada di dua tempat: di dalam loop generate dan sekali lagi saat publish.
 
 **Gate 1 - struktur** (`npm run check`, juga `prebuild`). Slug, panjang description,
 duplikat metadata, `$` tanpa escape, alt gambar, dan **hero**: artikel yang tayang wajib punya
@@ -267,8 +331,8 @@ sampai tanggal itu. Hapus barisnya untuk melepas.
 | Tanggal tidak valid | **menolak terbit** (status 1); menganggap tahanan rusak sebagai "tidak ada tahanan" berarti menerbitkan tepat saat tahanan salah tulis |
 | Tahanan lewat | lanjut normal |
 
-Karena tidak ada review, tahanan ini juga satu-satunya rem darurat: kalau Anda melihat
-artikel bermasalah, set tanggalnya, perbaiki, baru lepas.
+Tahanan ini rem darurat di atas review (2b), yang hanya menyaring draft satu per satu: kalau
+Anda melihat artikel bermasalah yang sudah tayang, set tanggalnya, perbaiki, baru lepas.
 
 Menerbitkan ke dalam rollout *spam update* Google yang menyasar konten skala besar
 adalah sebuah pilihan; pilihan itu harus dibuat sadar.
@@ -332,6 +396,7 @@ masih di hari UTC yang sama, jadi bisa ikut terhenti). Itu bukan kegagalan artik
 | Generate: "stopped early because of the API" | DeepSeek sibuk (503/429), timeout, key salah atau saldo habis (401/402), atau batas harian | topik **tidak** ditandai `failed`; tidak ada yang perlu dipulihkan, run berikutnya mencoba lagi. 401/402: periksa key dan saldo |
 | Banyak topik berstatus `failed` berturut-turut | gate menolak isi artikel (prompt atau gate bermasalah); gangguan API tidak lagi menyebabkan ini | set `PUBLISH_NOT_BEFORE`, baca `data/failed/`, cari sebabnya |
 | Push sukses tapi situs tidak berubah | Actions gagal | tab Actions di GitHub |
+| Tidak ada baris baru di `data/pipeline-runs.jsonl` setelah jadwalnya | run tidak jalan sama sekali, atau push-nya gagal | `crontab -l` / `systemctl list-timers`, lalu `~/sn-*.log` atau `journalctl` |
 
 **Gangguan API tidak membakar antrean.** Error 429, 5xx, timeout, dan "tidak tersambung" ditangani
 sebagai masalah penyedia: topik tetap `pending`, dicoba satu kali lagi, dan setelah dua topik
@@ -347,9 +412,45 @@ keduanya dibungkus `flock` pada `.pipeline.lock` di folder clone. Generate yang 
 terpakai melewatkan run-nya; publish menunggu sampai satu jam supaya artikel hari itu tidak
 hilang karena generate masih berjalan.
 
+Jadwal yang dipasang sebelum `setup.sh` memakai `flock` tetap berjalan tanpa kunci, karena
+`setup.sh` hanya menulis jadwal saat dijalankan. `detect.sh` memberi `WARN` "tanpa flock" untuk
+jadwal seperti itu; pasang ulang baris crontab atau unit systemd dari `setup.sh`.
+
 ---
 
-## 10. Batas keamanan data
+## 10. Audit mingguan
+
+`scripts/audit-routine.mjs` jalan tiap **Minggu 03:41** (cron, `flock -w` pada kunci yang sama).
+Ia **hanya melapor**: tidak menahan publish dan tidak mengubah artikel. Hasilnya dikirim ke
+ERPSonus (SEO Marketing > **Audit**), yang menampilkan apa yang baru muncul, sudah beres, dan
+masih terbuka dibanding minggu lalu. Salinan ada di `data/audit/<tanggal>.json` (tidak di-commit).
+
+| Pemeriksaan | Isi |
+|---|---|
+| content | `check-content`, dan aturan `check-seo` untuk setiap artikel yang tayang (satu temuan per artikel) |
+| site | `astro build`, lalu `audit-site --json` atas `dist/` (404 internal, duplikat, canonical, JSON-LD, ...) |
+| live | 80 URL sitemap di situs yang tayang, `/pratinjau/` tetap noindex, `robots.txt` (bot AI), `llms.txt`, JSON-LD Organization |
+| links | tautan eksternal semua artikel. Hanya 404/410 yang disebut mati; 403/429/5xx hanya info |
+| pipeline | token ERPSonus masih diterima, stok draf, topik `failed`, umur artikel terakhir, disk |
+
+Kritis: token ERPSonus hilang atau ditolak (publish berhenti diam-diam), stok draf nol, `/pratinjau/`
+bisa terindeks, build atau beranda gagal. Run menyala-merah di log (`exit 1`) bila ada temuan kritis
+atau pengiriman ke ERPSonus gagal.
+
+```bash
+npm run audit:routine -- --dry-run      # jalankan semua pemeriksaan, cetak temuan, tidak mengirim/menulis
+node scripts/audit-routine.mjs --skip-build --skip-live --skip-links   # hanya yang lokal
+tail -30 ~/sn-audit.log
+```
+
+Token memakai `SEO_REVIEW_TOKEN` yang sama dengan review. `geo_subset_score` hanya subset yang bisa
+dicek mesin (bot AI di robots, llms.txt, schema, sitemap); bandingkan dengan dirinya sendiri dari
+minggu ke minggu, bukan dengan skor `/geo` penuh. Jadwal ini hanya terpasang oleh `setup.sh` mode
+cron; di mode systemd belum ada unit-nya.
+
+---
+
+## 11. Batas keamanan data
 
 Repo ini **publik**. `DB_PR.csv` di proyek ERP memuat `Pagu` dan `Final Price` (harga
 pengadaan internal dan margin); generator tidak pernah membacanya. Berkas pasar internal

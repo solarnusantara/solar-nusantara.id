@@ -5,6 +5,8 @@ import MobileHeader from '../components/MobileHeader.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { SITE_CONFIG } from '../config';
+import { navLinks } from '../data/navLinks';
+import { navTrail, buildBreadcrumb } from '../utils/breadcrumb';
 
 interface Heading {
   depth: number;
@@ -108,7 +110,17 @@ const ogImageUrl = new URL(imageSrc, canonicalUrl).href;
 const hasHeadings = headings && headings.length > 0;
 
 const baseUrl = Astro.site ? Astro.site.origin : SITE_CONFIG.url;
-const logoUrl = new URL('/favicon.svg', baseUrl).href;
+// Square raster (1024x1024, logo centred on white). Google asks for a raster
+// logo of at least 112x112; the favicon SVG it replaced does not qualify.
+const logoUrl = new URL('/logo-schema.png', baseUrl).href;
+
+// Pages that sit in the navigation get a BreadcrumbList derived from it, unless
+// the page supplied its own (articles: Beranda > Berita > title).
+const hasOwnBreadcrumb = jsonLd.some((node) => node['@type'] === 'BreadcrumbList');
+const navBreadcrumb = hasOwnBreadcrumb
+  ? undefined
+  : buildBreadcrumb(canonicalUrl, baseUrl, navTrail(navLinks, Astro.url.pathname));
+const pageNodes = navBreadcrumb ? [...jsonLd, navBreadcrumb] : jsonLd;
 
 const structuredData = {
   "@context": "https://schema.org",
@@ -122,8 +134,8 @@ const structuredData = {
       "logo": {
         "@type": "ImageObject",
         "url": logoUrl,
-        "width": 112,
-        "height": 112
+        "width": 1024,
+        "height": 1024
       },
       "founder": {
         "@type": "Person",
@@ -150,6 +162,10 @@ const structuredData = {
       "image": logoUrl,
       "telephone": "+62 821 7000 0575",
       "url": baseUrl,
+      "areaServed": {
+        "@type": "Country",
+        "name": "Indonesia"
+      },
       "address": {
         "@type": "PostalAddress",
         "streetAddress": "Gandaria Office 8 Tower lantai 8, Jl. Sultan Iskandar Muda No.8, RT.10/RW.6, Gandaria, Kec. Kby. Lama",
@@ -207,7 +223,7 @@ const structuredData = {
     // FAQPage, ...). Merged into THIS graph on purpose so the page emits one
     // script tag, and so those nodes can reference #organization / #website by
     // @id instead of restating the publisher.
-    ...jsonLd,
+    ...pageNodes,
   ]
 };
 ---

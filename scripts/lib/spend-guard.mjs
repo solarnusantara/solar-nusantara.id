@@ -21,14 +21,16 @@ export function record(api, amount, note = '') {
 	appendFileSync(LEDGER, `${JSON.stringify({ t: new Date().toISOString(), api, amount, note })}\n`, 'utf8');
 }
 
-export function spentToday(api) {
+export const spentToday = (api) => spentSince(api, `${new Date().toISOString().slice(0, 10)}T00:00:00.000Z`);
+
+/** Spend recorded at or after an ISO timestamp: what one run cost, when `since` is its start. */
+export function spentSince(api, since) {
 	if (!existsSync(LEDGER)) return 0;
-	const today = new Date().toISOString().slice(0, 10);
 	let sum = 0;
 	for (const line of readFileSync(LEDGER, 'utf8').split('\n')) {
 		try {
 			const e = JSON.parse(line);
-			if (e.api === api && typeof e.t === 'string' && e.t.startsWith(today)) sum += Number(e.amount) || 0;
+			if (e.api === api && typeof e.t === 'string' && e.t >= since) sum += Number(e.amount) || 0;
 		} catch {
 			/* blank or damaged line: skip it, never let the guard itself crash a run */
 		}

@@ -14,22 +14,22 @@ description: "Layanan EPC Solar Home System dari SONUS untuk kebutuhan listrik r
 
   <!-- Slides -->
   <div class="slide" id="shs-slide1">
-    <img src="/images/layanan/shs-image.png" alt="SHS Image 1">
+    <img src="/images/layanan/shs-image.png" alt="SHS Image 1" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide2">
-    <img src="/images/layanan/shs-image-1.png" alt="SHS Image 2">
+    <img src="/images/layanan/shs-image-1.png" alt="SHS Image 2" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide3">
-    <img src="/images/layanan/shs-image-2.png" alt="SHS Image 3">
+    <img src="/images/layanan/shs-image-2.png" alt="SHS Image 3" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide4">
-    <img src="/images/layanan/shs-image-3.png" alt="SHS Image 4">
+    <img src="/images/layanan/shs-image-3.png" alt="SHS Image 4" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide5">
-    <img src="/images/layanan/shs-image-4.png" alt="SHS Image 5">
+    <img src="/images/layanan/shs-image-4.png" alt="SHS Image 5" width="810" height="537">
   </div>
   <div class="slide" id="shs-slide6">
-    <img src="/images/layanan/shs-image-5.png" alt="SHS Image 6">
+    <img src="/images/layanan/shs-image-5.png" alt="SHS Image 6" width="810" height="537">
   </div>
 
   <!-- Navigation -->
@@ -125,11 +125,11 @@ description: "Layanan EPC Solar Home System dari SONUS untuk kebutuhan listrik r
 #shs-s6:checked ~ #shs-slide6, #shs-s6:checked ~ #shs-nav6 { opacity: 1; display: flex; pointer-events: auto; z-index: 1; }
 </style>
 
-**Ingin mengurangi konsumsi listrik rumah dan menekan biaya bulanan? Saatnya beralih ke Smart Home System berbasis energi surya.**
+**Ingin mengurangi konsumsi listrik rumah dan menekan biaya bulanan? Saatnya beralih ke Solar Home System berbasis energi surya.**
 
 Dengan meningkatnya kebutuhan listrik rumah tangga, solar panel menjadi solusi yang lebih **hemat**, **bersih**, dan **berkelanjutan**. Instalasi PLTS atap dapat mengurangi ketergantungan pada listrik konvensional dan menurunkan tagihan secara signifikan.
 
-Smart Home System kami membawa energi surya ke level berikutnya dengan fitur manajemen energi cerdas: memantau penggunaan listrik, mengoptimalkan konsumsi, dan membantu Anda menghemat lebih banyak.
+Solar Home System kami membawa energi surya ke level berikutnya dengan fitur manajemen energi cerdas: memantau penggunaan listrik, mengoptimalkan konsumsi, dan membantu Anda menghemat lebih banyak.
 
 Didukung instalasi profesional dan layanan purna jual yang siap membantu, Anda bisa menikmati manfaat energi surya secara maksimal—lebih efisien, ramah lingkungan, dan menguntungkan.
 

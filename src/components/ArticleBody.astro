@@ -13,6 +13,11 @@ type Props = { data: Article['data']; body: string; related: Article[] };
 
 const { data, body, related } = Astro.props;
 
+// Shown only for a real revision: an updatedDate on the same calendar day as
+// pubDate is the publish itself, not an update.
+const dayKey = (d: Date) => d.toISOString().slice(0, 10);
+const showUpdated = !!data.updatedDate && dayKey(data.updatedDate) > dayKey(data.pubDate);
+
 // Calculate reading time
 const wordsPerMinute = 200;
 const readingTime = Math.ceil(countWords(body) / wordsPerMinute);
@@ -20,9 +25,6 @@ const readingTime = Math.ceil(countWords(body) / wordsPerMinute);
 const byline = resolveAuthor(data);
 const external = byline.url ? !byline.url.startsWith('/') : false;
 const fmt = (d: Date) => d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
-// Shown only for a real revision: dateModified in the schema and the sitemap
-// lastmod come from the same updatedDate, so reader and crawler see one date.
-const revised = data.updatedDate && fmt(data.updatedDate) !== fmt(data.pubDate) ? data.updatedDate : null;
 ---
 
 <div class="text-lg text-gray-500 -mt-8 mb-8 flex flex-wrap items-center gap-x-2">
@@ -43,10 +45,10 @@ const revised = data.updatedDate && fmt(data.updatedDate) !== fmt(data.pubDate) 
       <span>{byline.name}</span>
     )}
   </span>
-  {revised && (
+  {showUpdated && data.updatedDate && (
     <span class="whitespace-nowrap">
       <span class="text-gray-400">&bull;</span>
-      <span>Diperbarui </span><time datetime={revised.toISOString()}>{fmt(revised)}</time>
+      <span>Diperbarui </span><time datetime={data.updatedDate.toISOString()}>{fmt(data.updatedDate)}</time>
     </span>
   )}
   <span class="whitespace-nowrap">

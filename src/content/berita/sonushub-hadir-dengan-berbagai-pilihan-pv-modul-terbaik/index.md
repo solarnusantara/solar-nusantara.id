@@ -6,6 +6,7 @@ heroImage: "./1.jpg"
 heroImageAlt: "Foto satu modul surya monokristalin berbingkai aluminium dengan latar putih"
 focusKeyphrase: "modul pv sonushub"
 tags: ["sonushub", "komponen"]
+updatedDate: "2026-11-02"
 ---
 
 ## SonusHUB: Solusi Kebutuhan Modul PV Anda
@@ -27,6 +28,12 @@ Kami menyediakan berbagai tipe modul PV, termasuk:
 * **Monocrystalline:** Dikenal dengan efisiensi tinggi dan tampilan yang elegan.
 * **Polycrystalline:** Pilihan yang baik dengan keseimbangan antara harga dan performa.
 * **Bifacial:** Mampu menangkap cahaya matahari dari kedua sisi untuk produksi energi yang maksimal.
+
+| Tipe modul | Ciri utama |
+|---|---|
+| Monocrystalline | Efisiensi tinggi dan tampilan yang elegan |
+| Polycrystalline | Keseimbangan antara harga dan performa |
+| Bifacial | Menangkap cahaya matahari dari kedua sisi untuk produksi energi yang maksimal |
 
 ## Siap Membangun Bersama Kami?
 

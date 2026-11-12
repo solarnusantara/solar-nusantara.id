@@ -22,10 +22,12 @@
  *   structured data        unparseable JSON-LD, or an Article missing a field
  *                          Google documents as required
  *
+ * With --json=<file> the findings are also written there for scripts/audit-routine.mjs.
+ *
  * Reports only. It never fails the build - a warning here is a judgement call,
  * unlike check-content.mjs which blocks on things that are unambiguously wrong.
  */
-import { readdirSync, readFileSync, statSync, existsSync } from 'node:fs';
+import { readdirSync, readFileSync, writeFileSync, statSync, existsSync } from 'node:fs';
 import { join, relative, sep } from 'node:path';
 
 const DIST = 'dist';
@@ -314,6 +316,10 @@ for (const [url, html] of pages) {
 }
 for (const f of files.filter((f) => f.endsWith('.json') || f.endsWith('.xml'))) {
 	if (readFileSync(f, 'utf8').includes(PREVIEW)) leaks.push(`${f} mentions ${PREVIEW}`);
+}
+const jsonArg = process.argv.find((a) => a.startsWith('--json='));
+if (jsonArg) {
+	writeFileSync(jsonArg.slice('--json='.length), JSON.stringify({ pages: pages.size, redirects: redirectPages.size, noindex: noindexPages.length, findings, leaks }), 'utf8');
 }
 if (leaks.length) {
 	console.error(`audit-site: draft previews could be indexed (${leaks.length}):`);

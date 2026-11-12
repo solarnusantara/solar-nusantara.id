@@ -74,8 +74,9 @@ export function buildArticleSchema(input: ArticleSchemaInput): Record<string, un
 	const origin = baseUrl.replace(/\/$/, '');
 
 	// `author` is required by Google for Article. When the frontmatter names a
-	// person, credit the person; otherwise fall back to the organisation by @id
-	// rather than inventing a byline.
+	// person, credit the person. With no byline at all, credit the site as an
+	// Organization named like the visible byline ("Solar Nusantara"); an @id
+	// reference would resolve to the legal name "PT Tripower Solar Nusantara".
 	const profileUrl = byline?.url ? new URL(byline.url, `${origin}/`).href : undefined;
 	const author = byline
 		? {
@@ -91,7 +92,7 @@ export function buildArticleSchema(input: ArticleSchemaInput): Record<string, un
 				// pointing at their own site is not claimed as an employee.
 				...(profileUrl?.startsWith(origin) ? { worksFor: { '@id': `${origin}/#organization` } } : {}),
 			}
-		: { '@id': `${origin}/#organization` };
+		: { '@type': 'Organization', name: 'Solar Nusantara', url: `${origin}/` };
 
 	const article: Record<string, unknown> = {
 		'@type': 'BlogPosting',
