@@ -1,6 +1,11 @@
 ---
 title: "Panel TKDN"
 description: "Panel TKDN SONUS dengan nilai TKDN 43,50 persen, kaca anti-reflektif, dan garansi usia teknis 20 tahun dengan degradasi output maksimum 20 persen."
+properties:
+  - { name: "Nilai TKDN", value: 43.5, unit: "%" }
+  - { name: "Garansi usia teknis", value: 20, unit: "tahun" }
+  - { name: "Degradasi output maksimum selama garansi", value: 20, unit: "%" }
+  - { name: "Degradasi performa maksimum per tahun", value: 1, unit: "%" }
 ---
 ![alt text](_image.png)
 Panel surya kini semakin populer sebagai sumber energi alternatif, dan Panel TKDN dari SONUS menawarkan solusi yang andal serta berkualitas tinggi bagi siapa pun yang ingin beralih ke energi terbarukan. Dengan sel surya berkualitas terbaik, teknologi manufaktur mutakhir, dan prosedur kontrol kualitas yang ketat, Anda dapat yakin bahwa panel-panel ini akan bekerja secara optimal selama bertahun-tahun.

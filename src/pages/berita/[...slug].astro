@@ -2,7 +2,8 @@
 import Layout from '../../layouts/Layout.astro';
 import { SITE_CONFIG } from '../../config';
 import { buildArticleSchema } from '../../utils/articleSchema';
-import { getPublishedArticles, getRelatedArticles, hasMath, type Article } from '../../utils/articles';
+import { getPublishedArticles, getRelatedArticles, hasMath, countWords, type Article } from '../../utils/articles';
+import { resolveAuthor } from '../../data/authors';
 import ArticleBody from '../../components/ArticleBody.astro';
 
 export async function getStaticPaths() {
@@ -20,7 +21,8 @@ type Props = { post: Article; related: Article[] };
 const { post, related } = Astro.props;
 const { Content, headings } = await post.render();
 
-const wordCount = post.body.split(/\s+/g).length;
+const wordCount = countWords(post.body);
+const byline = resolveAuthor(post.data);
 
 // Pass frontmatter and headings to the main layout so it can render the TOC
 const frontmatter = {
@@ -53,8 +55,12 @@ const jsonLd = buildArticleSchema({
   imageUrl: heroImageUrl,
   datePublished: post.data.pubDate,
   dateModified: post.data.updatedDate,
-  authorName: post.data.author,
-  authorUrl: post.data.authorUrl,
+  author: {
+    name: byline.name,
+    url: byline.url,
+    jobTitle: byline.registry?.jobTitle,
+    sameAs: byline.registry?.sameAs,
+  },
   wordCount,
 });
 ---

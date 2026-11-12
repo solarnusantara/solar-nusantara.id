@@ -118,3 +118,22 @@ Kami telah menyelesaikan berbagai proyek Solar PV di sektor manufaktur, kesehata
 Di SONUS, keberlanjutan adalah prioritas. Sistem Solar PV kami membantu menekan emisi karbon, mengurangi biaya energi, dan meningkatkan nilai aset.
 
 **Percayakan kebutuhan Solar PV Anda pada SONUS dan rasakan komitmen kami terhadap kualitas, inovasi, dan kepuasan pelanggan.**
+
+## Studi Kasus: EPC PLTS Atap Otsuka, Sukabumi
+
+Salah satu proyek EPC terbesar kami di segmen C & I adalah PLTS atap berkapasitas sekitar **3,9 MWp** di Otsuka, Sukabumi, Jawa Barat. Pekerjaan berlangsung pada 2024–2025 dengan lingkup EPC penuh: survei, pengadaan material, pengiriman, dan konstruksi.
+
+| Item | Keterangan |
+|---|---|
+| Lokasi | Otsuka, Sukabumi, Jawa Barat |
+| Kapasitas | Sekitar 3,9 MWp |
+| Jenis atap | Atap logam, dua paket: 1,35 MWp dan 2,51 MWp |
+| Lingkup | EPC (survei, pengadaan, pengiriman, konstruksi) |
+| Periode | 2024–2025 |
+| Survei lokasi | 11 September 2024 |
+
+### Tantangan dan cara kami menanganinya
+
+- **Skala logistik.** Material dikirim bertahap dari Jakarta ke Sukabumi: 9 kontainer modul PV dan 4 kontainer 40 ft, dengan forklift 5 ton di lokasi. Pengiriman tercatat hingga awal Mei 2025.
+- **Kebutuhan kabel bertambah.** Pada April 2025 pengadaan kabel PV ditambah 25 km dan 6 km, dipasok bertahap.
+- **Atap logam dua paket.** Pekerjaan dibagi menjadi paket 1,35 MWp dan 2,51 MWp.

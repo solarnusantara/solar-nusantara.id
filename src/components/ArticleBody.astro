@@ -1,8 +1,8 @@
 ---
 import { Image } from 'astro:assets';
 import RelatedArticles from './RelatedArticles.astro';
-import type { Article } from '../utils/articles';
-import { SITE_CONFIG } from '../config';
+import { countWords, type Article } from '../utils/articles';
+import { resolveAuthor } from '../data/authors';
 
 /**
  * Everything an article shows inside the Layout: the date line, the hero, the
@@ -13,10 +13,6 @@ type Props = { data: Article['data']; body: string; related: Article[] };
 
 const { data, body, related } = Astro.props;
 
-// Articles without a named author are credited to the site, matching the
-// Organization fallback in articleSchema.ts so byline and JSON-LD agree.
-const authorName = data.author ?? SITE_CONFIG.title;
-
 // Shown only for a real revision: an updatedDate on the same calendar day as
 // pubDate is the publish itself, not an update.
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
@@ -24,36 +20,37 @@ const showUpdated = !!data.updatedDate && dayKey(data.updatedDate) > dayKey(data
 
 // Calculate reading time
 const wordsPerMinute = 200;
-const wordCount = body.split(/\s+/g).length;
-const readingTime = Math.ceil(wordCount / wordsPerMinute);
+const readingTime = Math.ceil(countWords(body) / wordsPerMinute);
+
+const byline = resolveAuthor(data);
+const external = byline.url ? !byline.url.startsWith('/') : false;
+const fmt = (d: Date) => d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
 ---
 
 <div class="text-lg text-gray-500 -mt-8 mb-8 flex flex-wrap items-center gap-x-2">
   <time datetime={data.pubDate.toISOString()} class="whitespace-nowrap">
     {data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
   </time>
+  <span class="whitespace-nowrap">
+    <span class="text-gray-400">&bull;</span>
+    <span>Oleh </span>
+    {byline.url ? (
+      <a
+        href={byline.url}
+        rel={external ? 'author noopener noreferrer' : 'author'}
+        target={external ? '_blank' : undefined}
+        class="text-gray-800 hover:text-blue-600 hover:underline transition-colors"
+      >{byline.name}</a>
+    ) : (
+      <span>{byline.name}</span>
+    )}
+  </span>
   {showUpdated && data.updatedDate && (
     <span class="whitespace-nowrap">
       <span class="text-gray-400">&bull;</span>
-      <span>Diperbarui </span>
-      <time datetime={data.updatedDate.toISOString()}>
-        {data.updatedDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
-      </time>
+      <span>Diperbarui </span><time datetime={data.updatedDate.toISOString()}>{fmt(data.updatedDate)}</time>
     </span>
   )}
-  <span class="whitespace-nowrap">
-    <span class="text-gray-400">&bull;</span>
-    {data.author && data.authorUrl ? (
-      <>
-        <span>Oleh </span>
-        <a href={data.authorUrl} target="_blank" rel="noopener noreferrer" class="text-gray-800 hover:text-blue-600 hover:underline transition-colors">
-          {authorName}
-        </a>
-      </>
-    ) : (
-      <span>Oleh {authorName}</span>
-    )}
-  </span>
   <span class="whitespace-nowrap">
     <span class="text-gray-400">&bull;</span>
     <span>{readingTime} menit baca</span>
@@ -74,5 +71,16 @@ const readingTime = Math.ceil(wordCount / wordsPerMinute);
 )}
 
 <slot />
+
+{byline.registry && (
+  <aside class="not-prose mt-16 rounded-2xl border border-gray-200 bg-gray-50 p-6" aria-label="Tentang penulis">
+    <p class="text-sm uppercase tracking-wide text-gray-500">Penulis</p>
+    <p class="mt-1 text-xl font-bold text-gray-900">
+      <a href={byline.url} rel="author" class="hover:text-blue-600">{byline.registry.name}</a>
+      <span class="ml-2 text-base font-medium text-blue-600">{byline.registry.jobTitle}</span>
+    </p>
+    <p class="mt-2 text-gray-700">{byline.registry.bio}</p>
+  </aside>
+)}
 
 <RelatedArticles posts={related} />

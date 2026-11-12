@@ -65,6 +65,22 @@ export function hasMath(body: string): boolean {
 	return /\$\$[\s\S]+?\$\$/.test(body) || /(?<!\$)\$(?!\s)[^\n$]+?(?<!\s)\$(?!\$)/.test(body);
 }
 
+/**
+ * Words a reader actually reads in a markdown body. `body.split(/\s+/)` also
+ * counted table pipes and `|---|` rules, heading hashes, list markers, link
+ * targets and math delimiters as words, which inflated both the reading time
+ * and the BlogPosting wordCount. Anything with no letter or digit is not a word.
+ */
+export function countWords(markdown: string): number {
+	const text = markdown
+		.replace(/```[\s\S]*?```/g, ' ')
+		.replace(/\$\$[\s\S]*?\$\$/g, ' ')
+		.replace(/!\[[^\]]*\]\([^)]*\)/g, ' ')
+		.replace(/\[([^\]]*)\]\([^)]*\)/g, '$1')
+		.replace(/<[^>]+>/g, ' ');
+	return text.split(/\s+/).filter((w) => /[\p{L}\p{N}]/u.test(w)).length;
+}
+
 export type DraftPreview = CollectionEntry<'pratinjau'>;
 
 /** The drafts waiting to be published, next in line first. Rendered only under /pratinjau/. */
