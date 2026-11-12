@@ -1,6 +1,8 @@
 ---
 import Layout from '../../layouts/Layout.astro';
-import { Image } from 'astro:assets'; // Added Image import
+import { Image } from 'astro:assets';
+import { SITE_CONFIG } from '../../config';
+import { AUTHORS } from '../../data/authors';
 
 // Import images from assets
 import djokoMulyono from '../../assets/tim/Irjend-Pol-Pur-Drs-Djoko-Mulyono-Msi.png';
@@ -81,106 +83,99 @@ const regional = [
 ]
 
 const introText = "Tim SONUS terdiri dari para ahli berpengalaman dan berdedikasi di bidang energi surya. Dengan semangat untuk energi terbarukan dan keahlian yang beragam, kami bekerja tanpa lelah untuk menyediakan solusi energi surya yang inovatif dan berkelanjutan untuk semua klien kami.";
+
+// Editorial team: the registry in data/authors.ts is the single source, so a
+// byline on an article links to the card rendered here. No photo yet.
+const editorial = Object.values(AUTHORS).map((a) => ({
+  name: a.name,
+  position: a.jobTitle,
+  imageUrl: null,
+  linkedinUrl: null,
+  sameAs: a.sameAs,
+  bio: a.bio,
+  id: a.id,
+}));
+
+const groups = [
+  { title: 'Dewan Komisaris', people: commissioners, grid: 'sm:grid-cols-2 max-w-4xl' },
+  { title: 'Dewan Direksi', people: directors, grid: 'sm:grid-cols-2 max-w-4xl' },
+  { title: 'Manajemen', people: management, grid: 'sm:grid-cols-2 lg:grid-cols-3 max-w-7xl' },
+  { title: 'Regional Manager', people: regional, grid: 'sm:grid-cols-2 max-w-4xl' },
+  { title: 'Tim Redaksi', people: editorial, grid: 'sm:grid-cols-2 max-w-4xl' },
+];
+
+const slugify = (name: string) =>
+  name.toLowerCase().replace(/[^a-z0-9]+/g, '-').replace(/^-+|-+$/g, '');
+
+// Every card is an anchor target (#tedi-s-wintoko) and a schema.org Person, so a
+// profile can be linked to and read by machines. Bios state only what the site
+// already knows (role and company); pass `bio` on a person to replace that line.
+const people = groups.flatMap((g) => g.people).map((p: any) => {
+  const id = p.id ?? slugify(p.name);
+  const bio = p.bio ?? `${p.name} menjabat sebagai ${p.position} di PT Tripower Solar Nusantara.`;
+  return { ...p, id, bio };
+});
+const byName = new Map(people.map((p) => [p.name, p]));
+
+const baseUrl = Astro.site ? Astro.site.origin : SITE_CONFIG.url;
+const pageUrl = `${baseUrl}/tentang/tim-kita/`;
+const jsonLd = people.map((p) => ({
+  '@type': 'Person',
+  '@id': `${pageUrl}#${p.id}`,
+  name: p.name,
+  jobTitle: p.position,
+  description: p.bio,
+  url: `${pageUrl}#${p.id}`,
+  worksFor: { '@id': `${baseUrl}/#organization` },
+  ...(p.imageUrl ? { image: new URL(p.imageUrl.src, baseUrl).href } : {}),
+  ...((p.linkedinUrl || p.sameAs?.length) ? { sameAs: [p.linkedinUrl, ...(p.sameAs ?? [])].filter(Boolean) } : {}),
+}));
 ---
 
 <Layout
   title="Tim Kita"
   description="Mengenal jajaran direksi dan tim inti PT Tripower Solar Nusantara yang menjalankan proyek energi surya dan manajemen energi di Indonesia."
+  jsonLd={jsonLd}
 >
   <div class="bg-white text-gray-800">
     <div class="container mx-auto px-4 py-16 sm:px-6 lg:px-8">
-      
+
       <div class="text-center mb-20">
         <h1 class="text-4xl lg:text-5xl font-extrabold text-gray-900 tracking-tight">Tim Kami</h1>
       </div>
 
-      <!-- Commissioners Section -->
-      <section class="mb-20">
-        <h2 class="text-3xl font-bold text-center mb-12">Dewan Komisaris</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
-          {commissioners.map(person => (
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
-              <div class="p-6 text-center">
-                <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
-                <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
-                {person.linkedinUrl && (
-                  <a href={person.linkedinUrl} target="_blank" rel="noopener noreferrer" class="inline-block mt-4 text-gray-400 hover:text-blue-500">
-                    <span class="sr-only">LinkedIn</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- Directors Section -->
-      <section class="mb-20">
-        <h2 class="text-3xl font-bold text-center mb-12">Dewan Direksi</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
-          {directors.map(person => (
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
-              <div class="p-6 text-center">
-                <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
-                <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
-                {person.linkedinUrl && (
-                  <a href={person.linkedinUrl} target="_blank" rel="noopener noreferrer" class="inline-block mt-4 text-gray-400 hover:text-blue-500">
-                    <span class="sr-only">LinkedIn</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-
-      <!-- Management Section -->
-      <section class="mb-20">
-        <h2 class="text-3xl font-bold text-center mb-12">Manajemen</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-10 md:gap-12 max-w-7xl mx-auto">
-          {management.map(person => (
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
-              <div class="p-6 text-center">
-                <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
-                <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
-                {person.linkedinUrl && (
-                  <a href={person.linkedinUrl} target="_blank" rel="noopener noreferrer" class="inline-block mt-4 text-gray-400 hover:text-blue-500">
-                    <span class="sr-only">LinkedIn</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
-      
-      <!-- Regional Section -->
-      <section class="mb-20">
-        <h2 class="text-3xl font-bold text-center mb-12">Regional Manager</h2>
-        <div class="grid grid-cols-1 sm:grid-cols-2 gap-10 md:gap-12 max-w-4xl mx-auto">
-          {regional.map(person => (
-            <div class="bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl group">
-              <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
-              <div class="p-6 text-center">
-                <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
-                <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
-                {person.linkedinUrl && (
-                  <a href={person.linkedinUrl} target="_blank" rel="noopener noreferrer" class="inline-block mt-4 text-gray-400 hover:text-blue-500">
-                    <span class="sr-only">LinkedIn</span>
-                    <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
-                  </a>
-                )}
-              </div>
-            </div>
-          ))}
-        </div>
-      </section>
+      {groups.map((group) => (
+        <section class="mb-20">
+          <h2 class="text-3xl font-bold text-center mb-12">{group.title}</h2>
+          <div class={`grid grid-cols-1 gap-10 md:gap-12 mx-auto ${group.grid}`}>
+            {group.people.map((raw: any) => {
+              const person = byName.get(raw.name)!;
+              return (
+                <article id={person.id} class="scroll-mt-28 bg-gray-50 rounded-lg shadow-lg overflow-hidden transition-shadow duration-300 hover:shadow-xl target:ring-2 target:ring-blue-500">
+                  {person.imageUrl ? (
+                    <Image class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 object-cover" src={person.imageUrl} alt={`Foto ${person.name}`} loading="lazy" width={160} height={200} />
+                  ) : (
+                    <div class="w-40 h-50 rounded-lg mx-auto mt-6 mb-4 bg-blue-100 text-blue-700 flex items-center justify-center text-5xl font-bold" aria-hidden="true">
+                      {person.name.split(' ').slice(0, 2).map((w: string) => w[0]).join('')}
+                    </div>
+                  )}
+                  <div class="p-6 text-center">
+                    <h3 class="text-xl font-bold text-gray-900">{person.name}</h3>
+                    <p class="text-md text-blue-600 font-medium mt-1">{person.position}</p>
+                    <p class="text-sm text-gray-600 mt-3">{person.bio}</p>
+                    {person.linkedinUrl && (
+                      <a href={person.linkedinUrl} target="_blank" rel="me noopener noreferrer" class="inline-block mt-4 text-gray-400 hover:text-blue-500">
+                        <span class="sr-only">LinkedIn {person.name}</span>
+                        <svg class="w-6 h-6" fill="currentColor" viewBox="0 0 448 512" xmlns="http://www.w3.org/2000/svg"><path d="M416 32H31.9C14.3 32 0 46.5 0 64.3v383.4C0 465.5 14.3 480 31.9 480H416c17.6 0 32-14.5 32-32.3V64.3c0-17.8-14.4-32.3-32-32.3zM135.4 416H69V202.2h66.5V416zm-33.2-243c-21.3 0-38.5-17.3-38.5-38.5S80.9 96 102.2 96c21.2 0 38.5 17.3 38.5 38.5 0 21.3-17.2 38.5-38.5 38.5zm282.1 243h-66.4V312c0-24.8-.5-56.7-34.5-56.7-34.6 0-39.9 27-39.9 54.9V416h-66.4V202.2h63.7v29.2h.9c8.9-16.8 30.6-34.5 62.9-34.5 67.2 0 79.7 44.3 79.7 101.9V416z"></path></svg>
+                      </a>
+                    )}
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        </section>
+      ))}
 
       <!-- Outro Section -->
       <div class="text-center mt-20 pt-12 border-t border-gray-200">

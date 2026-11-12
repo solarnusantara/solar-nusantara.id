@@ -158,7 +158,18 @@ const simplePageSchema = z.object({
 });
 
 const layananCollection = defineCollection({ schema: simplePageSchema });
-const produkCollection = defineCollection({ schema: simplePageSchema });
+
+/**
+ * Facts a product page states in its copy, repeated here as data so the page's
+ * Product schema can carry them (see utils/productSchema.ts). Only list what
+ * the page text already says - a figure that is not on the page does not belong.
+ */
+const produkSchema = simplePageSchema.extend({
+  properties: z
+    .array(z.object({ name: z.string(), value: z.union([z.string(), z.number()]), unit: z.string().optional() }))
+    .optional(),
+});
+const produkCollection = defineCollection({ schema: produkSchema });
 const tentangCollection = defineCollection({ schema: simplePageSchema });
 
 export const collections = {

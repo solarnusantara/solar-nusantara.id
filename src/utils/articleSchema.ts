@@ -24,8 +24,14 @@ export interface ArticleSchemaInput {
 	imageUrl?: string;
 	datePublished: Date;
 	dateModified?: Date;
-	authorName?: string;
-	authorUrl?: string;
+	/** Byline, from resolveAuthor(). Omitted only if an article somehow has none. */
+	author?: {
+		name: string;
+		/** Site-relative profile path or absolute URL. */
+		url?: string;
+		jobTitle?: string;
+		sameAs?: string[];
+	};
 	/** Body word count, used for wordCount. */
 	wordCount?: number;
 	/** Section label shown in the breadcrumb, e.g. "Berita". */
@@ -59,8 +65,7 @@ export function buildArticleSchema(input: ArticleSchemaInput): Record<string, un
 		imageUrl,
 		datePublished,
 		dateModified,
-		authorName,
-		authorUrl,
+		author: byline,
 		wordCount,
 		sectionName = 'Berita',
 		sectionPath = '/berita',
@@ -71,11 +76,20 @@ export function buildArticleSchema(input: ArticleSchemaInput): Record<string, un
 	// `author` is required by Google for Article. When the frontmatter names a
 	// person, credit the person; otherwise fall back to the organisation by @id
 	// rather than inventing a byline.
-	const author = authorName
+	const profileUrl = byline?.url ? new URL(byline.url, `${origin}/`).href : undefined;
+	const author = byline
 		? {
 				'@type': 'Person',
-				name: authorName,
-				...(authorUrl ? { url: authorUrl } : {}),
+				// A profile on this site doubles as the node's @id, so the team page
+				// and every article describe the same Person rather than copies.
+				...(profileUrl?.startsWith(origin) ? { '@id': profileUrl } : {}),
+				name: byline.name,
+				...(byline.jobTitle ? { jobTitle: byline.jobTitle } : {}),
+				...(profileUrl ? { url: profileUrl } : {}),
+				...(byline.sameAs?.length ? { sameAs: byline.sameAs } : {}),
+				// Only people with a profile on this site are staff; a guest byline
+				// pointing at their own site is not claimed as an employee.
+				...(profileUrl?.startsWith(origin) ? { worksFor: { '@id': `${origin}/#organization` } } : {}),
 			}
 		: { '@id': `${origin}/#organization` };
 

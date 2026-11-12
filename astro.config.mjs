@@ -1,6 +1,8 @@
 import { defineConfig } from 'astro/config';
 import { readFileSync, readdirSync, statSync } from 'node:fs';
 import { join } from 'node:path';
+import { copyFile } from 'node:fs/promises';
+import { fileURLToPath } from 'node:url';
 import UnoCSS from 'unocss/astro';
 import sitemap from "@astrojs/sitemap";
 import remarkMath from 'remark-math';
@@ -94,7 +96,20 @@ export default defineConfig({
         if (date) item.lastmod = date.toISOString();
         return item;
       },
-    })
+    }),
+    {
+      // Crawlers and AI fetchers guess /sitemap.xml; @astrojs/sitemap only writes
+      // /sitemap-index.xml. Static hosting here cannot send a 301, and a meta-refresh
+      // page is not a sitemap, so serve a byte-identical copy instead. Must stay
+      // after sitemap() so the index exists when this hook runs.
+      name: 'sitemap-alias',
+      hooks: {
+        'astro:build:done': async ({ dir }) => {
+          const out = fileURLToPath(dir);
+          await copyFile(join(out, 'sitemap-index.xml'), join(out, 'sitemap.xml'));
+        },
+      },
+    },
   ],
   markdown: {
     remarkPlugins: [remarkMath],
