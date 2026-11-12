@@ -31,7 +31,7 @@ export const SONUSHUB_GENERAL = [
  * change the line here and re-run `npm run plan-topics`.
  */
 export const SONUSHUB_PRODUCT = {
-	'mounting-rel': `${SONUSHUB_ORIGIN}/category/mnt-pv-rail-mounting-hardware-sh`,
+	'mounting-rel': `${SONUSHUB_ORIGIN}/category/mnt-pv-mounting-sh`,
 	'walkway-tray': `${SONUSHUB_ORIGIN}/category/cable-trays-trunking-fittings-cr`,
 	'kabel-dc': `${SONUSHUB_ORIGIN}/category/crx-dc-pv-cable-sh`,
 	'kabel-ac': `${SONUSHUB_ORIGIN}/category/crx-ac-power-cable-sh`,

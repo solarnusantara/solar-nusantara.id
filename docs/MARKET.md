@@ -87,7 +87,7 @@ kalkulator) di bagian penutup sebagai ajakan.
 
 | Produk | Halaman SonusHUB |
 |---|---|
-| mounting rel | /category/mnt-pv-rail-mounting-hardware-sh |
+| mounting rel | /category/mnt-pv-mounting-sh |
 | walkway dan tray | /category/cable-trays-trunking-fittings-cr |
 | kabel DC | /category/crx-dc-pv-cable-sh |
 | kabel AC | /category/crx-ac-power-cable-sh |
