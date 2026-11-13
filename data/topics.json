@@ -165,7 +165,7 @@
     {
       "id": "epc--pv-modul--perbandingan",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 19,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -183,7 +183,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 90,
-      "generatedAt": "2026-11-01T18:09:31.724Z"
+      "generatedAt": "2026-11-01T18:09:31.724Z",
+      "publishedAt": "2026-11-13T01:23:07.859Z"
     },
     {
       "id": "epc--pv-modul--pengadaan",

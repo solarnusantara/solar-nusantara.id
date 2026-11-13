@@ -5,9 +5,9 @@ description: "Perbandingan modul surya TOPCon PERC kontraktor EPC: kriteria tekn
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi dua varian modul surya berdampingan dengan timbangan di antaranya"
 focusKeyphrase: "modul surya topcon perc kontraktor epc"
-pubDate: "2026-11-01"
+pubDate: "2026-11-13"
 tags: ["epc", "modul-surya", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Dalam tender PLTS, kontraktor EPC PLTS harus memutuskan apakah spesifikasi modul memakai TOPCon, PERC, atau kombinasi keduanya untuk paket proyek. Perbandingan modul surya TOPCon PERC kontraktor EPC tidak berhenti pada efisiensi di datasheet; Anda perlu menilai profil beban, luas lahan atau atap, skema interkoneksi, dan kesiapan rantai pasok. Keputusan ini memengaruhi desain string, kebutuhan MPPT inverter, tata letak mounting, serta ruang verifikasi TKDN dalam dokumen pengadaan. Artikel ini langsung membahas kapan masing-masing teknologi lebih tepat dipilih, tanpa mengulang dasar sel fotovoltaik.
