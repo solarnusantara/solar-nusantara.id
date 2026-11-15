@@ -76,7 +76,7 @@
     {
       "id": "epc--mounting-rel--pengadaan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "failed",
       "rank": 29,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -93,12 +93,13 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "epc--mounting-rel--mutu",
       "kind": "longtail",
-      "status": "pending",
+      "status": "failed",
       "rank": 25,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -115,7 +116,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "epc--pv-modul--panduan",
@@ -1211,7 +1213,7 @@
     {
       "id": "developer--walkway-tray--mutu",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 27,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -1228,7 +1230,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 60
+      "priority": 60,
+      "generatedAt": "2026-11-15T18:10:47.144Z"
     },
     {
       "id": "developer--inverter--panduan",
@@ -2206,7 +2209,7 @@
     {
       "id": "manufaktur--inverter--mutu",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 28,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2223,7 +2226,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 45
+      "priority": 45,
+      "generatedAt": "2026-11-15T18:09:02.787Z"
     },
     {
       "id": "manufaktur--kabel-dc--panduan",
@@ -6463,7 +6467,7 @@
     {
       "id": "umum--merek--jinko",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 26,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6481,7 +6485,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-11-15T18:07:53.198Z"
     },
     {
       "id": "umum--merek--ja-solar",
@@ -6631,7 +6636,7 @@
     {
       "id": "umum--merek--kabelindo",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 30,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6649,7 +6654,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/crx-ac-power-cable-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-11-15T18:14:32.630Z"
     },
     {
       "id": "umum--merek--sutrado",
