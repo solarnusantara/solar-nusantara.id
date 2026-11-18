@@ -918,7 +918,7 @@
     {
       "id": "developer--mounting-rel--spesifikasi",
       "kind": "longtail",
-      "status": "generated",
+      "status": "failed",
       "rank": 21,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -936,7 +936,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
       "priority": 100,
-      "generatedAt": "2026-11-08T18:09:29.437Z"
+      "generatedAt": "2026-11-08T18:09:29.437Z",
+      "lastError": "publish gate: sonushub.id link not on the allowlist: https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh?utm_source=solar-nusantara.id&utm_medium=artikel&utm_campaign=mounting-rel&utm_content=spesifikasi-teknis-mounting-rel-atap-plts-untuk-developer-energi-terbarukan&utm_term=isi - use only the URLs given in the prompt"
     },
     {
       "id": "developer--mounting-rel--perbandingan",
@@ -6492,7 +6493,7 @@
     {
       "id": "umum--merek--ja-solar",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 22,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6511,7 +6512,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 95,
-      "generatedAt": "2026-11-08T18:09:23.454Z"
+      "generatedAt": "2026-11-08T18:09:23.454Z",
+      "publishedAt": "2026-11-18T01:23:09.452Z"
     },
     {
       "id": "umum--merek--longi",

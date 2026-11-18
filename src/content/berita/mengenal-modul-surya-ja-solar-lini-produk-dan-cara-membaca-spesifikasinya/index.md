@@ -5,9 +5,9 @@ description: "Mengenal lini produk modul surya JA Solar di SonusHUB dan cara mem
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "modul surya ja solar"
-pubDate: "2026-11-08"
+pubDate: "2026-11-18"
 tags: ["pengetahuan-material", "modul-surya", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Modul surya adalah kategori material yang menjadi jantung setiap PLTS, dan JA Solar merupakan salah satu produsen di kategori tersebut. Bagi tim pengadaan, membaca penamaan model dan lembar data (datasheet) sama pentingnya dengan memilih pemasok. Artikel ini membahas lini produk modul surya JA Solar yang tersedia di SonusHUB sekaligus cara menelaah spesifikasinya sebelum inquiry dikirim.
