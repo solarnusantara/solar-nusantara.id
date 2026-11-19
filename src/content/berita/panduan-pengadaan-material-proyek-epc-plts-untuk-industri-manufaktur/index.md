@@ -5,9 +5,9 @@ description: "Panduan pengadaan material proyek EPC PLTS industri manufaktur: kr
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi proyek pemasangan PLTS atap dengan derek dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "material proyek epc plts industri manufaktur"
-pubDate: "2026-11-08"
+pubDate: "2026-11-19"
 tags: ["manufaktur", "proyek-epc", "pengadaan-material", "panduan"]
-draft: true
+draft: false
 ---
 
 Sebelum menerbitkan PO, tim pengadaan industri manufaktur harus memutuskan batas paket material PLTS: apa yang masuk lingkup EPC, apa yang dipasok pemilik, dan bagaimana kesiapan dokumen teknisnya. Keputusan ini menentukan kebutuhan material proyek EPC PLTS industri manufaktur, mulai dari modul, inverter, mounting, kabel DC/AC, cable tray, hingga perangkat proteksi dan pemantauan. Tanpa batas lingkup yang tegas, spesifikasi mudah tercampur dan verifikasi dokumen menjadi lambat. Artikel ini memandu keputusan tersebut secara menyeluruh sebagai rujukan pengadaan.

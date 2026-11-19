@@ -2560,7 +2560,7 @@
     {
       "id": "manufaktur--proyek--panduan",
       "kind": "pillar",
-      "status": "generated",
+      "status": "published",
       "rank": 24,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2578,7 +2578,8 @@
       ],
       "sonushubLink": "https://sonushub.id/kalkulator-panel-surya",
       "priority": 45,
-      "generatedAt": "2026-11-08T18:16:05.305Z"
+      "generatedAt": "2026-11-08T18:16:05.305Z",
+      "publishedAt": "2026-11-19T01:23:06.380Z"
     },
     {
       "id": "manufaktur--proyek--spesifikasi",
