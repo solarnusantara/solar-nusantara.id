@@ -6470,7 +6470,7 @@
     {
       "id": "umum--merek--jinko",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 26,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6489,7 +6489,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
       "priority": 95,
-      "generatedAt": "2026-11-15T18:07:53.198Z"
+      "generatedAt": "2026-11-15T18:07:53.198Z",
+      "publishedAt": "2026-11-20T01:23:07.193Z"
     },
     {
       "id": "umum--merek--ja-solar",

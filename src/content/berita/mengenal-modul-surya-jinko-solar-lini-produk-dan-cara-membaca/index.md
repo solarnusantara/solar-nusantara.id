@@ -5,9 +5,9 @@ description: "Lini produk modul surya Jinko Solar di SonusHUB dan panduan membac
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi modul surya dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "modul surya jinko solar"
-pubDate: "2026-11-15"
+pubDate: "2026-11-20"
 tags: ["pengetahuan-material", "modul-surya", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Modul surya adalah komponen yang mengubah radiasi matahari menjadi listrik arus searah, dan pada kategori inilah Jinko Solar menempatkan produknya. Bagi tim pengadaan maupun project manager, membaca katalog modul surya Jinko Solar berarti membaca kode model, kelas daya, serta aksesori penyambungnya sebelum menyusun permintaan penawaran.
