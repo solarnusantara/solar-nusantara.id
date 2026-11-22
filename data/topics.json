@@ -32,7 +32,7 @@
     {
       "id": "epc--mounting-rel--spesifikasi",
       "kind": "longtail",
-      "status": "pending",
+      "status": "failed",
       "rank": 37,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -49,12 +49,13 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "epc--mounting-rel--perbandingan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "failed",
       "rank": 33,
       "buyer": "epc",
       "buyerLabel": "Kontraktor EPC PLTS",
@@ -71,7 +72,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/mnt-pv-rail-mounting-hardware-sh",
-      "priority": 100
+      "priority": 100,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "epc--mounting-rel--pengadaan",
@@ -1014,7 +1016,7 @@
     {
       "id": "developer--pv-modul--panduan",
       "kind": "pillar",
-      "status": "pending",
+      "status": "failed",
       "rank": 31,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -1031,7 +1033,8 @@
         "panduan"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 90
+      "priority": 90,
+      "lastError": "failed 3 attempts"
     },
     {
       "id": "developer--pv-modul--spesifikasi",
@@ -1192,7 +1195,7 @@
     {
       "id": "developer--walkway-tray--pengadaan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 35,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -1209,7 +1212,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 60
+      "priority": 60,
+      "generatedAt": "2026-11-22T18:16:18.523Z"
     },
     {
       "id": "developer--walkway-tray--mutu",
@@ -2028,7 +2032,7 @@
     {
       "id": "manufaktur--walkway-tray--spesifikasi",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 32,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2045,7 +2049,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
-      "priority": 54
+      "priority": 54,
+      "generatedAt": "2026-11-22T18:07:52.182Z"
     },
     {
       "id": "manufaktur--walkway-tray--perbandingan",
@@ -2189,7 +2194,7 @@
     {
       "id": "manufaktur--inverter--pengadaan",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 36,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2206,7 +2211,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
-      "priority": 45
+      "priority": 45,
+      "generatedAt": "2026-11-22T18:17:09.626Z"
     },
     {
       "id": "manufaktur--inverter--mutu",
@@ -6520,7 +6526,7 @@
     {
       "id": "umum--merek--longi",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 34,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6538,7 +6544,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/pvx-solar-modules-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-11-22T18:09:01.295Z"
     },
     {
       "id": "umum--merek--trina",
@@ -6665,7 +6672,7 @@
     {
       "id": "umum--merek--sutrado",
       "kind": "longtail",
-      "status": "pending",
+      "status": "generated",
       "rank": 38,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6683,7 +6690,8 @@
         "teknis"
       ],
       "sonushubLink": "https://sonushub.id/category/crx-ac-power-cable-sh",
-      "priority": 95
+      "priority": 95,
+      "generatedAt": "2026-11-22T18:20:01.449Z"
     },
     {
       "id": "pabrik-manufaktur--desain-sizing--pilar",
