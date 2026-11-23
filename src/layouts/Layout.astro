@@ -104,8 +104,9 @@ const description = frontmatter?.description || directDescription || SITE_CONFIG
 // Resolved against the canonical URL, not Astro.url: Astro.url carries the
 // querystring, and a relative image source would otherwise resolve against the
 // current path rather than the site root.
-const imageSrc = ogImage || frontmatter?.heroImage?.src || '/meta.png';
+const imageSrc = ogImage || frontmatter?.heroImage?.src || '/meta.jpg';
 const ogImageUrl = new URL(imageSrc, canonicalUrl).href;
+const isDefaultOgImage = !ogImage && !frontmatter?.heroImage?.src;
 
 const hasHeadings = headings && headings.length > 0;
 
@@ -289,6 +290,13 @@ const structuredData = {
 		<meta property="og:title" content={pageTitle} />
 		<meta property="og:description" content={description} />
 		<meta property="og:image" content={ogImageUrl} />
+		{isDefaultOgImage && (
+			<>
+				<meta property="og:image:type" content="image/jpeg" />
+				<meta property="og:image:width" content="1200" />
+				<meta property="og:image:height" content="630" />
+			</>
+		)}
 		<meta property="og:image:alt" content={description} />
 		{isMarkdownPage && frontmatter.pubDate && (
 			<meta property="article:published_time" content={frontmatter.pubDate.toISOString()} />
