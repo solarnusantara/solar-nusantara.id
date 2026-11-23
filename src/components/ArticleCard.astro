@@ -18,13 +18,13 @@ const categoryLabel =
 <a href={`/berita/${post.slug}/`} class="group block h-full">
   <article class="bg-white border border-[#dbe5f0] rounded-[12px] p-[15px] lg:p-[17px] flex flex-col h-full transition-all duration-200 hover:border-[#0f7dc7] hover:shadow-[0_8px_24px_rgba(20,38,61,0.08)]">
     {post.data.heroImage && (
-      <div class="w-full h-[180px] lg:h-[200px] rounded-[10px] overflow-hidden bg-[#dbf0fa] mb-[14px] shrink-0">
+      <div class="w-full rounded-[10px] overflow-hidden bg-[#f4f7f9] mb-[14px] shrink-0">
         <Image
           src={post.data.heroImage}
           alt={post.data.heroImageAlt ?? post.data.title}
           width={600}
           height={338}
-          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          class="w-full h-auto block transition-transform duration-300 group-hover:scale-[1.02]"
           loading={eager ? 'eager' : 'lazy'}
         />
       </div>
