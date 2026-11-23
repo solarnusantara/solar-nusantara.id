@@ -4,16 +4,16 @@ export const SITE_CONFIG = {
     // "Wujudkan masa" was written "Wujudkanmasa" until 2026-09-15. This string
     // is the site-wide meta description, so the typo was rendering in the
     // search snippet on every page.
-    description: 'Solar Nusantara menyediakan solusi energi surya terdepan untuk perumahan, komersial, dan industri. Wujudkan masa depan Indonesia dengan energi bersih.',
+    description: 'Solusi developer, EPC PLTS rooftop & ground-mounted, serta pengadaan material surya melalui SonusHUB.',
     url: 'https://solar-nusantara.id',
     logo: {
       src: '/src/assets/logo.png',
       alt: 'Solar Nusantara Logo',
     },
     contact: {
-      email: 'info@solar-nusantara.id',
-      phone: '+62 123 4567 890',
-      address: 'Jakarta, Indonesia',
+      email: 'sonus@solar-nusantara.id',
+      phone: '+62 821-8000-0575',
+      address: 'PDIN Building, Yogyakarta, Indonesia',
     },
     socials: {
       facebook: 'https://facebook.com/solarnusantara',
