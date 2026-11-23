@@ -19,6 +19,14 @@ const external = byline.url ? !byline.url.startsWith('/') : false;
 const fmt = (d: Date) => d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
+{/* Reading progress, scrubbed by src/scripts/motion.ts. Starts at scaleX(0) so it stays invisible without JS. */}
+<div
+  data-read-progress
+  aria-hidden="true"
+  class="not-prose fixed top-0 left-0 right-0 h-[3px] bg-[#1483c8] origin-left z-[55] pointer-events-none"
+  style="transform: scaleX(0)"
+></div>
+
 <div class="not-prose text-[14px] text-[#5e7080] mb-[24px] flex flex-wrap items-center gap-x-[10px] gap-y-[4px]">
   <time datetime={data.pubDate.toISOString()} class="whitespace-nowrap">
     {fmt(data.pubDate)}

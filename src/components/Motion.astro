@@ -1,0 +1,16 @@
+---
+/**
+ * Loads src/scripts/motion.ts. Rendered once, unconditionally, by Layout.
+ *
+ * It is its own component on purpose. As a plain <script> in Layout.astro,
+ * next to Layout's conditional TOC script ({hasHeadings && <script>}), the
+ * production build (Astro 5.15) shipped it only on article pages and shipped
+ * the TOC script on pages without headings instead - the dev server rendered
+ * both correctly, so nothing looked wrong until dist/ was inspected. Here it is
+ * the only script in a component that always renders, which the build handles.
+ */
+---
+
+<script>
+  import '../scripts/motion';
+</script>

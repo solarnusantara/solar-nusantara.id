@@ -1,6 +1,7 @@
 ---
 import SiteHeader from '../components/SiteHeader.astro';
 import Footer from '../components/Footer.astro';
+import Motion from '../components/Motion.astro';
 import '../styles/global.css';
 import { SITE_CONFIG } from '../config';
 import { navLinks } from '../data/navLinks';
@@ -265,6 +266,18 @@ const structuredData = {
 <html lang="id" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
+		{/*
+			Pre-hide for src/scripts/motion.ts, before first paint so revealed
+			content never flashes in and then vanishes. Only when the visitor
+			has not asked for reduced motion, and never for longer than 3 s: if
+			the module fails to load, the page simply appears without motion.
+		*/}
+		<script is:inline>
+			if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
+				document.documentElement.classList.add('sn-motion');
+				setTimeout(function () { document.documentElement.classList.remove('sn-motion'); }, 3000);
+			}
+		</script>
 		<title>{pageTitle}</title>
 
 		<!-- Primary Meta Tags -->
@@ -406,6 +419,7 @@ const structuredData = {
     )}
 
 		<Footer />
+		<Motion />
 
     {isMarkdownPage && hasHeadings && (
       <>

@@ -22,7 +22,99 @@ section:not([data-sonus-section]) {
 .prose img {
   margin-left: auto;
   margin-right: auto;
-  display: block; 
-  border-radius: 0.5rem; 
-  box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+  display: block;
+  border-radius: 0.5rem;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+}
+
+/* ==========================================================================
+   Motion - the CSS half of src/scripts/motion.ts
+   ========================================================================== */
+:root {
+  --sn-ease-out: cubic-bezier(0.22, 1, 0.36, 1);
+}
+
+/*
+  Home hero copy only: pre-hidden while <html> has .sn-motion (set in Layout
+  <head>, dropped by motion.ts once its inline styles take over, or after 3 s
+  regardless). Scroll reveals need no pre-hide - motion.ts only hides what is
+  still below the fold. visibility, not display, so nothing reflows.
+*/
+html.sn-motion :is([data-hero-title], [data-hero-item]) {
+  visibility: hidden;
+}
+
+/*
+  SplitText's per-line mask (motion.ts hero title) clips at the line box, which
+  at leading 1.15 cuts Inter's descenders. Pad the clip downward and pull the
+  margin back so the layout does not move.
+*/
+.sn-line-mask {
+  padding-bottom: 0.15em;
+  margin-bottom: -0.15em;
+}
+
+/* Counting digits keep a fixed width, so the label under them does not jitter. */
+[data-count] {
+  font-variant-numeric: tabular-nums;
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  /*
+    Page intros: pure CSS so they start at first paint rather than when the
+    GSAP bundle lands, which keeps them out of the LCP path. data-intro
+    cascades its children; data-intro-self animates the element itself.
+  */
+  [data-intro] > *,
+  [data-intro-self] {
+    animation: sn-intro 0.9s var(--sn-ease-out) both;
+  }
+  [data-intro] > :nth-child(2) { animation-delay: 0.08s; }
+  [data-intro] > :nth-child(3) { animation-delay: 0.16s; }
+  [data-intro] > :nth-child(4) { animation-delay: 0.24s; }
+  [data-intro] > :nth-child(n + 5) { animation-delay: 0.32s; }
+  [data-intro-self] { animation-delay: 0.2s; }
+
+  /* The zoom motion.ts parallax holds, applied up front so in-view images do not pop when it loads. */
+  [data-parallax] {
+    transform: scale(1.14);
+  }
+}
+
+@keyframes sn-intro {
+  from {
+    opacity: 0;
+    translate: 0 18px;
+  }
+}
+
+/*
+  Card hover: lift and a slow image push. These use the individual `translate`
+  and `scale` properties, never `transform`, because GSAP writes `transform`
+  inline during reveals and parallax; a CSS transition on the same property
+  would chase every frame GSAP sets and smear the motion. The transition list
+  restates colour and shadow so cards keep the hover fades their own utility
+  classes gave them.
+*/
+@media (hover: hover) and (prefers-reduced-motion: no-preference) {
+  [data-reveal-stagger] > :is(article, a) {
+    transition:
+      translate 0.5s var(--sn-ease-out),
+      box-shadow 0.5s var(--sn-ease-out),
+      border-color 0.3s ease,
+      background-color 0.3s ease,
+      color 0.3s ease;
+  }
+
+  [data-reveal-stagger] > :is(article, a):hover {
+    translate: 0 -4px;
+  }
+
+  [data-reveal-stagger] > article img {
+    transition: scale 0.9s var(--sn-ease-out);
+  }
+
+  [data-reveal-stagger] > article:hover img {
+    scale: 1.04;
+  }
 }
