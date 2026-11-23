@@ -30,10 +30,10 @@ const businessBases = [
 ];
 
 const impactMetrics = [
-  { value: '30 MWp', label: 'Total installed PLTS' },
-  { value: '27 MWp', label: 'Installed in the last 3 years' },
-  { value: '12+', label: 'EPC partners vetted and standardized' },
-  { value: '2021', label: 'Tahun berdiri' },
+  { value: '30 MWp', count: 30, countStart: 0, countSuffix: ' MWp', label: 'Total installed PLTS' },
+  { value: '27 MWp', count: 27, countStart: 0, countSuffix: ' MWp', label: 'Installed in the last 3 years' },
+  { value: '12+', count: 12, countStart: 0, countSuffix: '+', label: 'EPC partners vetted and standardized' },
+  { value: '2021', count: 2021, countStart: 0, countSuffix: '', label: 'Tahun berdiri' },
 ];
 
 const selectedProjects = [
@@ -149,15 +149,23 @@ const pltsConfigurations = [
 
     <div class="relative z-10 w-full max-w-[1440px] mx-auto px-[20px] lg:px-[80px] pt-[140px] pb-[64px] lg:pt-[180px] lg:pb-[88px]">
       <div class="flex flex-col gap-[15px] lg:gap-[18px] max-w-[736px]">
-        <h1 class="text-[33px] lg:text-[46px] font-bold leading-[1.15] tracking-[-0.015em] text-white max-w-[690px]">
+        <h1
+          data-hero-enter
+          style="--enter-delay: 0ms"
+          class="text-[33px] lg:text-[46px] font-bold leading-[1.15] tracking-[-0.015em] text-white max-w-[690px]"
+        >
           We believe the next energy is electricity
         </h1>
 
-        <p class="text-[15px] lg:text-[16px] font-normal leading-[1.55] text-[#f5faff] lg:text-white/90 max-w-[690px]">
+        <p
+          data-hero-enter
+          style="--enter-delay: 90ms"
+          class="text-[15px] lg:text-[16px] font-normal leading-[1.55] text-[#f5faff] lg:text-white/90 max-w-[690px]"
+        >
           Solar Nusantara mengembangkan proyek, melaksanakan EPC PLTS rooftop dan ground-mounted, serta mendukung pengadaan material melalui SonusHUB.
         </p>
 
-        <div class="flex flex-col sm:flex-row gap-[12px] pt-[4px]">
+        <div data-hero-enter style="--enter-delay: 170ms" class="flex flex-col sm:flex-row gap-[12px] pt-[4px]">
           <a
             href="/kontak"
             class="inline-flex items-center justify-center h-[45px] px-[20px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-[#0f6ea8] w-full sm:w-auto"
@@ -172,7 +180,11 @@ const pltsConfigurations = [
           </a>
         </div>
 
-        <p class="hidden lg:block text-[11px] font-bold tracking-[0.06em] text-white/82 pt-[2px]">
+        <p
+          data-hero-enter
+          style="--enter-delay: 240ms"
+          class="hidden lg:block text-[11px] font-bold tracking-[0.06em] text-white/82 pt-[2px]"
+        >
           DEVELOPER&nbsp;&nbsp;•&nbsp;&nbsp;EPC PLTS&nbsp;&nbsp;•&nbsp;&nbsp;SUPPLY CHAIN
         </p>
       </div>
@@ -185,7 +197,7 @@ const pltsConfigurations = [
   <section data-sonus-section class="bg-white">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[70px]">
       <div class="flex flex-col lg:flex-row items-start gap-[28px] lg:gap-[64px]">
-        <div class="hidden lg:block w-[440px] h-[320px] rounded-[14px] overflow-hidden shrink-0 bg-[#f4f7f9]">
+        <div data-reveal="scale" class="hidden lg:block w-[440px] h-[320px] rounded-[14px] overflow-hidden shrink-0 bg-[#f4f7f9]">
           <Image
             src={aboutSolarImg}
             alt="Instalasi PLTS Solar Nusantara untuk sektor industri dan komersial"
@@ -193,7 +205,7 @@ const pltsConfigurations = [
           />
         </div>
 
-        <div class="flex-1 flex flex-col gap-[12px] lg:gap-[15px] min-w-0">
+        <div data-reveal class="flex-1 flex flex-col gap-[12px] lg:gap-[15px] min-w-0">
           <p class="text-[11px] lg:text-[12px] font-semibold lg:font-bold tracking-[0.04em] text-[#1483c8] uppercase">
             WHO WE ARE
           </p>
@@ -226,7 +238,7 @@ const pltsConfigurations = [
   <!-- ===================================================================== -->
   <section data-sonus-section class="bg-[#f4f7f9]">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:pt-[68px] lg:pb-[72px]">
-      <div class="flex flex-col gap-[10px]">
+      <div data-reveal class="flex flex-col gap-[10px]">
         <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
           BASIS BISNIS
         </p>
@@ -238,7 +250,7 @@ const pltsConfigurations = [
         </p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[22px] lg:mt-[28px]">
+      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[22px] lg:mt-[28px]">
         {businessBases.map((item) => (
           <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] min-h-[152px] lg:min-h-[170px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
             <p class="text-[11px] font-bold tracking-[0.03em] text-[#1483c8]">
@@ -262,7 +274,7 @@ const pltsConfigurations = [
   <section data-sonus-section class="bg-[#10283d] lg:bg-[#071b33]">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[52px]">
       <div class="flex flex-col gap-[14px] lg:gap-[24px]">
-        <div class="flex flex-col gap-[8px] lg:gap-[12px]">
+        <div data-reveal class="flex flex-col gap-[8px] lg:gap-[12px]">
           <p class="text-[11px] lg:text-[12px] font-semibold lg:font-bold tracking-[0.04em] text-[#afc7e2] uppercase">
             COMPANY PROFILE 2027
           </p>
@@ -271,10 +283,15 @@ const pltsConfigurations = [
           </h2>
         </div>
 
-        <div class="grid grid-cols-2 lg:grid-cols-4 gap-[10px] lg:gap-[22px]">
+        <div data-reveal-stagger class="grid grid-cols-2 lg:grid-cols-4 gap-[10px] lg:gap-[22px]">
           {impactMetrics.map((metric) => (
             <div class="bg-[#17334d] lg:bg-transparent rounded-[10px] lg:rounded-none p-[14px] lg:p-0 flex flex-col gap-[6px]">
-              <p class="text-[24px] lg:text-[28px] font-bold leading-[1.15] text-white">
+              <p
+                data-count={metric.count}
+                data-count-start={metric.countStart}
+                data-count-suffix={metric.countSuffix}
+                class="text-[24px] lg:text-[28px] font-bold leading-[1.15] text-white tabular-nums"
+              >
                 {metric.value}
               </p>
               <p class="text-[12px] lg:text-[13px] font-normal leading-[1.45] text-[#d5e2f0]">
@@ -296,7 +313,7 @@ const pltsConfigurations = [
   <!-- ===================================================================== -->
   <section id="proyek" data-sonus-section class="bg-white scroll-mt-[120px]">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[70px]">
-      <div class="flex flex-col gap-[10px]">
+      <div data-reveal class="flex flex-col gap-[10px]">
         <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
           PORTOFOLIO
         </p>
@@ -308,7 +325,7 @@ const pltsConfigurations = [
         </p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[20px] lg:mt-[26px]">
+      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[20px] lg:mt-[26px]">
         {selectedProjects.map((project) => (
           <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[18px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
             <div class="w-full h-[170px] lg:h-[180px] rounded-[8px] overflow-hidden bg-[#f4f7f9]">
@@ -347,7 +364,7 @@ const pltsConfigurations = [
   <!-- ===================================================================== -->
   <section data-sonus-section class="bg-[#f7f9fc] lg:bg-white">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[48px]">
-      <div class="flex flex-col gap-[8px] lg:gap-[9px]">
+      <div data-reveal class="flex flex-col gap-[8px] lg:gap-[9px]">
         <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
           PROJECT FINANCING
         </p>
@@ -356,7 +373,7 @@ const pltsConfigurations = [
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[20px] lg:mt-[24px]">
+      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[20px] lg:mt-[24px]">
         {financingOptions.map((option) => (
           <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[18px] lg:p-[22px] flex flex-col gap-[8px] lg:gap-[11px] lg:min-h-[180px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
             <p class="text-[11px] font-semibold lg:font-bold tracking-[0.03em] text-[#1483c8]">
@@ -380,7 +397,7 @@ const pltsConfigurations = [
   <section data-sonus-section class="bg-[#f7f9fc]">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[64px]">
       <div class="grid grid-cols-1 lg:grid-cols-2 gap-[24px] lg:gap-[48px] items-start">
-        <div class="flex flex-col gap-[12px] lg:gap-[14px]">
+        <div data-reveal class="flex flex-col gap-[12px] lg:gap-[14px]">
           <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
             LAYANAN PENDUKUNG
           </p>
@@ -392,7 +409,7 @@ const pltsConfigurations = [
           </p>
         </div>
 
-        <div class="flex flex-col gap-[14px] lg:gap-[17px]">
+        <div data-reveal-stagger class="flex flex-col gap-[14px] lg:gap-[17px]">
           {supportingServices.map((service) => (
             <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[8px] lg:gap-[11px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
               <p class="text-[11px] font-bold tracking-[0.03em] text-[#0247aa]">
@@ -416,7 +433,7 @@ const pltsConfigurations = [
   <!-- ===================================================================== -->
   <section data-sonus-section class="bg-white">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[70px]">
-      <div class="flex flex-col gap-[10px]">
+      <div data-reveal class="flex flex-col gap-[10px]">
         <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
           KONFIGURASI PLTS
         </p>
@@ -428,7 +445,7 @@ const pltsConfigurations = [
         </p>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[20px] lg:mt-[24px]">
+      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[20px] lg:mt-[24px]">
         {pltsConfigurations.map((cfg) => (
           <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] min-h-[145px] lg:min-h-[160px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
             <p class="text-[11px] font-bold tracking-[0.03em] text-[#0247aa]">
@@ -451,7 +468,7 @@ const pltsConfigurations = [
   <!-- ===================================================================== -->
   <section data-sonus-section class="bg-[#1483c8]">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[44px]">
-      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[16px] lg:gap-[32px]">
+      <div data-reveal class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[16px] lg:gap-[32px]">
         <div class="flex flex-col gap-[8px]">
           <p class="text-[11px] font-semibold lg:font-bold text-[#cfe0f5]">
             Sedang menyiapkan proyek PLTS?

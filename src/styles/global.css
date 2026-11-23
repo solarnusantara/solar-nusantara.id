@@ -26,3 +26,77 @@ section:not([data-sonus-section]) {
   border-radius: 0.5rem; 
   box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
 }
+
+/* ==========================================================================
+   Zero-dependency Scroll Reveal & Hero Entrance Motion System
+   Uses GPU-composited opacity + transform only; respects reduced-motion.
+   ========================================================================== */
+@keyframes sn-hero-enter {
+  from {
+    opacity: 0;
+    transform: translate3d(0, 18px, 0);
+  }
+  to {
+    opacity: 1;
+    transform: translate3d(0, 0, 0);
+  }
+}
+
+[data-hero-enter] {
+  animation: sn-hero-enter 0.65s cubic-bezier(0.22, 1, 0.36, 1) var(--enter-delay, 0ms) both;
+  will-change: opacity, transform;
+}
+
+html.js-reveal [data-reveal] {
+  opacity: 0;
+  transform: translate3d(0, 22px, 0);
+  transition:
+    opacity 0.68s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms),
+    transform 0.68s cubic-bezier(0.22, 1, 0.36, 1) var(--reveal-delay, 0ms);
+  will-change: opacity, transform;
+}
+
+html.js-reveal [data-reveal="fade"] {
+  transform: none;
+}
+
+html.js-reveal [data-reveal="scale"] {
+  transform: translate3d(0, 16px, 0) scale(0.975);
+}
+
+html.js-reveal [data-reveal].is-visible {
+  opacity: 1;
+  transform: translate3d(0, 0, 0) scale(1);
+  will-change: auto;
+}
+
+html.js-reveal [data-reveal-stagger] > * {
+  opacity: 0;
+  transform: translate3d(0, 20px, 0);
+  transition:
+    opacity 0.62s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-index, 0) * 75ms),
+    transform 0.62s cubic-bezier(0.22, 1, 0.36, 1) calc(var(--reveal-index, 0) * 75ms);
+  will-change: opacity, transform;
+}
+
+html.js-reveal [data-reveal-stagger].is-visible > * {
+  opacity: 1;
+  transform: translate3d(0, 0, 0);
+  will-change: auto;
+}
+
+@media (prefers-reduced-motion: reduce) {
+  html {
+    scroll-behavior: auto;
+  }
+
+  [data-hero-enter],
+  html.js-reveal [data-reveal],
+  html.js-reveal [data-reveal-stagger] > * {
+    animation: none !important;
+    transition: none !important;
+    opacity: 1 !important;
+    transform: none !important;
+    will-change: auto !important;
+  }
+}

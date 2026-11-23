@@ -63,7 +63,7 @@ const productsTech = [
         <span>Solusi</span>
       </nav>
 
-      <div class="flex flex-col gap-[10px]">
+      <div data-hero-enter class="flex flex-col gap-[10px]">
         <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
           ENERGI&nbsp;&nbsp;•&nbsp;&nbsp;TEKNOLOGI&nbsp;&nbsp;•&nbsp;&nbsp;PROGRAM
         </p>
@@ -91,13 +91,13 @@ const productsTech = [
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
+      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
         {energySolutions.map((sol) => (
           <a
             href={sol.href}
             class="group bg-white border border-[#e0e8ee] rounded-[14px] px-[22px] py-[22px] lg:px-[24px] flex flex-col justify-between gap-[16px] lg:min-h-[240px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
           >
-            <div class="flex flex-col gap-[10px]">
+            <div data-hero-enter class="flex flex-col gap-[10px]">
               <p class="text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
                 {sol.eyebrow}
               </p>
@@ -131,7 +131,7 @@ const productsTech = [
         </h2>
       </div>
 
-      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
+      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
         {productsTech.map((item) => (
           <a
             href={item.href}

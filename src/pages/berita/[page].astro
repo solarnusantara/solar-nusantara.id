@@ -22,7 +22,7 @@ const prevUrl = page.url.prev === '/berita/1' ? '/berita' : page.url.prev;
   description={`Artikel dan panduan teknis energi surya dari Solar Nusantara, halaman ${page.currentPage} dari ${page.lastPage}: perhitungan PLTS, efisiensi panel, dan industri fotovoltaik.`}
 >
   <section data-sonus-section class="bg-[#f2f7fb] border-b border-[#dbe5f0]">
-    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[54px]">
+    <div data-hero-enter class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[54px]">
       <h1 class="text-[32px] lg:text-[40px] font-bold leading-[1.15] text-[#14263d]">
         Berita &amp; Wawasan
       </h1>
@@ -34,7 +34,7 @@ const prevUrl = page.url.prev === '/berita/1' ? '/berita' : page.url.prev;
 
   <section data-sonus-section class="bg-white">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[44px]">
-      <div class="grid grid-cols-1 md:grid-cols-2 gap-[20px] lg:gap-[24px]">
+      <div data-reveal-stagger class="grid grid-cols-1 md:grid-cols-2 gap-[20px] lg:gap-[24px]">
         {page.data.map((post, i) => <ArticleCard post={post} eager={i < 2} />)}
       </div>
 
