@@ -12,6 +12,12 @@ section:not([data-sonus-section]) {
   @apply py-16 sm:py-20;
 }
 
+/* Keep button-style links inside markdown prose legible */
+.prose a.text-white {
+  color: #ffffff !important;
+  text-decoration: none !important;
+}
+
 /* Custom styles for images in markdown to center and round them */
 .prose img {
   margin-left: auto;
