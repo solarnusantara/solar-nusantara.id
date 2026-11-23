@@ -1,0 +1,168 @@
+---
+import Layout from '../layouts/Layout.astro';
+import { Image } from 'astro:assets';
+
+import imgCilegon from '../assets/redesign/project-cilegon.png';
+import imgSragen from '../assets/redesign/project-sragen.png';
+import imgSemarang from '../assets/redesign/project-semarang.png';
+import imgSukabumi from '../assets/redesign/project-sukabumi.png';
+import imgTangerang from '../assets/redesign/project-tangerang.png';
+import imgSukoharjo from '../assets/redesign/project-sukoharjo.png';
+import imgKlaten from '../assets/redesign/project-klaten.png';
+
+const projects = [
+  {
+    image: imgCilegon,
+    alt: 'Instalasi PLTS ground-mounted 4.6 MWp untuk fasilitas pabrik di Cilegon',
+    category: 'INDUSTRI  /  GROUND-MOUNTED',
+    location: 'Cilegon',
+    description: 'Instalasi PLTS ground-mounted untuk fasilitas pabrik.',
+    meta: '4.6 MWp   •   2025',
+  },
+  {
+    image: imgSragen,
+    alt: 'Instalasi PLTS on-grid 4.9 MWp untuk fasilitas pabrik di Sragen',
+    category: 'INDUSTRI  /  ON-GRID',
+    location: 'Sragen',
+    description: 'Instalasi tenaga surya on-grid untuk fasilitas pabrik.',
+    meta: '4.9 MWp   •   2024',
+  },
+  {
+    image: imgSemarang,
+    alt: 'Instalasi PLTS on-grid 2.1 MWp untuk fasilitas pabrik di Semarang',
+    category: 'INDUSTRI  /  ON-GRID',
+    location: 'Semarang',
+    description: 'Instalasi tenaga surya on-grid untuk fasilitas pabrik.',
+    meta: '2.1 MWp   •   2024',
+  },
+  {
+    image: imgSukabumi,
+    alt: 'Instalasi PLTS on-grid 3.8 MWp untuk fasilitas pabrik di Sukabumi',
+    category: 'INDUSTRI  /  ON-GRID',
+    location: 'Sukabumi',
+    description: 'Instalasi tenaga surya on-grid untuk fasilitas pabrik.',
+    meta: '3.8 MWp   •   2024',
+  },
+  {
+    image: imgTangerang,
+    alt: 'Instalasi PLTS on-grid 643.5 kWp untuk fasilitas pabrik di Tangerang',
+    category: 'INDUSTRI  /  ON-GRID',
+    location: 'Tangerang',
+    description: 'Instalasi tenaga surya on-grid untuk fasilitas pabrik.',
+    meta: '643.5 kWp   •   2024',
+  },
+  {
+    image: imgSukoharjo,
+    alt: 'Instalasi PLTS on-grid 470 kWp untuk fasilitas pabrik di Telukan, Sukoharjo',
+    category: 'INDUSTRI  /  ON-GRID',
+    location: 'Telukan, Sukoharjo',
+    description: 'Instalasi tenaga surya on-grid untuk fasilitas pabrik.',
+    meta: '470 kWp   •   2024',
+  },
+  {
+    image: imgKlaten,
+    alt: 'Instalasi PLTS on-grid dengan TKDN 208 kWp untuk pasar di Klaten',
+    category: 'KOMERSIAL  /  ON-GRID + TKDN',
+    location: 'Klaten',
+    description: 'Instalasi PLTS on-grid dengan TKDN untuk pasar.',
+    meta: '208 kWp   •   2024',
+  },
+];
+---
+
+<Layout
+  title="Portofolio Proyek PLTS"
+  description="Portofolio proyek PLTS industri dan komersial PT Tripower Solar Nusantara di berbagai wilayah Indonesia: Cilegon, Sragen, Semarang, Sukabumi, Tangerang, Sukoharjo, dan Klaten."
+>
+  <!-- ===================================================================== -->
+  <!-- PAGE INTRO                                                            -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f5fafc] border-b border-[#e0ebf2]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:pt-[25px] lg:pb-[44px]">
+      <nav aria-label="Breadcrumb" class="text-[12px] text-[#5e7385] mb-[20px] lg:mb-[28px] flex items-center gap-[8px]">
+        <a href="/" class="hover:text-[#1482c7] transition-colors">Beranda</a>
+        <span>/</span>
+        <span class="text-[#0a243d]">Portofolio</span>
+      </nav>
+
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] font-bold tracking-[0.04em] text-[#1482c7] uppercase">
+          PROYEK KAMI
+        </p>
+        <h1 class="text-[32px] lg:text-[44px] font-bold leading-[1.15] text-[#0a243d] max-w-[1120px]">
+          Proyek PLTS di berbagai wilayah Indonesia.
+        </h1>
+        <p class="text-[15px] lg:text-[17px] font-normal leading-[1.5] text-[#5e7385] max-w-[920px]">
+          Portofolio instalasi tenaga surya untuk fasilitas industri dan komersial.
+        </p>
+        <p class="text-[13px] font-semibold text-[#0a243d] pt-[8px]">
+          7 proyek&nbsp;&nbsp;•&nbsp;&nbsp;Indonesia
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- PORTFOLIO GRID (7 PROJECTS)                                           -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[48px]">
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[20px] lg:gap-[32px]">
+        {projects.map((project, idx) => (
+          <article
+            class:list={[
+              'bg-white border border-[#e0ebf2] rounded-[12px] p-[18px] flex flex-col gap-[9px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(10,36,61,0.07)]',
+              idx === projects.length - 1 ? 'lg:col-start-2' : '',
+            ]}
+          >
+            <div class="w-full h-[170px] lg:h-[180px] rounded-[8px] overflow-hidden bg-[#f4f7f9] shrink-0">
+              <Image
+                src={project.image}
+                alt={project.alt}
+                class="w-full h-full object-cover"
+                loading={idx < 3 ? 'eager' : 'lazy'}
+              />
+            </div>
+
+            <p class="text-[10px] font-bold tracking-[0.04em] text-[#1482c7] uppercase pt-[2px]">
+              {project.category}
+            </p>
+            <h2 class="text-[20px] lg:text-[22px] font-bold leading-[1.2] text-[#0a243d]">
+              {project.location}
+            </h2>
+            <p class="text-[13px] font-normal leading-[1.5] text-[#5e7385] flex-grow">
+              {project.description}
+            </p>
+            <p class="text-[12px] font-semibold text-[#0a243d] pt-[4px]">
+              {project.meta}
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- PORTFOLIO CTA                                                       -->
+      <!-- =================================================================== -->
+      <div class="mt-[36px] lg:mt-[52px] bg-[#0a243d] rounded-[16px] px-[22px] py-[26px] lg:px-[36px] lg:py-[36px] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px] lg:gap-[32px]">
+        <div class="flex flex-col gap-[8px] max-w-[780px]">
+          <p class="text-[11px] font-bold tracking-[0.04em] text-[#73c4f5] uppercase">
+            ADA RENCANA PROYEK PLTS?
+          </p>
+          <h2 class="text-[22px] lg:text-[26px] font-bold leading-[1.2] text-white">
+            Mari diskusikan kebutuhan proyek Anda.
+          </h2>
+          <p class="text-[14px] font-normal leading-[1.5] text-[#c7d9e8]">
+            Tim Solar Nusantara siap membantu dari perencanaan hingga instalasi.
+          </p>
+        </div>
+
+        <a
+          href="/kontak"
+          class="inline-flex items-center justify-center h-[48px] px-[24px] rounded-[8px] bg-[#1482c7] text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-[#0f6ea8] w-full lg:w-[225px] shrink-0 whitespace-nowrap"
+        >
+          Konsultasikan Proyek
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>
