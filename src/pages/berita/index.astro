@@ -16,7 +16,7 @@ const page = {
   url: {
     prev: undefined,
     next: pageCount > 1 ? '/berita/2' : undefined,
-  }
+  },
 };
 ---
 
@@ -24,36 +24,54 @@ const page = {
   title="Berita & Wawasan Energi Surya"
   description="Artikel dan panduan teknis energi surya dari Solar Nusantara: perhitungan sistem PLTS, efisiensi panel, komponen, dan perkembangan industri fotovoltaik."
 >
-  <main class="py-20 px-4 sm:px-6 lg:px-8 bg-gray-50 min-h-screen">
-    <div class="max-w-7xl mx-auto text-center">
-      <h1 class="text-4xl md:text-5xl font-bold text-gray-900 mb-4 tracking-tight">Berita & Wawasan</h1>
-      <p class="text-lg md:text-xl text-gray-600">
+  <section data-sonus-section class="bg-[#f2f7fb] border-b border-[#dbe5f0]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[54px]">
+      <h1 class="text-[32px] lg:text-[40px] font-bold leading-[1.15] text-[#14263d]">
+        Berita &amp; Wawasan
+      </h1>
+      <p class="text-[16px] lg:text-[18px] font-normal leading-[1.5] text-[#5e7080] mt-[10px] max-w-[760px]">
         Ikuti perkembangan terbaru, proyek, dan inovasi dari Solar Nusantara.
       </p>
     </div>
+  </section>
 
-    <div class="max-w-7xl mx-auto mt-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-2 gap-8">
-      {page.data.map((post, i) => <ArticleCard post={post} eager={i < 2} />)}
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[44px]">
+      <div class="grid grid-cols-1 md:grid-cols-2 gap-[20px] lg:gap-[24px]">
+        {page.data.map((post, i) => <ArticleCard post={post} eager={i < 2} />)}
+      </div>
+
+      <nav
+        class="mt-[36px] lg:mt-[48px] pt-[24px] border-t border-[#dbe5f0] flex flex-col sm:flex-row justify-between items-center gap-[16px]"
+        aria-label="Navigasi halaman"
+      >
+        <div class="w-full sm:w-auto flex justify-start">
+          {page.url.prev && (
+            <a
+              href={page.url.prev}
+              class="inline-flex items-center justify-center h-[42px] px-[18px] rounded-[8px] border border-[#0f7dc7] text-[#0f7dc7] text-[14px] font-semibold hover:bg-[#0f7dc7] hover:text-white transition-colors"
+            >
+              ← Halaman Sebelumnya
+            </a>
+          )}
+        </div>
+
+        <div class="text-[14px] text-[#5e7080] font-medium">
+          Halaman {page.currentPage} dari {page.lastPage}
+        </div>
+
+        <div class="w-full sm:w-auto flex justify-end">
+          {page.url.next && (
+            <a
+              href={page.url.next}
+              rel="next"
+              class="inline-flex items-center justify-center h-[42px] px-[18px] rounded-[8px] bg-[#0f7dc7] text-white text-[14px] font-semibold hover:bg-[#0c6ab0] transition-colors w-full sm:w-auto"
+            >
+              Halaman Berikutnya →
+            </a>
+          )}
+        </div>
+      </nav>
     </div>
-
-    <nav class="max-w-7xl mx-auto mt-16 flex justify-between items-center" aria-label="Navigasi halaman">
-      <div>
-        {page.url.prev && (
-          <a href={page.url.prev} class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
-            &larr; Halaman Sebelumnya
-          </a>
-        )}
-      </div>
-      <div class="text-gray-600">
-        Halaman {page.currentPage} dari {page.lastPage}
-      </div>
-      <div>
-        {page.url.next && (
-          <a href={page.url.next} rel="next" class="bg-blue-600 hover:bg-blue-700 text-white font-semibold py-2 px-4 rounded-lg transition-colors duration-300">
-            Halaman Berikutnya &rarr;
-          </a>
-        )}
-      </div>
-    </nav>
-  </main>
+  </section>
 </Layout>

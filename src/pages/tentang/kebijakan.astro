@@ -1,0 +1,98 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const policies = [
+  {
+    number: '01',
+    title: 'K3L & Sosial',
+    description:
+      'Kami berupaya menciptakan tempat kerja yang aman dan sehat, melindungi karyawan, mitra, pemasok, subkontraktor, dan masyarakat, serta menggunakan sumber daya alam secara efisien.',
+    highlights: 'Kepatuhan • pencegahan insiden • perbaikan berkelanjutan',
+    href: '/tentang/tentang-solar-nusantara/kebijakan-k3l-dan-sosial',
+  },
+  {
+    number: '02',
+    title: 'Obat-obatan & Alkohol',
+    description:
+      'Alkohol dan obat-obatan terlarang dilarang di lingkungan kerja. Pengecualian hanya untuk keperluan medis sesuai resep dokter; pelanggaran dapat dikenai tindakan disiplin.',
+    highlights: 'Larangan berlaku di lokasi kerja',
+    href: '/tentang/tentang-solar-nusantara/kebijakan-larangan-penggunaan-obat-obatan-terlarang-dan-alkohol',
+  },
+  {
+    number: '03',
+    title: 'Pencegahan Terjatuh',
+    description:
+      'Pekerjaan konstruksi, instalasi, dan pemeliharaan PLTS didukung penilaian bahaya, sistem perlindungan jatuh, inspeksi alat, serta pelatihan sebelum bekerja.',
+    highlights: 'Inspeksi • PFAS • jaring pengaman • pelatihan',
+    href: '/tentang/tentang-solar-nusantara/kebijakan-pencegahan-terjatuh',
+  },
+];
+---
+
+<Layout
+  title="Kebijakan Perusahaan"
+  description="Komitmen keselamatan, kesehatan, lingkungan (K3L), pencegahan terjatuh, dan kepatuhan PT Tripower Solar Nusantara bagi karyawan, mitra, pemasok, dan subkontraktor."
+>
+  <!-- ===================================================================== -->
+  <!-- PAGE INTRO                                                            -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f4f7f9] border-b border-[#e2e9ee]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:pt-[20px] lg:pb-[44px]">
+      <nav aria-label="Breadcrumb" class="text-[12px] text-[#60717e] mb-[20px] lg:mb-[28px]">
+        <a href="/" class="hover:text-[#1483c8] transition-colors">Beranda</a>
+        <span class="mx-2">/</span>
+        <a href="/tentang" class="hover:text-[#1483c8] transition-colors">Tentang Kami</a>
+      </nav>
+
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          TENTANG SONUS ID
+        </p>
+        <h1 class="text-[32px] lg:text-[42px] font-bold leading-[1.15] text-[#10283d]">
+          Kebijakan
+        </h1>
+        <p class="text-[16px] lg:text-[18px] font-normal leading-[1.5] text-[#60717e] max-w-[920px]">
+          Komitmen keselamatan, kesehatan, lingkungan, dan kepatuhan dalam setiap kegiatan SONUS.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- KEBIJAKAN PERUSAHAAN                                                  -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[48px]">
+      <div class="flex flex-col gap-[8px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          KEBIJAKAN PERUSAHAAN
+        </p>
+        <p class="text-[15px] font-normal leading-[1.5] text-[#60717e] max-w-[900px]">
+          Pedoman bagi seluruh karyawan, mitra kerja, pemasok, dan subkontraktor.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[28px]">
+        {policies.map((p) => (
+          <a
+            href={p.href}
+            class="group bg-white border border-[#e2e9ee] rounded-[12px] p-[21px] flex flex-col justify-between gap-[18px] lg:min-h-[274px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+          >
+            <div class="flex flex-col gap-[10px]">
+              <p class="text-[12px] font-semibold text-[#1483c8]">{p.number}</p>
+              <h2 class="text-[20px] font-semibold leading-[1.25] text-[#10283d] group-hover:text-[#1483c8] transition-colors">
+                {p.title}
+              </h2>
+              <p class="text-[14px] font-normal leading-[1.55] text-[#60717e]">
+                {p.description}
+              </p>
+            </div>
+            <p class="text-[12px] font-semibold text-[#1483c8] pt-[8px] border-t border-[#f0f4f8]">
+              {p.highlights}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+</Layout>

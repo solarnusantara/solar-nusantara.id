@@ -1,0 +1,529 @@
+---
+import logoColor from '../assets/redesign/logo-color.svg';
+import logoWhite from '../assets/redesign/logo-white.svg';
+
+interface Props {
+  /**
+   * When true (Homepage with dark Hero), the header starts transparent with
+   * the white logo overlaid on the hero, hides on scroll down, and reveals
+   * Header 02 · Classic (white bg + color logo) on scroll up.
+   * When false (inner light pages), Header 02 · Classic is used by default.
+   */
+  heroHeader?: boolean;
+}
+
+const { heroHeader = false } = Astro.props;
+const currentPath = Astro.url.pathname;
+
+const isActive = (href: string) => {
+  if (href === '/') return currentPath === '/';
+  if (href.startsWith('/#')) return false;
+  return currentPath === href || currentPath.startsWith(`${href}/`);
+};
+
+interface TopNavItem {
+  label: string;
+  href: string;
+  children?: { label: string; href: string }[];
+}
+
+const mainNav: TopNavItem[] = [
+  { label: 'Beranda', href: '/' },
+  {
+    label: 'Tentang',
+    href: '/tentang',
+    children: [
+      { label: 'Visi, Misi & Nilai', href: '/tentang/visi-dan-misi' },
+      { label: 'Kebijakan', href: '/tentang/kebijakan' },
+      { label: 'Karier', href: '/tentang/karir' },
+    ],
+  },
+  {
+    label: 'Solusi',
+    href: '/layanan',
+    children: [
+      { label: 'Layanan EPC PLTS', href: '/layanan/sistem-tenaga-surya-epc' },
+      { label: 'Produk', href: '/produk' },
+      { label: 'PINTAR', href: '/pintar' },
+    ],
+  },
+  { label: 'Proyek', href: '/#proyek' },
+  { label: 'Insight', href: '/berita' },
+  { label: 'Kontak', href: '/kontak' },
+];
+---
+
+<header
+  id="sonus-smart-header"
+  data-hero-header={heroHeader ? 'true' : 'false'}
+  data-state={heroHeader ? 'transparent' : 'classic'}
+  class:list={[
+    'sonus-header fixed top-0 left-0 right-0 z-50 transition-transform duration-300 ease-out font-sans',
+    heroHeader ? 'is-transparent' : 'is-classic',
+  ]}
+>
+  <!-- ===================================================================== -->
+  <!-- HEADER 01 · PRIMARY TRANSPARENT (Over Hero at scrollY ≈ 0)            -->
+  <!-- ===================================================================== -->
+  {heroHeader && (
+    <div class="header-primary-layer">
+      <!-- Desktop Primary -->
+      <div class="hidden lg:flex max-w-[1440px] mx-auto items-center justify-between px-[80px] py-[20px] pt-[28px]">
+        <a href="/" class="flex items-center shrink-0" aria-label="Solar Nusantara Beranda">
+          <img
+            src={logoWhite.src}
+            alt="Solar Nusantara"
+            width={205}
+            height={42}
+            class="h-[42px] w-[205px] object-contain"
+          />
+        </a>
+
+        <nav aria-label="Navigasi utama" class="flex items-center gap-[26px]">
+          {mainNav.map((item) => (
+            <div class="relative group">
+              <a
+                href={item.href}
+                class:list={[
+                  'inline-flex items-center gap-1 text-[14px] leading-normal text-white transition-opacity duration-150 hover:opacity-80',
+                  isActive(item.href) ? 'font-semibold' : 'font-normal',
+                ]}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-all duration-150 absolute left-0 top-full pt-3 z-50">
+                  <div class="min-w-[210px] rounded-[10px] bg-white border border-[#e2eaf2] shadow-lg py-2">
+                    {item.children.map((sub) => (
+                      <a
+                        href={sub.href}
+                        class="block px-4 py-2 text-[13px] text-[#0f2942] hover:bg-[#f4f7f9] hover:text-[#1483c8] transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        <a
+          href="https://sonushub.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center w-[150px] h-[45px] rounded-[8px] border border-white text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-white hover:text-[#071b33]"
+        >
+          SonusHUB ↗
+        </a>
+      </div>
+
+      <!-- Mobile Primary -->
+      <div class="flex lg:hidden items-center justify-between px-[20px] py-[14px]">
+        <a href="/" class="flex items-center shrink-0" aria-label="Solar Nusantara Beranda">
+          <img
+            src={logoWhite.src}
+            alt="Solar Nusantara"
+            width={145}
+            height={30}
+            class="h-[30px] w-[145px] object-contain"
+          />
+        </a>
+
+        <div class="flex items-center gap-[10px] shrink-0">
+          <a
+            href="https://sonushub.id"
+            target="_blank"
+            rel="noopener noreferrer"
+            class="inline-flex items-center justify-center w-[116px] h-[43px] rounded-[8px] border border-white text-white text-[14px] font-semibold transition-colors hover:bg-white hover:text-[#071b33]"
+          >
+            SonusHUB ↗
+          </a>
+          <button
+            type="button"
+            data-menu-open
+            aria-label="Buka menu navigasi"
+            aria-expanded="false"
+            aria-controls="sonus-mobile-drawer"
+            class="inline-flex items-center justify-center w-[32px] h-[32px] text-white cursor-pointer"
+          >
+            <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+              <line x1="3" y1="6" x2="21" y2="6" />
+              <line x1="3" y1="12" x2="21" y2="12" />
+              <line x1="3" y1="18" x2="21" y2="18" />
+            </svg>
+          </button>
+        </div>
+      </div>
+    </div>
+  )}
+
+  <!-- ===================================================================== -->
+  <!-- HEADER 02 · CLASSIC (White BG + Color Logo on scroll up / inner pages) -->
+  <!-- ===================================================================== -->
+  <div class="header-classic-layer bg-white shadow-[0_6px_24px_rgba(7,23,41,0.08)]">
+    <!-- Desktop Main Classic Bar -->
+    <div class="hidden lg:block bg-white border-b border-[#e2eaf2]">
+      <div class="max-w-[1440px] mx-auto h-[88px] px-[80px] flex items-center justify-between">
+        <a href="/" class="flex items-center shrink-0" aria-label="Solar Nusantara Beranda">
+          <img
+            src={logoColor.src}
+            alt="Solar Nusantara"
+            width={205}
+            height={42}
+            class="h-[42px] w-[205px] object-contain"
+          />
+        </a>
+
+        <nav aria-label="Navigasi utama klasik" class="flex items-center gap-[26px]">
+          {mainNav.map((item) => (
+            <div class="relative group">
+              <a
+                href={item.href}
+                class:list={[
+                  'inline-flex items-center gap-1 text-[14px] leading-normal text-[#0a1f36] transition-colors duration-150 hover:text-[#1483c8]',
+                  isActive(item.href) ? 'font-semibold' : 'font-normal',
+                ]}
+              >
+                {item.label}
+              </a>
+              {item.children && (
+                <div class="invisible opacity-0 group-hover:visible group-hover:opacity-100 group-focus-within:visible group-focus-within:opacity-100 transition-all duration-150 absolute left-0 top-full pt-3 z-50">
+                  <div class="min-w-[210px] rounded-[10px] bg-white border border-[#e2eaf2] shadow-lg py-2">
+                    {item.children.map((sub) => (
+                      <a
+                        href={sub.href}
+                        class="block px-4 py-2 text-[13px] text-[#0f2942] hover:bg-[#f4f7f9] hover:text-[#1483c8] transition-colors"
+                      >
+                        {sub.label}
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+            </div>
+          ))}
+        </nav>
+
+        <a
+          href="https://sonushub.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center w-[150px] h-[45px] rounded-[8px] bg-[#0f85c4] text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-[#0c6fa6]"
+        >
+          SonusHUB ↗
+        </a>
+      </div>
+    </div>
+
+    <!-- Mobile Classic Bar -->
+    <div class="flex lg:hidden items-center justify-between bg-white px-[16px] py-[13px] border-b border-[#e2eaf2]">
+      <a href="/" class="flex items-center shrink-0" aria-label="Solar Nusantara Beranda">
+        <img
+          src={logoColor.src}
+          alt="Solar Nusantara"
+          width={145}
+          height={30}
+          class="h-[30px] w-[145px] object-contain"
+        />
+      </a>
+
+      <div class="flex items-center gap-[10px] shrink-0">
+        <a
+          href="https://sonushub.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center w-[116px] h-[43px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold transition-colors hover:bg-[#0f6ea8]"
+        >
+          SonusHUB ↗
+        </a>
+        <button
+          type="button"
+          data-menu-open
+          aria-label="Buka menu navigasi"
+          aria-expanded="false"
+          aria-controls="sonus-mobile-drawer"
+          class="inline-flex items-center justify-center w-[32px] h-[32px] text-[#10283d] cursor-pointer"
+        >
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round">
+            <line x1="3" y1="6" x2="21" y2="6" />
+            <line x1="3" y1="12" x2="21" y2="12" />
+            <line x1="3" y1="18" x2="21" y2="18" />
+          </svg>
+        </button>
+      </div>
+    </div>
+  </div>
+</header>
+
+<!-- Spacer for non-hero pages so fixed classic header doesn't overlap content -->
+{!heroHeader && <div class="h-[69px] lg:h-[88px]" aria-hidden="true"></div>}
+
+<!-- ======================================================================= -->
+<!-- MOBILE MENU DRAWER (Matches Figma: Mobile — Menu Open · 390px)          -->
+<!-- ======================================================================= -->
+<div
+  id="sonus-mobile-drawer"
+  class="fixed inset-0 z-[60] lg:hidden pointer-events-none opacity-0 transition-opacity duration-200 font-sans"
+  aria-hidden="true"
+>
+  <!-- Background Scrim -->
+  <div
+    data-menu-close
+    class="absolute inset-0 bg-[rgba(5,23,41,0.44)]"
+  ></div>
+
+  <!-- Drawer Container -->
+  <div class="relative z-10 flex flex-col w-full max-h-screen">
+    <!-- Top Header inside Menu Open -->
+    <div class="flex items-center justify-between bg-white px-[16px] py-[13px] border-b border-[#e0e8f0]">
+      <a href="/" class="flex items-center shrink-0" aria-label="Solar Nusantara Beranda">
+        <img
+          src={logoColor.src}
+          alt="Solar Nusantara"
+          width={145}
+          height={30}
+          class="h-[30px] w-[145px] object-contain"
+        />
+      </a>
+
+      <div class="flex items-center gap-[10px] shrink-0">
+        <a
+          href="https://sonushub.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center w-[116px] h-[43px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold"
+        >
+          SonusHUB ↗
+        </a>
+        <button
+          type="button"
+          data-menu-close
+          aria-label="Tutup menu navigasi"
+          class="inline-flex items-center justify-center w-[32px] h-[32px] text-[#0f2942] text-[28px] leading-none font-semibold cursor-pointer"
+        >
+          ×
+        </button>
+      </div>
+    </div>
+
+    <!-- Expanded Menu Panel -->
+    <nav aria-label="Navigasi mobile" class="bg-white overflow-y-auto px-[20px] pt-[12px] pb-[28px] shadow-xl">
+      <a
+        href="/"
+        data-menu-link
+        class="block px-[4px] py-[12px] text-[15px] font-semibold text-[#0f2942] hover:text-[#1483c8]"
+      >
+        Beranda
+      </a>
+      <div class="h-px bg-[#e0e8f0]"></div>
+
+      <!-- Tentang Accordion -->
+      <div class="py-[6px]" data-accordion>
+        <div class="flex items-center justify-between px-[4px] py-[8px]">
+          <a href="/tentang" data-menu-link class="text-[15px] font-semibold text-[#0f2942] hover:text-[#1483c8]">
+            Tentang
+          </a>
+          <button
+            type="button"
+            data-accordion-toggle
+            aria-expanded="true"
+            aria-label="Toggle submenu Tentang"
+            class="p-1 text-[#0f85c7] transition-transform duration-200 cursor-pointer"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6l4 4 4-4" />
+            </svg>
+          </button>
+        </div>
+        <div data-accordion-panel class="flex flex-col gap-[12px] pl-[20px] pt-[4px] pb-[10px]">
+          <a href="/tentang/visi-dan-misi" data-menu-link class="text-[13px] text-[#637587] hover:text-[#1483c8]">
+            Visi, Misi &amp; Nilai
+          </a>
+          <a href="/tentang/kebijakan" data-menu-link class="text-[13px] text-[#637587] hover:text-[#1483c8]">
+            Kebijakan
+          </a>
+          <a href="/tentang/karir" data-menu-link class="text-[13px] text-[#637587] hover:text-[#1483c8]">
+            Karier
+          </a>
+        </div>
+      </div>
+      <div class="h-px bg-[#e0e8f0]"></div>
+
+      <!-- Solusi Accordion -->
+      <div class="py-[6px]" data-accordion>
+        <div class="flex items-center justify-between px-[4px] py-[8px]">
+          <a href="/layanan" data-menu-link class="text-[15px] font-semibold text-[#0f2942] hover:text-[#1483c8]">
+            Solusi
+          </a>
+          <button
+            type="button"
+            data-accordion-toggle
+            aria-expanded="true"
+            aria-label="Toggle submenu Solusi"
+            class="p-1 text-[#0f85c7] transition-transform duration-200 cursor-pointer"
+          >
+            <svg width="16" height="16" viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+              <path d="M4 6l4 4 4-4" />
+            </svg>
+          </button>
+        </div>
+        <div data-accordion-panel class="flex flex-col gap-[12px] pl-[20px] pt-[4px] pb-[10px]">
+          <a href="/layanan/sistem-tenaga-surya-epc" data-menu-link class="text-[13px] text-[#637587] hover:text-[#1483c8]">
+            Layanan EPC PLTS
+          </a>
+          <a href="/produk" data-menu-link class="text-[13px] text-[#637587] hover:text-[#1483c8]">
+            Produk
+          </a>
+          <a href="/pintar" data-menu-link class="text-[13px] text-[#637587] hover:text-[#1483c8]">
+            PINTAR
+          </a>
+        </div>
+      </div>
+      <div class="h-px bg-[#e0e8f0]"></div>
+
+      <!-- Bottom Direct Links -->
+      <div class="flex flex-col gap-[4px] pt-[8px]">
+        <a href="/#proyek" data-menu-link class="block px-[4px] py-[10px] text-[15px] font-semibold text-[#0f2942] hover:text-[#1483c8]">
+          Proyek
+        </a>
+        <a href="/berita" data-menu-link class="block px-[4px] py-[10px] text-[15px] font-semibold text-[#0f2942] hover:text-[#1483c8]">
+          Insight
+        </a>
+        <a href="/kontak" data-menu-link class="block px-[4px] py-[10px] text-[15px] font-semibold text-[#0f2942] hover:text-[#1483c8]">
+          Kontak
+        </a>
+      </div>
+    </nav>
+  </div>
+</div>
+
+<style>
+  .sonus-header .header-primary-layer {
+    display: none;
+  }
+  .sonus-header .header-classic-layer {
+    display: none;
+  }
+
+  .sonus-header.is-transparent .header-primary-layer {
+    display: block;
+  }
+  .sonus-header.is-classic .header-classic-layer {
+    display: block;
+  }
+  .sonus-header.is-hidden {
+    transform: translateY(-100%);
+    pointer-events: none;
+  }
+
+  #sonus-mobile-drawer.is-open {
+    opacity: 1;
+    pointer-events: auto;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const header = document.getElementById('sonus-smart-header');
+    const drawer = document.getElementById('sonus-mobile-drawer');
+    if (!header) return;
+
+    const isHeroPage = header.dataset.heroHeader === 'true';
+    let lastScrollY = window.scrollY;
+    let ticking = false;
+
+    // Elementor-style smart sticky header:
+    // - Hero page at top (<= 40px): transparent Header 01 (white logo)
+    // - Scrolling down past threshold (> 80px): header hides (-100%)
+    // - Scrolling up (while > 40px): Header 02 Classic (white bg + color logo) appears
+    // - Back to top (<= 40px): returns to transparent Header 01 on hero page
+    const updateHeaderState = () => {
+      const currentY = Math.max(window.scrollY, 0);
+      const delta = currentY - lastScrollY;
+
+      if (currentY <= 40) {
+        header.classList.remove('is-hidden');
+        if (isHeroPage) {
+          header.classList.add('is-transparent');
+          header.classList.remove('is-classic');
+          header.dataset.state = 'transparent';
+        } else {
+          header.classList.add('is-classic');
+          header.classList.remove('is-transparent');
+          header.dataset.state = 'classic';
+        }
+      } else if (delta > 6 && currentY > 80) {
+        // Scrolling down -> hide header
+        header.classList.add('is-hidden');
+        header.dataset.state = 'hidden';
+      } else if (delta < -6) {
+        // Scrolling up -> reveal Header 02 · Classic (white bg + color logo)
+        header.classList.remove('is-hidden', 'is-transparent');
+        header.classList.add('is-classic');
+        header.dataset.state = 'classic';
+      }
+
+      lastScrollY = currentY;
+      ticking = false;
+    };
+
+    window.addEventListener(
+      'scroll',
+      () => {
+        if (!ticking) {
+          window.requestAnimationFrame(updateHeaderState);
+          ticking = true;
+        }
+      },
+      { passive: true },
+    );
+
+    // Initialize state on load
+    updateHeaderState();
+
+    // --- Mobile Drawer Controls ---
+    if (drawer) {
+      const openBtns = header.querySelectorAll('[data-menu-open]');
+      const closeTriggers = drawer.querySelectorAll('[data-menu-close], [data-menu-link]');
+
+      const openDrawer = () => {
+        drawer.classList.add('is-open');
+        drawer.setAttribute('aria-hidden', 'false');
+        document.body.classList.add('overflow-hidden');
+        openBtns.forEach((btn) => btn.setAttribute('aria-expanded', 'true'));
+      };
+
+      const closeDrawer = () => {
+        drawer.classList.remove('is-open');
+        drawer.setAttribute('aria-hidden', 'true');
+        document.body.classList.remove('overflow-hidden');
+        openBtns.forEach((btn) => btn.setAttribute('aria-expanded', 'false'));
+      };
+
+      openBtns.forEach((btn) => btn.addEventListener('click', openDrawer));
+      closeTriggers.forEach((el) => el.addEventListener('click', closeDrawer));
+
+      document.addEventListener('keydown', (e) => {
+        if (e.key === 'Escape' && drawer.classList.contains('is-open')) {
+          closeDrawer();
+        }
+      });
+
+      // Accordion toggles inside drawer
+      drawer.querySelectorAll('[data-accordion]').forEach((acc) => {
+        const toggle = acc.querySelector('[data-accordion-toggle]');
+        const panel = acc.querySelector('[data-accordion-panel]');
+        if (!toggle || !panel) return;
+
+        toggle.addEventListener('click', () => {
+          const isExpanded = toggle.getAttribute('aria-expanded') === 'true';
+          toggle.setAttribute('aria-expanded', String(!isExpanded));
+          panel.classList.toggle('hidden', isExpanded);
+          toggle.classList.toggle('rotate-180', isExpanded);
+        });
+      });
+    }
+  });
+</script>

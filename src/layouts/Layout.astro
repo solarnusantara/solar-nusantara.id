@@ -1,7 +1,5 @@
 ---
-import Header from '../components/Header.astro';
-import Navbar from '../components/Navbar.astro';
-import MobileHeader from '../components/MobileHeader.astro';
+import SiteHeader from '../components/SiteHeader.astro';
 import Footer from '../components/Footer.astro';
 import '../styles/global.css';
 import { SITE_CONFIG } from '../config';
@@ -61,9 +59,11 @@ interface Props {
   jsonLd?: Record<string, unknown>[];
   /** Keep the page out of search results: the public draft previews under /pratinjau/. */
   noindex?: boolean;
+  /** Use transparent primary header over hero at top of page, switching to Header 02 Classic on scroll up. */
+  heroHeader?: boolean;
 }
 
-const { headings, frontmatter, title: directTitle, description: directDescription, ogImage, jsonLd = [], needsKatex = false, noindex = false } = Astro.props;
+const { headings, frontmatter, title: directTitle, description: directDescription, ogImage, jsonLd = [], needsKatex = false, noindex = false, heroHeader = false } = Astro.props;
 
 // Canonical origin + path only, deliberately dropping any querystring or hash.
 // Derived from `site` in astro.config.mjs (exposed as import.meta.env.SITE) so
@@ -193,16 +193,16 @@ const structuredData = {
       },
       "address": {
         "@type": "PostalAddress",
-        "streetAddress": "Gandaria Office 8 Tower lantai 8, Jl. Sultan Iskandar Muda No.8, RT.10/RW.6, Gandaria, Kec. Kby. Lama",
-        "addressLocality": "Jakarta Selatan",
-        "addressRegion": "DKI Jakarta",
-        "postalCode": "12240",
+        "streetAddress": "Pusat Desain Industri Nasional (PDIN) Lt. 2, Jl. C. Simanjuntak, Kec. Gondokusuman",
+        "addressLocality": "Yogyakarta",
+        "addressRegion": "DI Yogyakarta",
+        "postalCode": "55223",
         "addressCountry": "ID"
       },
       "geo": {
         "@type": "GeoCoordinates",
-        "latitude": -6.2443,
-        "longitude": 106.7845
+        "latitude": -7.7816,
+        "longitude": 110.3712
       },
       "openingHoursSpecification": {
         "@type": "OpeningHoursSpecification",
@@ -340,31 +340,39 @@ const structuredData = {
 		  <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
 		</noscript>
 	</head>
-	<body class="bg-white min-h-screen flex flex-col">
-		<Header />
-		<Navbar />
-		<MobileHeader />
+	<body class="bg-white min-h-screen flex flex-col font-sans antialiased text-[#10283d]">
+		<SiteHeader heroHeader={heroHeader} />
 		
     {isMarkdownPage ? (
-      // Smart Layout for .md pages
-      <main class="flex-grow">
-        <div class="container mx-auto px-4 py-16">
+      // Smart Layout for .md / article pages (aligned with Figma Berita Detail)
+      <main class="flex-grow bg-white">
+        <div class="max-w-[1440px] mx-auto px-[20px] lg:px-[80px] py-[24px] lg:py-[36px]">
+          {Astro.url.pathname.startsWith('/berita/') && (
+            <nav aria-label="Breadcrumb" class="text-[13px] text-[#5e7080] mb-[18px] lg:mb-[24px] truncate">
+              <a href="/" class="hover:text-[#0f7dc7] transition-colors">Beranda</a>
+              <span class="mx-2">/</span>
+              <a href="/berita" class="hover:text-[#0f7dc7] transition-colors">Berita</a>
+              <span class="mx-2">/</span>
+              <span class="text-[#14263d]">{title}</span>
+            </nav>
+          )}
+
           {hasHeadings ? (
             // With Table of Contents
-            <div class="flex flex-col lg:flex-row gap-8 lg:gap-12">
-              <div class="flex-1 w-full lg:w-3/4">
-                <article class="prose lg:prose-xl mx-auto">
-                  <h1>{title}</h1>
+            <div class="flex flex-col lg:flex-row gap-[28px] lg:gap-[40px] items-start">
+              <div class="flex-1 w-full min-w-0 lg:max-w-[850px]">
+                <article class="prose lg:prose-lg max-w-none prose-headings:text-[#14263d] prose-p:text-[#5e7080] prose-a:text-[#0f7dc7] prose-strong:text-[#14263d]">
+                  <h1 class="!text-[30px] lg:!text-[40px] !font-bold !leading-[1.18] !text-[#14263d] !mb-[16px]">{title}</h1>
                   <slot />
                 </article>
               </div>
-              <aside class="hidden lg:block lg:w-1/4 lg:sticky lg:top-24 self-start">
-                <nav id="toc-nav" class="border-l-2 border-gray-200 pl-4">
-                  <h2 class="font-bold text-lg mb-4 text-gray-800">Di Halaman ini</h2>
-                  <ul class="space-y-2">
+              <aside class="hidden lg:block w-[360px] xl:w-[390px] shrink-0 sticky top-[140px] self-start">
+                <nav id="toc-nav" class="bg-white border border-[#dbe5f0] rounded-[12px] p-[22px]">
+                  <h2 class="font-bold text-[20px] mb-[16px] text-[#14263d]">Di halaman ini</h2>
+                  <ul class="space-y-[12px]">
                     {headings.filter(h => h.depth === 2 || h.depth === 3).map(heading => (
                       <li>
-                        <a href={`#${heading.slug}`} data-slug={heading.slug} class:list={["toc-link text-gray-500 hover:text-blue-600 transition-colors duration-200", { 'pl-4': heading.depth === 3 }]}>
+                        <a href={`#${heading.slug}`} data-slug={heading.slug} class:list={["toc-link block text-[14px] leading-[1.45] text-[#5e7080] hover:text-[#0f7dc7] transition-colors duration-200", { 'pl-4 text-[13px]': heading.depth === 3 }]}>
                           {heading.text}
                         </a>
                       </li>
@@ -375,8 +383,8 @@ const structuredData = {
             </div>
           ) : (
             // Without Table of Contents
-            <article class="prose lg:prose-xl mx-auto">
-              <h1>{title}</h1>
+            <article class="prose lg:prose-lg max-w-[850px] prose-headings:text-[#14263d] prose-p:text-[#5e7080] prose-a:text-[#0f7dc7]">
+              <h1 class="!text-[30px] lg:!text-[40px] !font-bold !leading-[1.18] !text-[#14263d]">{title}</h1>
               <slot />
             </article>
           )}

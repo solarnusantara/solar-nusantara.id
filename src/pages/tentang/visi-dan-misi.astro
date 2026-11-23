@@ -1,0 +1,130 @@
+---
+import Layout from '../../layouts/Layout.astro';
+
+const values = [
+  {
+    number: '01',
+    title: 'Dapat Diandalkan',
+    description: 'Panel surya berkualitas tinggi dan layanan yang dapat diandalkan.',
+  },
+  {
+    number: '02',
+    title: 'Menghubungkan Titik',
+    description: 'Menghubungkan kebutuhan energi dengan potensi matahari.',
+  },
+  {
+    number: '03',
+    title: 'Tangguh',
+    description: 'Membangun solusi yang dirancang untuk menghadapi tantangan.',
+  },
+  {
+    number: '04',
+    title: 'Lincah',
+    description: 'Beradaptasi dan berinovasi sesuai kebutuhan pelanggan.',
+  },
+  {
+    number: '05',
+    title: 'Berpikir Besar',
+    description: 'Melihat potensi energi surya untuk masa depan berkelanjutan.',
+  },
+  {
+    number: '06',
+    title: 'Corsa',
+    description: 'Bergerak dengan tujuan untuk mempercepat transisi energi bersih.',
+  },
+];
+---
+
+<Layout
+  title="Visi, Misi & Nilai"
+  description="Visi, misi, dan enam nilai Sonusian PT Tripower Solar Nusantara yang membentuk arah dan cara kami mempercepat transisi energi Indonesia."
+>
+  <!-- ===================================================================== -->
+  <!-- PAGE INTRO                                                            -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f4f7f9] border-b border-[#e2e9ee]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:pt-[24px] lg:pb-[46px]">
+      <nav aria-label="Breadcrumb" class="text-[12px] text-[#60717e] mb-[24px] lg:mb-[38px]">
+        <a href="/" class="hover:text-[#1483c8] transition-colors">Beranda</a>
+        <span class="mx-2">/</span>
+        <a href="/tentang" class="hover:text-[#1483c8] transition-colors">Tentang Kami</a>
+      </nav>
+
+      <div class="flex flex-col gap-[10px] lg:gap-[12px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          TENTANG SONUS ID
+        </p>
+        <h1 class="text-[32px] lg:text-[42px] font-bold leading-[1.15] text-[#10283d]">
+          Visi, Misi &amp; Nilai
+        </h1>
+        <p class="text-[16px] lg:text-[18px] font-normal leading-[1.5] text-[#60717e] max-w-[760px]">
+          Arah dan nilai yang membentuk cara SONUS bekerja.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- ARAH KAMI (VISI & MISI)                                               -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] pt-[32px] pb-[16px] lg:px-[80px] lg:pt-[48px] lg:pb-[24px]">
+      <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+        ARAH KAMI
+      </p>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[16px] lg:mt-[20px]">
+        <article class="bg-white border border-[#e2e9ee] rounded-[12px] p-[22px] lg:p-[24px] flex flex-col gap-[12px] lg:min-h-[210px]">
+          <p class="text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+            VISI
+          </p>
+          <h2 class="text-[22px] lg:text-[27px] font-semibold leading-[1.3] text-[#10283d]">
+            Menjadi perusahaan terdepan yang berkontribusi pada transisi energi menuju Energi Baru Indonesia.
+          </h2>
+        </article>
+
+        <article class="bg-white border border-[#e2e9ee] rounded-[12px] p-[22px] lg:p-[24px] flex flex-col gap-[12px] lg:min-h-[210px]">
+          <p class="text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+            MISI
+          </p>
+          <h2 class="text-[22px] lg:text-[27px] font-semibold leading-[1.3] text-[#10283d]">
+            Menghadirkan Energi Baru di setiap perusahaan sampai dengan utilitas terakhir.
+          </h2>
+        </article>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- NILAI SONUSIAN                                                        -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[42px]">
+      <div class="flex flex-col gap-[8px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          NILAI SONUSIAN
+        </p>
+        <p class="text-[15px] lg:text-[16px] font-normal leading-[1.5] text-[#60717e] max-w-[900px]">
+          Enam prinsip yang kami wujudkan dalam setiap proyek, kemitraan, dan keputusan.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
+        {values.map((v) => (
+          <article class="bg-white border border-[#e2e9ee] rounded-[12px] p-[21px] flex flex-col gap-[10px] lg:min-h-[166px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
+            <p class="text-[12px] font-semibold text-[#1483c8]">{v.number}</p>
+            <h3 class="text-[20px] font-semibold leading-[1.25] text-[#10283d]">{v.title}</h3>
+            <p class="text-[15px] font-normal leading-[1.5] text-[#60717e]">{v.description}</p>
+          </article>
+        ))}
+      </div>
+
+      <!-- Closing Banner -->
+      <div class="mt-[32px] lg:mt-[44px] bg-[#10283d] rounded-[12px] px-[24px] py-[26px] lg:px-[34px] lg:py-[32px]">
+        <p class="text-[18px] lg:text-[21px] font-semibold leading-[1.45] text-white max-w-[1160px]">
+          Nilai-nilai ini menjadi cara kami bekerja—dengan mitra dan pelanggan, untuk mempercepat transisi energi Indonesia.
+        </p>
+      </div>
+    </div>
+  </section>
+</Layout>

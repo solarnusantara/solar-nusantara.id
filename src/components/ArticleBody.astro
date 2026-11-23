@@ -4,68 +4,60 @@ import RelatedArticles from './RelatedArticles.astro';
 import { countWords, type Article } from '../utils/articles';
 import { resolveAuthor } from '../data/authors';
 
-/**
- * Everything an article shows inside the Layout: the date line, the hero, the
- * body (the default slot) and the related links. Shared by the live article and
- * its preview, so a preview looks exactly like the page it will become.
- */
 type Props = { data: Article['data']; body: string; related: Article[] };
 
 const { data, body, related } = Astro.props;
 
-// Shown only for a real revision: an updatedDate on the same calendar day as
-// pubDate is the publish itself, not an update.
 const dayKey = (d: Date) => d.toISOString().slice(0, 10);
 const showUpdated = !!data.updatedDate && dayKey(data.updatedDate) > dayKey(data.pubDate);
 
-// Calculate reading time
 const wordsPerMinute = 200;
 const readingTime = Math.ceil(countWords(body) / wordsPerMinute);
 
 const byline = resolveAuthor(data);
 const external = byline.url ? !byline.url.startsWith('/') : false;
-const fmt = (d: Date) => d.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' });
+const fmt = (d: Date) => d.toLocaleDateString('id-ID', { year: 'numeric', month: 'long', day: 'numeric' });
 ---
 
-<div class="text-lg text-gray-500 -mt-8 mb-8 flex flex-wrap items-center gap-x-2">
+<div class="not-prose text-[14px] text-[#5e7080] mb-[24px] flex flex-wrap items-center gap-x-[10px] gap-y-[4px]">
   <time datetime={data.pubDate.toISOString()} class="whitespace-nowrap">
-    {data.pubDate.toLocaleDateString('id-ID', { year: 'numeric', month: 'short', day: 'numeric' })}
+    {fmt(data.pubDate)}
   </time>
   <span class="whitespace-nowrap">
-    <span class="text-gray-400">&bull;</span>
+    <span class="mr-[10px] text-[#9bb0c4]">·</span>
     <span>Oleh </span>
     {byline.url ? (
       <a
         href={byline.url}
         rel={external ? 'author noopener noreferrer' : 'author'}
         target={external ? '_blank' : undefined}
-        class="text-gray-800 hover:text-blue-600 hover:underline transition-colors"
+        class="font-medium text-[#14263d] hover:text-[#0f7dc7] hover:underline transition-colors"
       >{byline.name}</a>
     ) : (
-      <span>{byline.name}</span>
+      <span class="font-medium text-[#14263d]">{byline.name}</span>
     )}
   </span>
   {showUpdated && data.updatedDate && (
     <span class="whitespace-nowrap">
-      <span class="text-gray-400">&bull;</span>
+      <span class="mr-[10px] text-[#9bb0c4]">·</span>
       <span>Diperbarui </span><time datetime={data.updatedDate.toISOString()}>{fmt(data.updatedDate)}</time>
     </span>
   )}
   <span class="whitespace-nowrap">
-    <span class="text-gray-400">&bull;</span>
+    <span class="mr-[10px] text-[#9bb0c4]">·</span>
     <span>{readingTime} menit baca</span>
   </span>
 </div>
 
 {data.heroImage && (
-  <div class="mb-12 not-prose -mx-4 sm:-mx-8 md:-mx-16 lg:mx-0">
-    <Image 
-      src={data.heroImage} 
-      alt={data.heroImageAlt || data.title} 
-      width={1200} 
-      height={600} 
-      class="w-full h-auto object-cover rounded-2xl shadow-lg" 
-      loading="eager" 
+  <div class="mb-[32px] not-prose rounded-[12px] overflow-hidden border border-[#dbe5f0] bg-[#d9edf7]">
+    <Image
+      src={data.heroImage}
+      alt={data.heroImageAlt || data.title}
+      width={1200}
+      height={600}
+      class="w-full h-auto object-cover"
+      loading="eager"
     />
   </div>
 )}
@@ -73,13 +65,22 @@ const fmt = (d: Date) => d.toLocaleDateString('id-ID', { year: 'numeric', month:
 <slot />
 
 {byline.registry && (
-  <aside class="not-prose mt-16 rounded-2xl border border-gray-200 bg-gray-50 p-6" aria-label="Tentang penulis">
-    <p class="text-sm uppercase tracking-wide text-gray-500">Penulis</p>
-    <p class="mt-1 text-xl font-bold text-gray-900">
-      <a href={byline.url} rel="author" class="hover:text-blue-600">{byline.registry.name}</a>
-      <span class="ml-2 text-base font-medium text-blue-600">{byline.registry.jobTitle}</span>
+  <aside
+    class="not-prose mt-[48px] rounded-[12px] bg-[#f2f7fb] border border-[#dbe5f0] px-[22px] py-[20px]"
+    aria-label="Tentang penulis"
+  >
+    <p class="text-[10px] font-semibold uppercase tracking-[0.05em] text-[#0f7dc7]">
+      PENULIS
     </p>
-    <p class="mt-2 text-gray-700">{byline.registry.bio}</p>
+    <p class="mt-[6px] text-[18px] font-semibold text-[#14263d]">
+      <a href={byline.url} rel="author" class="hover:text-[#0f7dc7] transition-colors">
+        {byline.registry.name}
+      </a>
+      {byline.registry.jobTitle && (
+        <span class="ml-2 text-[13px] font-medium text-[#0f7dc7]">{byline.registry.jobTitle}</span>
+      )}
+    </p>
+    <p class="mt-[6px] text-[13px] leading-[1.55] text-[#5e7080]">{byline.registry.bio}</p>
   </aside>
 )}
 

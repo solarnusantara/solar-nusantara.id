@@ -1,12 +1,199 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import IntroPageMenu from '../components/IntroPageMenu.astro';
-import { navLinks } from '../data/navLinks';
 
-const pageData = navLinks.find(link => link.href === '/layanan');
-const title = pageData?.text || 'Layanan';
-const menuItems = pageData?.children;
+const energySolutions = [
+  {
+    eyebrow: 'ENERGI SURYA',
+    title: 'Sistem Tenaga Surya EPC',
+    description:
+      'Rancang, bangun, dan rawat sistem PLTS dari survei lokasi sampai siap beroperasi.',
+    tags: 'Komersial & industri  ·  Solar Home System  ·  PJUTS',
+    href: '/layanan/sistem-tenaga-surya-epc',
+  },
+  {
+    eyebrow: 'OPTIMASI PENGGUNAAN ENERGI',
+    title: 'Manajemen Energi',
+    description:
+      'Pantau, kendalikan, dan optimalkan pemakaian energi di bangunan, armada, dan rumah.',
+    tags: 'Pemantauan C&I  ·  Otomasi bangunan  ·  Manajemen armada  ·  Rumah pintar  ·  Carbon capture',
+    href: '/layanan/manajemen-energi',
+  },
+];
+
+const productsTech = [
+  {
+    title: 'Sistem Panel Surya',
+    description: 'Satu rangkaian komponen untuk membangun sistem tenaga surya.',
+    tags: 'Panel surya  ·  Inverter  ·  Pemasangan  ·  Pengkabelan  ·  Baterai',
+    href: '/produk/sistem-panel-surya',
+  },
+  {
+    title: 'Ekosistem EV',
+    description: 'Dukungan infrastruktur pengisian daya kendaraan listrik.',
+    tags: 'SPKL  ·  Pengisian daya kendaraan listrik',
+    href: '/produk/ekosistem-ev',
+  },
+  {
+    title: 'Energi Biomassa',
+    description: 'Pilihan bahan bakar biomassa untuk kebutuhan energi.',
+    tags: 'Pelet kayu  ·  RDF  ·  SRF',
+    href: '/produk/energi-biomassa',
+  },
+  {
+    title: 'Seri 50100 FG',
+    description: 'Jelajahi lini Seri 50100 FG dari SONUS ID.',
+    tags: 'Seri 50100 FG',
+    href: '/produk/seri-50100-fg',
+  },
+];
 ---
-<Layout title={title} description="Layanan Solar Nusantara: EPC sistem tenaga surya untuk segmen C&I, SHS, dan PJUTS, serta manajemen energi dari pemantauan sampai otomasi bangunan.">
-  <IntroPageMenu title={title} items={menuItems} />
+
+<Layout
+  title="Solusi Energi"
+  description="Solusi energi Solar Nusantara: EPC PLTS, manajemen energi, produk surya, ekosistem EV, energi biomassa, dan program PINTAR untuk kebutuhan energi di Indonesia."
+>
+  <!-- ===================================================================== -->
+  <!-- PAGE INTRO                                                            -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f4f7f9] border-b border-[#e2e9ee]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:pt-[20px] lg:pb-[44px]">
+      <nav aria-label="Breadcrumb" class="text-[12px] text-[#60717e] mb-[20px] lg:mb-[28px]">
+        <a href="/" class="hover:text-[#1483c8] transition-colors">Beranda</a>
+        <span class="mx-2">/</span>
+        <span>Solusi</span>
+      </nav>
+
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          ENERGI&nbsp;&nbsp;•&nbsp;&nbsp;TEKNOLOGI&nbsp;&nbsp;•&nbsp;&nbsp;PROGRAM
+        </p>
+        <h1 class="text-[32px] lg:text-[42px] font-bold leading-[1.15] text-[#10283d]">
+          Solusi Energi
+        </h1>
+        <p class="text-[16px] lg:text-[18px] font-normal leading-[1.5] text-[#60717e] max-w-[920px]">
+          EPC PLTS, manajemen energi, produk surya, ekosistem EV, dan program PINTAR untuk kebutuhan energi yang berbeda.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- SOLUSI ENERGI                                                         -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] pt-[32px] pb-[16px] lg:px-[80px] lg:pt-[48px] lg:pb-[24px]">
+      <div class="flex flex-col gap-[8px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          SOLUSI ENERGI
+        </p>
+        <h2 class="text-[24px] lg:text-[30px] font-bold leading-[1.2] text-[#10283d]">
+          Dari pembangkit hingga penggunaan energi.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
+        {energySolutions.map((sol) => (
+          <a
+            href={sol.href}
+            class="group bg-white border border-[#e0e8ee] rounded-[14px] px-[22px] py-[22px] lg:px-[24px] flex flex-col justify-between gap-[16px] lg:min-h-[240px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+          >
+            <div class="flex flex-col gap-[10px]">
+              <p class="text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+                {sol.eyebrow}
+              </p>
+              <h3 class="text-[21px] lg:text-[23px] font-bold leading-[1.25] text-[#10283d] group-hover:text-[#1483c8] transition-colors">
+                {sol.title}
+              </h3>
+              <p class="text-[14px] font-normal leading-[1.55] text-[#60717e]">
+                {sol.description}
+              </p>
+            </div>
+            <p class="text-[13px] lg:text-[14px] font-medium text-[#10283d] pt-[6px] border-t border-[#f0f4f8]">
+              {sol.tags}
+            </p>
+          </a>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- PRODUK & TEKNOLOGI                                                    -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[40px]">
+      <div class="flex flex-col gap-[8px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          PRODUK &amp; TEKNOLOGI
+        </p>
+        <h2 class="text-[24px] lg:text-[30px] font-bold leading-[1.2] text-[#10283d]">
+          Komponen dan ekosistem untuk energi bersih.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[22px] lg:mt-[26px]">
+        {productsTech.map((item) => (
+          <a
+            href={item.href}
+            class="group bg-white border border-[#e0e8ee] rounded-[14px] px-[22px] py-[20px] flex flex-col justify-between gap-[12px] lg:min-h-[168px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+          >
+            <div class="flex flex-col gap-[8px]">
+              <h3 class="text-[20px] lg:text-[21px] font-bold leading-[1.25] text-[#10283d] group-hover:text-[#1483c8] transition-colors">
+                {item.title}
+              </h3>
+              <p class="text-[14px] font-normal leading-[1.5] text-[#60717e]">
+                {item.description}
+              </p>
+            </div>
+            <p class="text-[13px] font-medium text-[#1483c8]">{item.tags}</p>
+          </a>
+        ))}
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- PINTAR FEATURE                                                      -->
+      <!-- =================================================================== -->
+      <div class="mt-[32px] lg:mt-[44px] bg-[#10283d] rounded-[16px] px-[22px] py-[26px] lg:px-[32px] lg:py-[32px] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px] lg:gap-[32px]">
+        <div class="flex flex-col gap-[10px] max-w-[820px]">
+          <p class="text-[12px] font-semibold tracking-[0.04em] text-[#66bff5] uppercase">
+            PROGRAM AKSES ENERGI
+          </p>
+          <h2 class="text-[22px] lg:text-[26px] font-bold leading-[1.25] text-white">
+            Akses listrik berkelanjutan untuk komunitas yang belum terjangkau.
+          </h2>
+          <p class="text-[14px] font-normal leading-[1.55] text-[#d6e3ed]">
+            Program PINTAR menghadirkan sistem kelistrikan untuk wilayah yang belum terlayani jaringan PLN.
+          </p>
+        </div>
+
+        <a
+          href="/pintar"
+          class="inline-flex items-center justify-center h-[46px] px-[20px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-[#0f6ea8] w-full lg:w-[220px] shrink-0 whitespace-nowrap"
+        >
+          Kenali program PINTAR
+        </a>
+      </div>
+
+      <!-- =================================================================== -->
+      <!-- CONTACT CTA                                                         -->
+      <!-- =================================================================== -->
+      <div class="mt-[24px] lg:mt-[32px] bg-[#f4f8fa] border border-[#e2e9ee] rounded-[14px] px-[22px] py-[26px] lg:px-[32px] lg:py-[32px] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px] lg:gap-[32px]">
+        <div class="flex flex-col gap-[8px] max-w-[760px]">
+          <h2 class="text-[22px] lg:text-[26px] font-bold leading-[1.2] text-[#10283d]">
+            Diskusikan kebutuhan energi Anda.
+          </h2>
+          <p class="text-[15px] font-normal leading-[1.5] text-[#60717e]">
+            Tim SONUS ID siap membantu dari perencanaan sampai operasional.
+          </p>
+        </div>
+
+        <a
+          href="/kontak"
+          class="inline-flex items-center justify-center h-[48px] px-[22px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-[#0f6ea8] w-full lg:w-[250px] shrink-0 whitespace-nowrap"
+        >
+          Konsultasikan kebutuhan
+        </a>
+      </div>
+    </div>
+  </section>
 </Layout>

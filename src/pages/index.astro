@@ -1,83 +1,476 @@
 ---
 import Layout from '../layouts/Layout.astro';
-import HeroSection from '../components/HeroSection.astro';
-import AboutIntro from '../components/AboutIntro.astro';
-import NewsSection from '../components/NewsSection.astro';
-import Benefits from '../components/Benefits.astro';
-import ServiceHighlight from '../components/ServiceHighlight.astro';
-import VideoSection from '../components/VideoSection.astro';
-import FlipBoxGrid from '../components/FlipBoxGrid.astro';
-import ServiceCarousel from '../components/ServiceCarousel.astro';
-import ProductCarousel from '../components/ProductCarousel.astro';
-import energiTerbarukanIcon from '../assets/icons/energi-baru.svg?raw';
-import manajemenEnergiIcon from '../assets/icons/manajemen-energi.svg?raw';
-import biomassIcon from '../assets/icons/biomass.svg?raw';
-import { getPublishedArticles } from '../utils/articles';
+import { Image } from 'astro:assets';
 
-const latestPosts = (await getPublishedArticles()).slice(0, 2);
+import heroDesktopImg from '../assets/redesign/hero-desktop.png';
+import aboutSolarImg from '../assets/redesign/about-solar.png';
+import projectCilegonImg from '../assets/redesign/project-cilegon.png';
+import projectSragenImg from '../assets/redesign/project-sragen.png';
+import projectSukabumiImg from '../assets/redesign/project-sukabumi.png';
 
-const energiTerbarukanStats = [
-  { iconPath: energiTerbarukanIcon, value: "17", title: "Proyek yang sedang Berjalan" },
-  { iconPath: energiTerbarukanIcon, value: "2109360", title: "Perkiraan kWh Diproduksi per Tahun" },
-  { iconPath: energiTerbarukanIcon, value: "1961704", title: "Perkiraan Penghindaran CO₂" },
+const businessBases = [
+  {
+    tag: '01 / DEVELOPER',
+    title: 'Pengembangan Proyek',
+    description:
+      'Mengembangkan aset energi terbarukan dengan fokus pada kawasan industri dan daerah terpencil.',
+  },
+  {
+    tag: '02 / EPC PLTS',
+    title: 'Engineering, Procurement & Construction',
+    description:
+      'Desain dan pelaksanaan PLTS rooftop maupun ground-mounted, dengan perhatian pada engineering, kualitas, dan HSE.',
+  },
+  {
+    tag: '03 / SUPPLY CHAIN',
+    title: 'SonusHUB',
+    description:
+      'Platform untuk pengadaan material PLTS dan elektrikal bagi kebutuhan proyek.',
+  },
 ];
 
-const manajemenEnergiStats = [
-  { iconPath: manajemenEnergiIcon, value: "2", title: "Proyek yang sedang Berjalan" },
-  { iconPath: manajemenEnergiIcon, value: "37192", title: "Perkiraan Penghematan kWh" },
-  { iconPath: manajemenEnergiIcon, value: "35166", title: "Perkiraan Penghindaran CO₂" },
+const impactMetrics = [
+  { value: '30 MWp', label: 'Total installed PLTS' },
+  { value: '27 MWp', label: 'Installed in the last 3 years' },
+  { value: '12+', label: 'EPC partners vetted and standardized' },
+  { value: '2021', label: 'Tahun berdiri' },
 ];
 
-const energiBiomassaStats = [
-  { iconPath: biomassIcon, value: "100", title: "Perkiraan Ton Sampah yang Diproses" },
-  { iconPath: biomassIcon, value: "476190", title: "Perkiraan Penghematan kWh" },
-  { iconPath: biomassIcon, value: "442857", title: "Perkiraan Penghindaran CO₂" },
+const selectedProjects = [
+  {
+    image: projectCilegonImg,
+    alt: 'Proyek PLTS Ground-Mounted 5.5 MWp Krakatau Chandra Energy di Cilegon',
+    type: 'GROUND-MOUNTED',
+    location: 'Cilegon',
+    description:
+      '5.5 MWp. Dikembangkan untuk memasok tenant Krakatau Chandra Energy di Cilegon.',
+  },
+  {
+    image: projectSragenImg,
+    alt: 'Proyek PLTS Rooftop 4.9 MWp DMST 3 fasilitas industri di Sragen',
+    type: 'ROOFTOP',
+    location: 'Sragen',
+    description:
+      '4.9 MWp. Memanfaatkan area atap fasilitas industri di Sragen.',
+  },
+  {
+    image: projectSukabumiImg,
+    alt: 'Proyek PLTS Rooftop 3.9 MWp Otsuka di Sukabumi',
+    type: 'ROOFTOP',
+    location: 'Sukabumi',
+    description:
+      '3.9 MWp. Terpasang di lebih dari 10 bangunan di Sukabumi.',
+  },
 ];
 
-const products = [
+const financingOptions = [
   {
-    title: "Impor Panel",
-    description: "Sistem Panel Surya adalah solusi inovatif dan efektif untuk menghasilkan listrik dengan memanfaatkan energi matahari.",
-    url: "/produk/sistem-panel-surya/panel-surya/panel-impor"
+    tag: '01 / PEMBELIAN LANGSUNG · CAPEX',
+    title: 'Aset PLTS menjadi milik perusahaan',
+    description:
+      'Pemilik bangunan menanggung investasi; biaya mencakup perizinan hingga SLO.',
   },
   {
-    title: "Panel TKDN",
-    description: "Panel surya semakin populer sebagai sumber energi alternatif, dan panel TKDN dari SONUS menawarkan solusi yang terjangkau.",
-    url: "/produk/sistem-panel-surya/panel-surya/panel-tkdn"
+    tag: '02 / POWER PURCHASE AGREEMENT · PPA',
+    title: 'Tanpa CAPEX di awal',
+    description:
+      'SONUS mengelola operasi selama perjanjian, sementara aset tetap milik developer.',
+  },
+];
+
+const supportingServices = [
+  {
+    tag: '01 / O&M FOR INDUSTRY',
+    title: 'Operation & Maintenance',
+    description:
+      'Pembersihan panel, pemeriksaan performa sistem, dan penggantian material bila diperlukan.',
   },
   {
-    title: "SPKL",
-    description: "SPKL adalah salah satu inovasi dari Sonus di bidang kendaraan listrik untuk infrastruktur pengisian daya yang efisien.",
-    url: "/produk/ekosistem-ev/spkl"
+    tag: '02 / SUPPLY CHAIN',
+    title: 'SonusHUB Platform',
+    description:
+      'Platform B2B untuk penjualan material PLTS dan elektrikal bagi kebutuhan proyek.',
   },
   {
-    title: "Wood Pellet",
-    description: "Energi biomassa adalah sumber energi terbarukan yang dihasilkan dari bahan organik, seperti serbuk kayu dan limbah pertanian.",
-    url: "/produk/energi-biomassa/pelet-kayu"
+    tag: '03 / PROJECT MANAGEMENT',
+    title: 'PLTS < 1 MWp',
+    description:
+      'Feasibility & design, koordinasi mitra EPC, pengadaan material, monitoring, dan handover.',
+  },
+];
+
+const pltsConfigurations = [
+  {
+    tag: '01 / ON-GRID',
+    title: 'PLTS terhubung ke jaringan utilitas',
+    description:
+      'Untuk lokasi yang masih terlayani PLN dan dirancang untuk membantu menekan biaya operasional.',
   },
   {
-    title: "50100 FG Series",
-    description: "Sumber daya listrik yang andal untuk Anda yang sering beraktivitas di daerah terpencil atau hidup tanpa bergantung pada jaringan listrik.",
-    url: "/produk/seri-50100-fg"
-  }
+    tag: '02 / HYBRID / MICROGRID',
+    title: 'PLTS dengan dukungan genset',
+    description:
+      'Sistem berjalan selaras dengan genset; baterai bersifat opsional sesuai kebutuhan beban malam.',
+  },
+  {
+    tag: '03 / OFF-GRID',
+    title: 'PLTS untuk area tanpa jaringan utilitas',
+    description:
+      'Menggunakan PV dan baterai, dengan genset sebagai opsi untuk kondisi tertentu.',
+  },
 ];
 ---
 
 <Layout
   title="Solar Nusantara - Energi Baru Indonesia"
-  description="PT Tripower Solar Nusantara: EPC PLTS, manajemen energi, dan produk panel surya untuk kebutuhan residensial, komersial, dan industri di Indonesia."
+  description="PT Tripower Solar Nusantara: Developer, EPC PLTS rooftop dan ground-mounted, serta pengadaan material melalui SonusHUB untuk kawasan industri dan komersial di Indonesia."
+  heroHeader={true}
 >
-	<HeroSection />
-	<main>
-		<AboutIntro />
-		<NewsSection posts={latestPosts} />
-    <ServiceHighlight title="Energi Terbarukan" stats={energiTerbarukanStats} />
-		<ServiceHighlight title="Manajemen Energi" stats={manajemenEnergiStats} />
-		<ServiceHighlight title="Energi Biomassa" stats={energiBiomassaStats} />
-		<Benefits />
-		<ServiceCarousel />
-		<ProductCarousel products={products} />
-		<VideoSection />
-		<FlipBoxGrid />
-	</main>
+  <!-- ===================================================================== -->
+  <!-- 1. HERO SECTION                                                       -->
+  <!-- ===================================================================== -->
+  <section
+    data-sonus-section
+    class="relative w-full min-h-[760px] lg:h-[771px] overflow-hidden bg-[#041429]"
+  >
+    <Image
+      src={heroDesktopImg}
+      alt="Pembangkit Listrik Tenaga Surya Solar Nusantara dengan latar pegunungan saat matahari terbit"
+      class="absolute inset-0 w-full h-full object-cover object-center"
+      loading="eager"
+      fetchpriority="high"
+    />
+
+    <!-- Contrast overlay: soft uniform scrim on mobile, directional gradient on desktop -->
+    <div
+      class="absolute inset-0 bg-[rgba(5,23,41,0.38)] lg:bg-gradient-to-r lg:from-[rgba(4,20,41,0.78)] lg:via-[rgba(4,20,41,0.40)] lg:to-[rgba(4,20,41,0.12)]"
+      aria-hidden="true"
+    ></div>
+
+    <div class="relative z-10 max-w-[1440px] mx-auto h-full px-[20px] lg:px-[80px] pt-[380px] pb-[56px] lg:pt-[378px] lg:pb-[65px] flex flex-col justify-end lg:justify-start">
+      <div class="flex flex-col gap-[15px] lg:gap-[18px] max-w-[736px]">
+        <h1 class="text-[33px] lg:text-[46px] font-bold leading-[1.15] tracking-[-0.015em] text-white max-w-[690px]">
+          We believe the next energy is electricity
+        </h1>
+
+        <p class="text-[15px] lg:text-[16px] font-normal leading-[1.55] text-[#f5faff] lg:text-white/90 max-w-[690px]">
+          Solar Nusantara mengembangkan proyek, melaksanakan EPC PLTS rooftop dan ground-mounted, serta mendukung pengadaan material melalui SonusHUB.
+        </p>
+
+        <div class="flex flex-col sm:flex-row gap-[12px] pt-[4px]">
+          <a
+            href="/kontak"
+            class="inline-flex items-center justify-center h-[45px] px-[20px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold transition-colors duration-200 hover:bg-[#0f6ea8] w-full sm:w-auto"
+          >
+            Konsultasikan Proyek
+          </a>
+          <a
+            href="#proyek"
+            class="inline-flex items-center justify-center h-[45px] px-[20px] rounded-[8px] bg-white border border-[#1483c8] text-[#1483c8] text-[14px] font-semibold transition-colors duration-200 hover:bg-[#f4f7f9] w-full sm:w-[160px]"
+          >
+            Lihat Portofolio
+          </a>
+        </div>
+
+        <p class="hidden lg:block text-[11px] font-bold tracking-[0.06em] text-white/82 pt-[2px]">
+          DEVELOPER&nbsp;&nbsp;•&nbsp;&nbsp;EPC PLTS&nbsp;&nbsp;•&nbsp;&nbsp;SUPPLY CHAIN
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 2. ABOUT SONUS (WHO WE ARE)                                           -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[70px]">
+      <div class="flex flex-col lg:flex-row items-start gap-[28px] lg:gap-[64px]">
+        <div class="hidden lg:block w-[440px] h-[320px] rounded-[14px] overflow-hidden shrink-0 bg-[#f4f7f9]">
+          <Image
+            src={aboutSolarImg}
+            alt="Instalasi PLTS Solar Nusantara untuk sektor industri dan komersial"
+            class="w-full h-full object-cover"
+          />
+        </div>
+
+        <div class="flex-1 flex flex-col gap-[12px] lg:gap-[15px] min-w-0">
+          <p class="text-[11px] lg:text-[12px] font-semibold lg:font-bold tracking-[0.04em] text-[#1483c8] uppercase">
+            WHO WE ARE
+          </p>
+          <h2 class="text-[26px] lg:text-[32px] font-bold leading-[1.2] text-[#10283d] max-w-[730px]">
+            Berdiri sejak 2021, berfokus pada transisi energi Indonesia.
+          </h2>
+          <p class="text-[15px] font-normal leading-[1.55] text-[#60717e] max-w-[730px]">
+            Solar Nusantara didirikan pada akhir 2021. SonusID dibentuk untuk mempercepat transisi energi Indonesia melalui solusi tenaga surya yang dapat diterapkan secara terukur dan terstruktur.
+          </p>
+          <p class="text-[17px] lg:text-[20px] font-normal leading-[1.45] text-[#60717e] max-w-[700px]">
+            Kami percaya masa depan peradaban adalah elektrifikasi, dan masa depan elektrifikasi adalah energi terbarukan.
+          </p>
+          <div class="pt-[4px]">
+            <a
+              href="/tentang/tentang-solar-nusantara"
+              class="inline-flex items-center justify-center h-[45px] px-[20px] rounded-[8px] bg-white border border-[#1483c8] text-[#1483c8] text-[14px] font-semibold transition-colors duration-200 hover:bg-[#1483c8] hover:text-white w-full sm:w-[220px]"
+            >
+              Lihat Company Profile
+            </a>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 3. SOLUTIONS / BASIS BISNIS                                           -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f4f7f9]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:pt-[68px] lg:pb-[72px]">
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
+          BASIS BISNIS
+        </p>
+        <h2 class="text-[26px] lg:text-[32px] font-bold leading-[1.2] text-[#10283d]">
+          Tiga basis bisnis SONUS ID.
+        </h2>
+        <p class="text-[15px] font-normal leading-[1.5] text-[#60717e]">
+          Project-based, platform-based, dan product-based.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[22px] lg:mt-[28px]">
+        {businessBases.map((item) => (
+          <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] min-h-[152px] lg:min-h-[170px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
+            <p class="text-[11px] font-bold tracking-[0.03em] text-[#1483c8]">
+              {item.tag}
+            </p>
+            <h3 class="text-[18px] lg:text-[19px] font-bold leading-[1.25] text-[#071b33]">
+              {item.title}
+            </h3>
+            <p class="text-[13px] font-normal leading-[1.5] text-[#60717e]">
+              {item.description}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 4. IMPACT METRICS                                                     -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#10283d] lg:bg-[#071b33]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[52px]">
+      <div class="flex flex-col gap-[14px] lg:gap-[24px]">
+        <div class="flex flex-col gap-[8px] lg:gap-[12px]">
+          <p class="text-[11px] lg:text-[12px] font-semibold lg:font-bold tracking-[0.04em] text-[#afc7e2] uppercase">
+            COMPANY PROFILE 2027
+          </p>
+          <h2 class="text-[25px] lg:text-[29px] font-bold leading-[1.2] text-white">
+            Rekam jejak proyek PLTS.
+          </h2>
+        </div>
+
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-[10px] lg:gap-[22px]">
+          {impactMetrics.map((metric) => (
+            <div class="bg-[#17334d] lg:bg-transparent rounded-[10px] lg:rounded-none p-[14px] lg:p-0 flex flex-col gap-[6px]">
+              <p class="text-[24px] lg:text-[28px] font-bold leading-[1.15] text-white">
+                {metric.value}
+              </p>
+              <p class="text-[12px] lg:text-[13px] font-normal leading-[1.45] text-[#d5e2f0]">
+                {metric.label}
+              </p>
+            </div>
+          ))}
+        </div>
+
+        <p class="text-[10px] font-normal leading-[1.4] text-[#afc7e2]">
+          Sumber: Company Profile SONUS ID 2027. Angka mengikuti klaim yang tercantum dalam dokumen.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 5. PROJECTS / PORTOFOLIO                                              -->
+  <!-- ===================================================================== -->
+  <section id="proyek" data-sonus-section class="bg-white scroll-mt-[120px]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[70px]">
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
+          PORTOFOLIO
+        </p>
+        <h2 class="text-[26px] lg:text-[32px] font-bold leading-[1.2] text-[#10283d]">
+          Proyek PLTS terpilih.
+        </h2>
+        <p class="text-[15px] font-normal leading-[1.5] text-[#60717e]">
+          Tiga contoh proyek C&amp;I dari Company Profile SONUS ID 2027.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[20px] lg:mt-[26px]">
+        {selectedProjects.map((project) => (
+          <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[18px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
+            <div class="w-full h-[140px] lg:h-[116px] rounded-[8px] overflow-hidden bg-[#f4f7f9]">
+              <Image
+                src={project.image}
+                alt={project.alt}
+                class="w-full h-full object-cover"
+              />
+            </div>
+            <p class="text-[10px] lg:text-[11px] font-semibold lg:font-bold tracking-[0.04em] text-[#1483c8] uppercase">
+              {project.type}
+            </p>
+            <h3 class="text-[18px] lg:text-[19px] font-bold leading-[1.25] text-[#071b33]">
+              {project.location}
+            </h3>
+            <p class="text-[14px] lg:text-[13px] font-normal leading-[1.5] text-[#60717e]">
+              {project.description}
+            </p>
+          </article>
+        ))}
+      </div>
+
+      <div class="mt-[22px] lg:mt-[26px]">
+        <a
+          href="/layanan/sistem-tenaga-surya-epc"
+          class="inline-flex items-center justify-center h-[45px] px-[20px] rounded-[8px] bg-white border border-[#1483c8] text-[#1483c8] text-[14px] font-semibold transition-colors duration-200 hover:bg-[#1483c8] hover:text-white w-full sm:w-[155px]"
+        >
+          Lihat Portofolio
+        </a>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 6. FINANCING OPTIONS                                                  -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f7f9fc] lg:bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[48px]">
+      <div class="flex flex-col gap-[8px] lg:gap-[9px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          PROJECT FINANCING
+        </p>
+        <h2 class="text-[22px] lg:text-[32px] font-bold leading-[1.2] text-[#10283d]">
+          Pilih skema pembiayaan proyek.
+        </h2>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[16px] lg:gap-[24px] mt-[20px] lg:mt-[24px]">
+        {financingOptions.map((option) => (
+          <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[18px] lg:p-[22px] flex flex-col gap-[8px] lg:gap-[11px] lg:min-h-[180px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
+            <p class="text-[11px] font-semibold lg:font-bold tracking-[0.03em] text-[#1483c8]">
+              {option.tag}
+            </p>
+            <h3 class="text-[17px] lg:text-[19px] font-bold leading-[1.25] text-[#071b33]">
+              {option.title}
+            </h3>
+            <p class="text-[13px] font-normal leading-[1.55] text-[#60717e]">
+              {option.description}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 7. WHY SONUS / LAYANAN PENDUKUNG                                      -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#f7f9fc]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[64px]">
+      <div class="grid grid-cols-1 lg:grid-cols-2 gap-[24px] lg:gap-[48px] items-start">
+        <div class="flex flex-col gap-[12px] lg:gap-[14px]">
+          <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
+            LAYANAN PENDUKUNG
+          </p>
+          <h2 class="text-[25px] lg:text-[31px] font-bold leading-[1.2] text-[#10283d] max-w-[580px]">
+            Layanan untuk setiap tahap proyek PLTS.
+          </h2>
+          <p class="text-[15px] font-normal leading-[1.55] text-[#60717e] max-w-[580px]">
+            Selain EPC PLTS, profil perusahaan mencantumkan O&amp;M industri, platform SonusHUB, dan project management untuk proyek PLTS di bawah 1 MWp.
+          </p>
+        </div>
+
+        <div class="flex flex-col gap-[14px] lg:gap-[17px]">
+          {supportingServices.map((service) => (
+            <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[8px] lg:gap-[11px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
+              <p class="text-[11px] font-bold tracking-[0.03em] text-[#0247aa]">
+                {service.tag}
+              </p>
+              <h3 class="text-[18px] lg:text-[19px] font-bold leading-[1.25] text-[#071b33]">
+                {service.title}
+              </h3>
+              <p class="text-[13px] font-normal leading-[1.5] text-[#60717e]">
+                {service.description}
+              </p>
+            </article>
+          ))}
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 8. PLTS CONFIGURATIONS                                                -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[70px]">
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] lg:text-[12px] font-bold tracking-[0.04em] text-[#1483c8] uppercase">
+          KONFIGURASI PLTS
+        </p>
+        <h2 class="text-[25px] lg:text-[32px] font-bold leading-[1.2] text-[#10283d]">
+          Tiga tipe sistem untuk kondisi lokasi yang berbeda.
+        </h2>
+        <p class="text-[15px] font-normal leading-[1.5] text-[#60717e]">
+          Company Profile 2027 menjelaskan sistem on-grid, hybrid/microgrid, dan off-grid.
+        </p>
+      </div>
+
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[20px] lg:mt-[24px]">
+        {pltsConfigurations.map((cfg) => (
+          <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] min-h-[145px] lg:min-h-[160px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
+            <p class="text-[11px] font-bold tracking-[0.03em] text-[#0247aa]">
+              {cfg.tag}
+            </p>
+            <h3 class="text-[18px] lg:text-[19px] font-bold leading-[1.25] text-[#071b33]">
+              {cfg.title}
+            </h3>
+            <p class="text-[13px] font-normal leading-[1.5] text-[#60717e]">
+              {cfg.description}
+            </p>
+          </article>
+        ))}
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================================================================== -->
+  <!-- 9. CONTACT / SONUSHUB CTA                                             -->
+  <!-- ===================================================================== -->
+  <section data-sonus-section class="bg-[#1483c8]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[44px]">
+      <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[16px] lg:gap-[32px]">
+        <div class="flex flex-col gap-[8px]">
+          <p class="text-[11px] font-semibold lg:font-bold text-[#cfe0f5]">
+            Sedang menyiapkan proyek PLTS?
+          </p>
+          <h2 class="text-[24px] lg:text-[29px] font-bold leading-[1.2] text-white max-w-[740px]">
+            Diskusikan kebutuhan proyek dengan tim SONUS ID.
+          </h2>
+          <p class="text-[14px] font-normal leading-[1.5] text-[#e1ecf8]">
+            Untuk material PLTS dan elektrikal, kunjungi SonusHUB.
+          </p>
+        </div>
+
+        <a
+          href="https://sonushub.id"
+          target="_blank"
+          rel="noopener noreferrer"
+          class="inline-flex items-center justify-center h-[45px] px-[20px] rounded-[8px] bg-white border border-[#1483c8] text-[#1483c8] text-[14px] font-semibold transition-colors duration-200 hover:bg-[#f4f7f9] w-full lg:w-[205px] shrink-0"
+        >
+          Kunjungi SonusHUB ↗
+        </a>
+      </div>
+    </div>
+  </section>
 </Layout>

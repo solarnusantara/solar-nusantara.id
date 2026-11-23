@@ -1,61 +1,62 @@
 ---
-/**
- * One article card, shared by /berita/ and /berita/[page].
- *
- * The two listing pages carried byte-identical copies of this markup. They had
- * already drifted once: both passed `alt={post.data.title}` to the hero image,
- * restating the headline instead of describing the picture, which is an empty
- * signal for screen readers and an Ahrefs/Semrush "non-descriptive alt" flag.
- * Fixed once here rather than twice there.
- */
 import { Image } from 'astro:assets';
 import type { Article } from '../utils/articles';
 
 interface Props {
-	post: Article;
-	/** Eager-load the first card so the listing's LCP image is not lazy. */
-	eager?: boolean;
+  post: Article;
+  /** Eager-load the first cards so the listing's LCP image is not lazy. */
+  eager?: boolean;
 }
 
 const { post, eager = false } = Astro.props;
+const categoryLabel =
+  post.data.tags && post.data.tags.length > 0
+    ? post.data.tags.slice(0, 2).join(' · ').toUpperCase()
+    : 'SOLAR NUSANTARA · INSIGHT';
 ---
 
-<a href={`/berita/${post.slug}/`} class="group block">
-	<article
-		class="bg-white p-6 rounded-xl shadow-lg hover:shadow-2xl transition-shadow duration-300 flex flex-col h-full"
-	>
-		{post.data.heroImage && (
-			<div class="flex-shrink-0 mb-4">
-				<Image
-					src={post.data.heroImage}
-					alt={post.data.heroImageAlt ?? post.data.title}
-					width={600}
-					height={338}
-					class="w-full h-auto object-cover rounded-lg shadow-md"
-					loading={eager ? 'eager' : 'lazy'}
-				/>
-			</div>
-		)}
-		<div class="flex-grow flex flex-col">
-			<p class="text-sm font-semibold text-blue-600 mb-2">
-				<time datetime={post.data.pubDate.toISOString()}>
-					{post.data.pubDate.toLocaleDateString('id-ID', {
-						year: 'numeric',
-						month: 'long',
-						day: 'numeric',
-					})}
-				</time>
-			</p>
-			<h2
-				class="text-xl font-bold text-gray-900 group-hover:text-blue-700 transition-colors duration-300 flex-grow"
-			>
-				{post.data.title}
-			</h2>
-			<p class="mt-3 text-base text-gray-600 line-clamp-3">{post.data.description}</p>
-			<div class="mt-4 font-semibold text-blue-600 flex items-center group-hover:text-blue-800">
-				Baca Selengkapnya
-				<span class="ml-2 transition-transform duration-300 group-hover:translate-x-2">&rarr;</span>
-			</div>
-		</div>
-	</article>
+<a href={`/berita/${post.slug}/`} class="group block h-full">
+  <article class="bg-white border border-[#dbe5f0] rounded-[12px] p-[15px] lg:p-[17px] flex flex-col h-full transition-all duration-200 hover:border-[#0f7dc7] hover:shadow-[0_8px_24px_rgba(20,38,61,0.08)]">
+    {post.data.heroImage && (
+      <div class="w-full h-[180px] lg:h-[200px] rounded-[10px] overflow-hidden bg-[#dbf0fa] mb-[14px] shrink-0">
+        <Image
+          src={post.data.heroImage}
+          alt={post.data.heroImageAlt ?? post.data.title}
+          width={600}
+          height={338}
+          class="w-full h-full object-cover transition-transform duration-300 group-hover:scale-[1.02]"
+          loading={eager ? 'eager' : 'lazy'}
+        />
+      </div>
+    )}
+
+    <div class="flex flex-col flex-grow gap-[6px]">
+      <p class="text-[12px] font-normal text-[#5e7080]">
+        <time datetime={post.data.pubDate.toISOString()}>
+          {post.data.pubDate.toLocaleDateString('id-ID', {
+            year: 'numeric',
+            month: 'long',
+            day: 'numeric',
+          })}
+        </time>
+      </p>
+
+      <p class="text-[10px] font-semibold tracking-[0.04em] text-[#0f7dc7] uppercase">
+        {categoryLabel}
+      </p>
+
+      <h2 class="text-[19px] lg:text-[21px] font-bold leading-[1.3] text-[#14263d] group-hover:text-[#0f7dc7] transition-colors mt-[2px]">
+        {post.data.title}
+      </h2>
+
+      <p class="text-[14px] font-normal leading-[1.5] text-[#5e7080] line-clamp-2 mt-[4px] flex-grow">
+        {post.data.description}
+      </p>
+
+      <div class="pt-[10px] text-[13px] font-semibold text-[#0f7dc7] inline-flex items-center gap-[6px]">
+        <span>Baca selengkapnya</span>
+        <span class="transition-transform duration-200 group-hover:translate-x-1">→</span>
+      </div>
+    </div>
+  </article>
 </a>
