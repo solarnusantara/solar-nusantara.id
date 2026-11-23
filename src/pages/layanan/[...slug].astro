@@ -1,5 +1,5 @@
 ---
-import { getCollection, getEntry } from 'astro:content';
+import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import IntroPageMenu from '../../components/IntroPageMenu.astro';
 import { navLinks, type NavLink } from '../../data/navLinks';
@@ -10,11 +10,10 @@ import { SITE_CONFIG } from '../../config';
 
 export async function getStaticPaths() {
   const layananEntries = await getCollection('layanan');
-  const layananLink = navLinks.find(link => link.href === '/layanan');
-  
+  const layananLink = navLinks.find((link) => link.href === '/layanan');
+
   const paths = [];
 
-  // 1. Paths from Content Collections
   for (const entry of layananEntries) {
     paths.push({
       params: { slug: entry.slug },
@@ -22,13 +21,11 @@ export async function getStaticPaths() {
     });
   }
 
-  // 2. Paths from navLinks (for hub pages that might not have content)
   function extractHubPaths(links: NavLink[]) {
     for (const link of links) {
       if (link.href?.startsWith('/layanan/') && link.children) {
         const slug = link.href.substring('/layanan/'.length);
-        // Only add if not already added by content
-        if (!paths.find(p => p.params.slug === slug)) {
+        if (!paths.find((p) => p.params.slug === slug)) {
           paths.push({
             params: { slug },
             props: { type: 'hub', link },
@@ -50,10 +47,8 @@ const { slug } = Astro.params;
 const { type, entry, link: hubLink } = Astro.props;
 
 let title = '';
-// Every page needs its own meta description. Falling back to the site-wide
-// one made 50 pages share a single identical description.
 let description = '';
-let menuItems = [];
+let menuItems: NavLink[] = [];
 let Content = null;
 
 if (type === 'content') {
@@ -61,8 +56,7 @@ if (type === 'content') {
   Content = rendered.Content;
   title = entry.data.title;
   description = entry.data.description ?? '';
-  
-  // Also find if it has children for a bottom menu
+
   const fullPath = `/layanan/${slug}`;
   const findInNav = (links: NavLink[]): NavLink | undefined => {
     for (const l of links) {
@@ -78,55 +72,138 @@ if (type === 'content') {
 } else {
   title = hubLink.text;
   menuItems = hubLink.children || [];
-  // Hub pages have no body text to summarise, so the description is built
-  // from what the page actually lists. Unique per hub, and accurate.
   const names = menuItems.map((i: NavLink) => i.text).slice(0, 4).join(', ');
   description = names
     ? `Daftar ${title} dari Solar Nusantara: ${names}. Solusi energi surya untuk kebutuhan residensial, komersial, dan industri di Indonesia.`
     : `${title} dari Solar Nusantara, penyedia solusi energi surya untuk kebutuhan residensial, komersial, dan industri di Indonesia.`;
 }
 
-// Only pages with real body content describe a service. Hub pages are menus.
 const baseUrl = Astro.site ? Astro.site.origin : SITE_CONFIG.url;
 const pageUrl = new URL(Astro.url.pathname, baseUrl).href;
 const faq = type === 'content' ? entry.data.faq ?? [] : [];
-const jsonLd = type === 'content'
-  ? [
-      ...buildServiceSchema({
-        url: pageUrl,
-        baseUrl,
-        title,
-        description,
-      }),
-      ...buildFaqSchema(pageUrl, faq),
-    ]
-  : [];
+const jsonLd =
+  type === 'content'
+    ? [
+        ...buildServiceSchema({
+          url: pageUrl,
+          baseUrl,
+          title,
+          description,
+        }),
+        ...buildFaqSchema(pageUrl, faq),
+      ]
+    : [];
+
+const breadcrumbs = [
+  { label: 'Beranda', href: '/' },
+  { label: 'Solusi', href: '/layanan' },
+  { label: title },
+];
 ---
 
 <Layout title={title} description={description || undefined} jsonLd={jsonLd}>
-  <div class="container mx-auto px-4 py-12">
-    {Content ? (
-      <article class="prose prose-lg max-w-4xl mx-auto">
-        <h1>{title}</h1>
-        <Content />
+  {Content ? (
+    <>
+      <!-- Page Intro -->
+      <section data-sonus-section class="bg-[#f4f7f9] border-b border-[#e2e9ee]">
+        <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:pt-[20px] lg:pb-[44px]">
+          <nav aria-label="Breadcrumb" class="text-[12px] text-[#60717e] mb-[20px] lg:mb-[28px] flex flex-wrap items-center gap-[8px]">
+            {breadcrumbs.map((crumb, idx) => (
+              <>
+                {idx > 0 && <span>/</span>}
+                {crumb.href ? (
+                  <a href={crumb.href} class="hover:text-[#1483c8] transition-colors">{crumb.label}</a>
+                ) : (
+                  <span class="text-[#10283d]">{crumb.label}</span>
+                )}
+              </>
+            ))}
+          </nav>
 
-        <FaqSection items={faq} />
-        
-        {menuItems.length > 0 && (
-          <div class="mt-16 pt-8 border-t">
-            <h2 class="text-2xl font-bold mb-6">Sub-Layanan</h2>
-            <div class="grid md:grid-cols-2 gap-4">
-              {menuItems.map(item => (
-                <a href={item.href} class="p-4 border rounded-lg hover:border-blue-600 hover:bg-blue-50 transition-all">
-                  <h3 class="font-semibold text-blue-600">{item.text}</h3>
-                </a>
-              ))}
-            </div>
+          <div class="flex flex-col gap-[10px]">
+            <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+              SOLUSI ENERGI
+            </p>
+            <h1 class="text-[30px] lg:text-[42px] font-bold leading-[1.15] text-[#10283d] max-w-[960px]">
+              {title}
+            </h1>
+            {description && (
+              <p class="text-[16px] lg:text-[18px] font-normal leading-[1.5] text-[#60717e] max-w-[840px]">
+                {description}
+              </p>
+            )}
           </div>
-        )}
-      </article>
-    ) : (
-      <IntroPageMenu title={title} items={menuItems} />
-    )}
-  </div>
+        </div>
+      </section>
+
+      <!-- Service Body -->
+      <section data-sonus-section class="bg-white">
+        <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[52px]">
+          <article class="prose lg:prose-lg max-w-[850px] prose-headings:text-[#10283d] prose-headings:font-bold prose-p:text-[#60717e] prose-li:text-[#60717e] prose-strong:text-[#10283d] prose-a:text-[#1483c8]">
+            <Content />
+          </article>
+
+          {menuItems.length > 0 && (
+            <div class="mt-[48px] pt-[36px] border-t border-[#e2e9ee]">
+              <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+                CAKUPAN LAYANAN
+              </p>
+              <h2 class="text-[22px] lg:text-[26px] font-bold text-[#10283d] mt-[6px] mb-[20px]">
+                Sub-Layanan {title}
+              </h2>
+              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[16px]">
+                {menuItems.map((item, idx) => (
+                  <a
+                    href={item.href}
+                    class="group bg-white border border-[#e0e8ee] rounded-[12px] p-[20px] flex flex-col justify-between gap-[12px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+                  >
+                    <p class="text-[11px] font-semibold text-[#1483c8]">{String(idx + 1).padStart(2, '0')}</p>
+                    <div class="flex items-center justify-between gap-[10px]">
+                      <h3 class="text-[17px] font-bold text-[#10283d] group-hover:text-[#1483c8] transition-colors">
+                        {item.text}
+                      </h3>
+                      <span class="text-[#1483c8] shrink-0 transition-transform group-hover:translate-x-1">→</span>
+                    </div>
+                  </a>
+                ))}
+              </div>
+            </div>
+          )}
+
+          <div class="max-w-[850px]">
+            <FaqSection items={faq} />
+          </div>
+
+          <!-- Contact CTA -->
+          <div class="mt-[48px] bg-[#10283d] rounded-[14px] px-[22px] py-[26px] lg:px-[32px] lg:py-[32px] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px]">
+            <div class="flex flex-col gap-[6px] max-w-[720px]">
+              <p class="text-[11px] font-semibold tracking-[0.04em] text-[#66bff5] uppercase">
+                KONSULTASI PROYEK
+              </p>
+              <h2 class="text-[22px] lg:text-[26px] font-bold leading-[1.2] text-white">
+                Diskusikan kebutuhan {title.toLowerCase()} Anda.
+              </h2>
+              <p class="text-[14px] text-[#d6e3ed]">
+                Tim SONUS ID siap membantu dari studi kelayakan, desain teknis, hingga operasional.
+              </p>
+            </div>
+            <a
+              href="/kontak"
+              class="inline-flex items-center justify-center h-[46px] px-[22px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold hover:bg-[#0f6ea8] transition-colors w-full lg:w-auto shrink-0 whitespace-nowrap"
+            >
+              Hubungi Tim SONUS →
+            </a>
+          </div>
+        </div>
+      </section>
+    </>
+  ) : (
+    <IntroPageMenu
+      title={title}
+      items={menuItems}
+      eyebrow="SOLUSI ENERGI"
+      description={description}
+      breadcrumbs={breadcrumbs}
+    />
+  )}
 </Layout>

@@ -9,16 +9,21 @@ const { items } = Astro.props;
 ---
 
 {items.length > 0 && (
-  <section class="mt-16 pt-8 border-t" aria-labelledby="faq-heading">
-    <h2 id="faq-heading" class="text-2xl font-bold mb-6">Pertanyaan yang Sering Diajukan</h2>
-    <div class="space-y-3">
+  <section data-sonus-section class="not-prose mt-[48px] pt-[36px] border-t border-[#e2e9ee]" aria-labelledby="faq-heading">
+    <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+      FAQ
+    </p>
+    <h2 id="faq-heading" class="text-[22px] lg:text-[26px] font-bold text-[#10283d] mt-[6px] mb-[20px]">
+      Pertanyaan yang Sering Diajukan
+    </h2>
+    <div class="space-y-[12px]">
       {items.map((item) => (
-        <details class="group border rounded-lg p-4 hover:border-blue-600 transition-all">
-          <summary class="cursor-pointer font-semibold text-blue-600 list-none flex justify-between items-start gap-4">
+        <details class="group bg-white border border-[#e2e9ee] rounded-[12px] px-[20px] py-[16px] hover:border-[#1483c8] transition-colors">
+          <summary class="cursor-pointer font-semibold text-[15px] lg:text-[16px] text-[#10283d] group-open:text-[#1483c8] list-none flex justify-between items-start gap-4">
             <span>{item.q}</span>
-            <span class="shrink-0 transition-transform group-open:rotate-45" aria-hidden="true">+</span>
+            <span class="shrink-0 text-[#1483c8] text-[18px] leading-none transition-transform duration-200 group-open:rotate-45" aria-hidden="true">+</span>
           </summary>
-          <p class="mt-3 mb-0">{item.a}</p>
+          <p class="mt-[12px] mb-0 text-[14px] lg:text-[15px] leading-[1.6] text-[#60717e]">{item.a}</p>
         </details>
       ))}
     </div>

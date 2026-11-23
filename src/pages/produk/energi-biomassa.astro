@@ -1,0 +1,129 @@
+---
+import { getEntry } from 'astro:content';
+import Layout from '../../layouts/Layout.astro';
+
+const peletEntry = await getEntry('produk', 'energi-biomassa/pelet-kayu');
+const rdfEntry = await getEntry('produk', 'energi-biomassa/rdf');
+const srfEntry = await getEntry('produk', 'energi-biomassa/srf');
+
+const sections = await Promise.all(
+  [
+    { id: 'pelet-kayu', tag: '01 / WOOD PELLET', entry: peletEntry, href: '/produk/energi-biomassa/pelet-kayu' },
+    { id: 'rdf', tag: '02 / REFUSE-DERIVED FUEL', entry: rdfEntry, href: '/produk/energi-biomassa/rdf' },
+    { id: 'srf', tag: '03 / SOLID RECOVERED FUEL', entry: srfEntry, href: '/produk/energi-biomassa/srf' },
+  ]
+    .filter((s) => s.entry)
+    .map(async (s) => {
+      const rendered = await s.entry!.render();
+      return {
+        ...s,
+        title: s.entry!.data.title,
+        description: s.entry!.data.description,
+        Content: rendered.Content,
+      };
+    }),
+);
+---
+
+<Layout
+  title="Energi Biomassa"
+  description="Solusi bahan bakar energi biomassa dari Solar Nusantara: Pelet Kayu (Wood Pellet), Refuse-Derived Fuel (RDF), dan Solid Recovered Fuel (SRF) untuk industri."
+>
+  <!-- Page Intro -->
+  <section data-sonus-section class="bg-[#f4f7f9] border-b border-[#e2e9ee]">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:pt-[20px] lg:pb-[44px]">
+      <nav aria-label="Breadcrumb" class="text-[12px] text-[#60717e] mb-[20px] lg:mb-[28px] flex flex-wrap items-center gap-[8px]">
+        <a href="/" class="hover:text-[#1483c8] transition-colors">Beranda</a>
+        <span>/</span>
+        <a href="/layanan" class="hover:text-[#1483c8] transition-colors">Solusi</a>
+        <span>/</span>
+        <a href="/produk" class="hover:text-[#1483c8] transition-colors">Produk</a>
+        <span>/</span>
+        <span class="text-[#10283d]">Energi Biomassa</span>
+      </nav>
+
+      <div class="flex flex-col gap-[10px]">
+        <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+          PRODUK &amp; TEKNOLOGI
+        </p>
+        <h1 class="text-[32px] lg:text-[42px] font-bold leading-[1.15] text-[#10283d]">
+          Energi Biomassa
+        </h1>
+        <p class="text-[16px] lg:text-[18px] font-normal leading-[1.5] text-[#60717e] max-w-[820px]">
+          Pilihan bahan bakar biomassa terbarukan — Pelet Kayu (Wood Pellet), RDF, dan SRF — sebagai alternatif ramah lingkungan pengganti bahan bakar fosil untuk kebutuhan industri.
+        </p>
+      </div>
+    </div>
+  </section>
+
+  <!-- Quick Jump Anchor Bar -->
+  <nav aria-label="Navigasi jenis biomassa" class="bg-white border-b border-[#e2e9ee]">
+    <div class="max-w-[1440px] mx-auto px-[20px] lg:px-[80px] h-[48px] flex items-center gap-[24px] lg:gap-[36px] overflow-x-auto whitespace-nowrap">
+      {sections.map((s) => (
+        <a
+          href={`#${s.id}`}
+          class="text-[12px] lg:text-[13px] font-semibold tracking-[0.02em] text-[#10283d] hover:text-[#1483c8] transition-colors shrink-0 uppercase"
+        >
+          {s.title}
+        </a>
+      ))}
+    </div>
+  </nav>
+
+  <!-- Consolidated Biomass Sections -->
+  <section data-sonus-section class="bg-white">
+    <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[52px] flex flex-col gap-[32px] lg:gap-[44px]">
+      {sections.map((sec) => {
+        const SectionContent = sec.Content;
+        return (
+          <article
+            id={sec.id}
+            class="scroll-mt-[120px] bg-white border border-[#e0e8ee] rounded-[14px] p-[22px] lg:p-[32px]"
+          >
+            <div class="flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[10px] pb-[18px] mb-[22px] border-b border-[#e2e9ee]">
+              <div>
+                <p class="text-[11px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+                  {sec.tag}
+                </p>
+                <h2 class="text-[24px] lg:text-[28px] font-bold text-[#10283d] mt-[4px]">
+                  {sec.title}
+                </h2>
+              </div>
+              <a
+                href={sec.href}
+                class="text-[13px] font-semibold text-[#1483c8] hover:underline shrink-0"
+              >
+                Tautan langsung →
+              </a>
+            </div>
+
+            <div class="prose lg:prose-lg max-w-[850px] prose-headings:text-[#10283d] prose-p:text-[#60717e] prose-li:text-[#60717e] prose-strong:text-[#10283d] prose-a:text-[#1483c8]">
+              <SectionContent />
+            </div>
+          </article>
+        );
+      })}
+
+      <!-- Contact CTA -->
+      <div class="bg-[#10283d] rounded-[14px] px-[22px] py-[26px] lg:px-[32px] lg:py-[32px] flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[20px]">
+        <div class="flex flex-col gap-[6px] max-w-[720px]">
+          <p class="text-[11px] font-semibold tracking-[0.04em] text-[#66bff5] uppercase">
+            KONSULTASI BIOMASSA
+          </p>
+          <h2 class="text-[22px] lg:text-[26px] font-bold leading-[1.2] text-white">
+            Butuh pasokan Wood Pellet, RDF, atau SRF untuk industri?
+          </h2>
+          <p class="text-[14px] text-[#d6e3ed]">
+            Hubungi tim SONUS ID untuk informasi nilai kalor, ketersediaan wilayah, dan penawaran pasokan.
+          </p>
+        </div>
+        <a
+          href="/kontak"
+          class="inline-flex items-center justify-center h-[46px] px-[22px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold hover:bg-[#0f6ea8] transition-colors w-full lg:w-auto shrink-0 whitespace-nowrap"
+        >
+          Hubungi Tim SONUS →
+        </a>
+      </div>
+    </div>
+  </section>
+</Layout>

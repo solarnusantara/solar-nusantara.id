@@ -16,5 +16,15 @@ const title = pageData?.text || 'produk';
 const menuItems = pageData?.children;
 ---
 <Layout title={title} description="Produk Solar Nusantara: panel surya TKDN dan impor, inverter on-grid dan off-grid, sistem baterai, ekosistem EV, dan bahan bakar energi biomassa.">
-  <IntroPageMenu title={title} items={menuItems} />
+  <IntroPageMenu
+    title={title}
+    items={menuItems}
+    eyebrow="PRODUK & TEKNOLOGI"
+    description="Komponen sistem panel surya, infrastruktur ekosistem EV, bahan bakar energi biomassa, dan seri 50100 FG dari SONUS ID."
+    breadcrumbs={[
+      { label: 'Beranda', href: '/' },
+      { label: 'Solusi', href: '/layanan' },
+      { label: 'Produk' },
+    ]}
+  />
 </Layout>
