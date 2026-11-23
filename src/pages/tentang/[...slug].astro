@@ -2,6 +2,7 @@
 import { getCollection } from 'astro:content';
 import Layout from '../../layouts/Layout.astro';
 import IntroPageMenu from '../../components/IntroPageMenu.astro';
+import PageToc, { type TocHeading } from '../../components/PageToc.astro';
 import { navLinks, type NavLink } from '../../data/navLinks';
 
 export async function getStaticPaths() {
@@ -46,10 +47,12 @@ let title = '';
 let description = '';
 let menuItems: NavLink[] = [];
 let Content = null;
+let headings: TocHeading[] = [];
 
 if (type === 'content') {
   const rendered = await entry.render();
   Content = rendered.Content;
+  headings = rendered.headings ?? [];
   title = entry.data.title;
   description = entry.data.description ?? '';
 
@@ -125,54 +128,60 @@ const breadcrumbs = isPolicy
         </div>
       </section>
 
-      <!-- Document Body -->
+      <!-- Document Body + Sticky TOC -->
       <section data-sonus-section class="bg-white">
         <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[52px]">
-          <article class="prose lg:prose-lg max-w-[850px] prose-headings:text-[#10283d] prose-headings:font-bold prose-p:text-[#60717e] prose-li:text-[#60717e] prose-strong:text-[#10283d] prose-a:text-[#1483c8]">
-            <Content />
-          </article>
+          <div class="flex flex-col lg:flex-row gap-[28px] lg:gap-[48px] items-start">
+            <div class="flex-1 w-full min-w-0 lg:max-w-[850px]">
+              <article class="prose lg:prose-lg max-w-none prose-headings:text-[#10283d] prose-headings:font-bold prose-p:text-[#60717e] prose-li:text-[#60717e] prose-strong:text-[#10283d] prose-a:text-[#1483c8]">
+                <Content />
+              </article>
 
-          {isPolicy && (
-            <div class="mt-[40px] pt-[28px] border-t border-[#e2e9ee] max-w-[850px] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[16px]">
-              <a
-                href="/tentang/kebijakan"
-                class="inline-flex items-center gap-[8px] text-[14px] font-semibold text-[#1483c8] hover:underline"
-              >
-                <span>←</span>
-                <span>Kembali ke Daftar Kebijakan</span>
-              </a>
-              <a
-                href="/kontak"
-                class="inline-flex items-center justify-center h-[44px] px-[20px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold hover:bg-[#0f6ea8] transition-colors"
-              >
-                Hubungi Tim SONUS
-              </a>
-            </div>
-          )}
-
-          {menuItems.length > 0 && (
-            <div class="mt-[48px] pt-[36px] border-t border-[#e2e9ee] max-w-[960px]">
-              <p class="text-[11px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
-                LANJUT MEMBACA
-              </p>
-              <h2 class="text-[22px] lg:text-[26px] font-bold text-[#10283d] mt-[6px] mb-[20px]">
-                Halaman Terkait
-              </h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[16px]">
-                {menuItems.map((item) => (
+              {isPolicy && (
+                <div class="mt-[40px] pt-[28px] border-t border-[#e2e9ee] flex flex-col sm:flex-row sm:items-center sm:justify-between gap-[16px]">
                   <a
-                    href={item.href}
-                    class="group bg-white border border-[#e2e9ee] rounded-[12px] p-[20px] flex items-center justify-between gap-[12px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+                    href="/tentang/kebijakan"
+                    class="inline-flex items-center gap-[8px] text-[14px] font-semibold text-[#1483c8] hover:underline"
                   >
-                    <h3 class="text-[16px] font-semibold text-[#10283d] group-hover:text-[#1483c8] transition-colors">
-                      {item.text}
-                    </h3>
-                    <span class="text-[#1483c8] shrink-0 transition-transform group-hover:translate-x-1">→</span>
+                    <span>←</span>
+                    <span>Kembali ke Daftar Kebijakan</span>
                   </a>
-                ))}
-              </div>
+                  <a
+                    href="/kontak"
+                    class="inline-flex items-center justify-center h-[44px] px-[20px] rounded-[8px] bg-[#1483c8] text-white text-[14px] font-semibold hover:bg-[#0f6ea8] transition-colors"
+                  >
+                    Hubungi Tim SONUS
+                  </a>
+                </div>
+              )}
+
+              {menuItems.length > 0 && (
+                <div class="mt-[48px] pt-[36px] border-t border-[#e2e9ee]">
+                  <p class="text-[11px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+                    LANJUT MEMBACA
+                  </p>
+                  <h2 class="text-[22px] lg:text-[26px] font-bold text-[#10283d] mt-[6px] mb-[20px]">
+                    Halaman Terkait
+                  </h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
+                    {menuItems.map((item) => (
+                      <a
+                        href={item.href}
+                        class="group bg-white border border-[#e2e9ee] rounded-[12px] p-[20px] flex items-center justify-between gap-[12px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+                      >
+                        <h3 class="text-[16px] font-semibold text-[#10283d] group-hover:text-[#1483c8] transition-colors">
+                          {item.text}
+                        </h3>
+                        <span class="text-[#1483c8] shrink-0 transition-transform group-hover:translate-x-1">→</span>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
             </div>
-          )}
+
+            <PageToc headings={headings} />
+          </div>
         </div>
       </section>
     </>

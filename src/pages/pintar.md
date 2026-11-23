@@ -6,11 +6,17 @@ description: "Program PINTAR dari SonusID membawa akses listrik ke daerah yang b
 ![Program PINTAR dari SonusID untuk distribusi energi di Indonesia](../assets/images/pages/_image.png)
 > Program PINTAR dari SonusID: Solusi Revolusioner untuk Distribusi Energi di Indonesia
 
+## Tentang Program PINTAR
+
 Program PINTAR dari SonusID merupakan terobosan nyata dalam bidang distribusi energi di Indonesia. Program ini dirancang untuk menyediakan akses listrik bagi seluruh komunitas di berbagai wilayah, tanpa memandang lokasi mereka. Pendekatan ramah lingkungan yang digunakan oleh program PINTAR menjadi bukti komitmen SonusID dalam menjaga kelestarian sumber daya alam Indonesia.
+
+## Dampak bagi Wilayah Belum Terjangkau Listrik
 
 Program PINTAR sangat penting bagi daerah-daerah yang hingga kini masih belum terjangkau listrik. Melalui inisiatif ini, SonusID akan menghadirkan sistem kelistrikan yang efisien ke wilayah-wilayah tersebut, memastikan mereka memiliki sumber energi yang berkelanjutan. Kehadiran listrik yang andal akan mendorong percepatan pembangunan daerah, karena akses energi merupakan prasyarat bagi pertumbuhan sosial dan ekonomi.
 
 ![Jangkauan kelistrikan program PINTAR ke wilayah yang belum terjangkau listrik](../assets/images/pages/_image-1.png)
+
+## Komitmen Keberlanjutan
 
 Komitmen SonusID terhadap keberlanjutan lingkungan dan pembangunan masyarakat melalui program PINTAR patut diapresiasi. Inisiatif ini tidak hanya meningkatkan kualitas hidup masyarakat, tetapi juga berkontribusi dalam menurunkan emisi karbon di Indonesia.
 

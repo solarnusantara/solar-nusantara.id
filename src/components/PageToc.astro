@@ -1,0 +1,109 @@
+---
+export interface TocHeading {
+  depth: number;
+  text: string;
+  slug: string;
+}
+
+interface Props {
+  headings: TocHeading[];
+  ctaTitle?: string;
+  ctaHref?: string;
+  ctaLabel?: string;
+}
+
+const {
+  headings = [],
+  ctaTitle = 'Butuh konsultasi proyek?',
+  ctaHref = '/kontak',
+  ctaLabel = 'Hubungi Tim SONUS →',
+} = Astro.props;
+
+const items = headings.filter((h) => h.depth === 2 || h.depth === 3);
+const isExternalCta = ctaHref.startsWith('http');
+---
+
+<aside class="hidden lg:block w-[340px] xl:w-[390px] shrink-0 sticky top-[116px] self-start">
+  {items.length > 0 && (
+    <nav
+      aria-label="Daftar isi halaman"
+      data-page-toc
+      class="bg-white border border-[#dbe5f0] rounded-[12px] p-[22px]"
+    >
+      <h2 class="font-bold text-[20px] mb-[16px] text-[#14263d]">Di halaman ini</h2>
+      <ul class="space-y-[12px]">
+        {items.map((h) => (
+          <li>
+            <a
+              href={`#${h.slug}`}
+              data-toc-slug={h.slug}
+              class:list={[
+                'page-toc-link block text-[14px] leading-[1.45] text-[#5e7080] hover:text-[#0f7dc7] transition-colors duration-200',
+                { 'pl-4 text-[13px]': h.depth === 3 },
+              ]}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  )}
+
+  <div class:list={['bg-[#f4f7f9] border border-[#dbe5f0] rounded-[12px] p-[20px]', { 'mt-[16px]': items.length > 0 }]}>
+    <p class="text-[11px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+      SONUS ID
+    </p>
+    <p class="text-[16px] font-bold text-[#10283d] mt-[6px]">
+      {ctaTitle}
+    </p>
+    <p class="text-[13px] leading-[1.5] text-[#60717e] mt-[6px]">
+      Tim kami siap membantu dari perencanaan teknis hingga pengadaan material.
+    </p>
+    <a
+      href={ctaHref}
+      target={isExternalCta ? '_blank' : undefined}
+      rel={isExternalCta ? 'noopener noreferrer' : undefined}
+      class="mt-[14px] inline-flex items-center justify-center w-full h-[42px] px-[16px] rounded-[8px] bg-[#1483c8] text-white text-[13px] font-semibold hover:bg-[#0f6ea8] transition-colors"
+    >
+      {ctaLabel}
+    </a>
+  </div>
+</aside>
+
+<style>
+  .page-toc-link.is-active {
+    color: #0f7dc7;
+    font-weight: 600;
+  }
+</style>
+
+<script>
+  document.addEventListener('DOMContentLoaded', () => {
+    const links = Array.from(document.querySelectorAll('.page-toc-link')) as HTMLAnchorElement[];
+    if (links.length === 0) return;
+
+    const targets = links
+      .map((l) => {
+        const slug = l.dataset.tocSlug;
+        return slug ? document.getElementById(slug) : null;
+      })
+      .filter((el): el is HTMLElement => Boolean(el));
+
+    if (targets.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        entries.forEach((entry) => {
+          if (entry.isIntersecting) {
+            const id = entry.target.id;
+            links.forEach((l) => l.classList.toggle('is-active', l.dataset.tocSlug === id));
+          }
+        });
+      },
+      { rootMargin: '-20% 0px -65% 0px', threshold: 0 },
+    );
+
+    targets.forEach((t) => observer.observe(t));
+  });
+</script>

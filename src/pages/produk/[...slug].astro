@@ -6,6 +6,7 @@ import { navLinks, type NavLink } from '../../data/navLinks';
 import { buildProductSchema } from '../../utils/productSchema';
 import { buildFaqSchema } from '../../utils/faqSchema';
 import FaqSection from '../../components/FaqSection.astro';
+import PageToc, { type TocHeading } from '../../components/PageToc.astro';
 
 export async function getStaticPaths() {
   const entries = await getCollection('produk');
@@ -51,12 +52,14 @@ let title = '';
 let description = '';
 let menuItems: NavLink[] = [];
 let Content = null;
+let headings: TocHeading[] = [];
 let jsonLd: Record<string, unknown>[] = [];
 let faq = [];
 
 if (type === 'content') {
   const rendered = await entry.render();
   Content = rendered.Content;
+  headings = rendered.headings ?? [];
   title = entry.data.title;
   description = entry.data.description ?? '';
 
@@ -101,6 +104,12 @@ const breadcrumbs = [
   { label: 'Produk', href: '/produk' },
   { label: title },
 ];
+
+const tocHeadings: TocHeading[] = [
+  ...headings,
+  ...(menuItems.length > 0 ? [{ depth: 2, slug: 'sub-produk', text: `Kategori ${title}` }] : []),
+  ...(faq.length > 0 ? [{ depth: 2, slug: 'faq-heading', text: 'Pertanyaan yang Sering Diajukan' }] : []),
+];
 ---
 
 <Layout title={title} description={description || undefined} jsonLd={jsonLd}>
@@ -138,42 +147,51 @@ const breadcrumbs = [
         </div>
       </section>
 
-      <!-- Product Body -->
+      <!-- Product Body + Sticky TOC -->
       <section data-sonus-section class="bg-white">
         <div class="max-w-[1440px] mx-auto px-[20px] py-[32px] lg:px-[80px] lg:py-[52px]">
-          <article class="prose lg:prose-lg max-w-[850px] prose-headings:text-[#10283d] prose-headings:font-bold prose-p:text-[#60717e] prose-li:text-[#60717e] prose-strong:text-[#10283d] prose-a:text-[#1483c8]">
-            <Content />
-          </article>
+          <div class="flex flex-col lg:flex-row gap-[28px] lg:gap-[48px] items-start">
+            <div class="flex-1 w-full min-w-0 lg:max-w-[850px]">
+              <article class="prose lg:prose-lg max-w-none prose-headings:text-[#10283d] prose-headings:font-bold prose-p:text-[#60717e] prose-li:text-[#60717e] prose-strong:text-[#10283d] prose-a:text-[#1483c8]">
+                <Content />
+              </article>
 
-          {menuItems.length > 0 && (
-            <div class="mt-[48px] pt-[36px] border-t border-[#e2e9ee]">
-              <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
-                SUB-PRODUK
-              </p>
-              <h2 class="text-[22px] lg:text-[26px] font-bold text-[#10283d] mt-[6px] mb-[20px]">
-                Kategori {title}
-              </h2>
-              <div class="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-[16px]">
-                {menuItems.map((item, idx) => (
-                  <a
-                    href={item.href}
-                    class="group bg-white border border-[#e0e8ee] rounded-[12px] p-[20px] flex flex-col justify-between gap-[12px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
-                  >
-                    <p class="text-[11px] font-semibold text-[#1483c8]">{String(idx + 1).padStart(2, '0')}</p>
-                    <div class="flex items-center justify-between gap-[10px]">
-                      <h3 class="text-[17px] font-bold text-[#10283d] group-hover:text-[#1483c8] transition-colors">
-                        {item.text}
-                      </h3>
-                      <span class="text-[#1483c8] shrink-0 transition-transform group-hover:translate-x-1">→</span>
-                    </div>
-                  </a>
-                ))}
-              </div>
+              {menuItems.length > 0 && (
+                <div id="sub-produk" class="mt-[48px] pt-[36px] border-t border-[#e2e9ee] scroll-mt-[120px]">
+                  <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
+                    SUB-PRODUK
+                  </p>
+                  <h2 class="text-[22px] lg:text-[26px] font-bold text-[#10283d] mt-[6px] mb-[20px]">
+                    Kategori {title}
+                  </h2>
+                  <div class="grid grid-cols-1 md:grid-cols-2 gap-[16px]">
+                    {menuItems.map((item, idx) => (
+                      <a
+                        href={item.href}
+                        class="group bg-white border border-[#e0e8ee] rounded-[12px] p-[20px] flex flex-col justify-between gap-[12px] transition-all duration-200 hover:border-[#1483c8] hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]"
+                      >
+                        <p class="text-[11px] font-semibold text-[#1483c8]">{String(idx + 1).padStart(2, '0')}</p>
+                        <div class="flex items-center justify-between gap-[10px]">
+                          <h3 class="text-[17px] font-bold text-[#10283d] group-hover:text-[#1483c8] transition-colors">
+                            {item.text}
+                          </h3>
+                          <span class="text-[#1483c8] shrink-0 transition-transform group-hover:translate-x-1">→</span>
+                        </div>
+                      </a>
+                    ))}
+                  </div>
+                </div>
+              )}
+
+              <FaqSection items={faq} />
             </div>
-          )}
 
-          <div class="max-w-[850px]">
-            <FaqSection items={faq} />
+            <PageToc
+              headings={tocHeadings}
+              ctaTitle={`Butuh spesifikasi ${title}?`}
+              ctaHref="https://sonushub.id"
+              ctaLabel="Cek di SonusHUB ↗"
+            />
           </div>
 
           <!-- SonusHUB / Contact CTA -->
