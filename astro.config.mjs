@@ -1,5 +1,6 @@
 import { defineConfig } from 'astro/config';
-import { readFileSync, readdirSync, statSync } from 'node:fs';
+import { readFileSync, readdirSync, statSync, existsSync } from 'node:fs';
+import { execFileSync } from 'node:child_process';
 import { join } from 'node:path';
 import { copyFile } from 'node:fs/promises';
 import { fileURLToPath } from 'node:url';
@@ -7,6 +8,7 @@ import UnoCSS from 'unocss/astro';
 import sitemap from "@astrojs/sitemap";
 import remarkMath from 'remark-math';
 import rehypeKatex from 'rehype-katex';
+import markdownPages from './scripts/lib/markdown-pages.mjs';
 
 /**
  * Article slug -> last-modified date, read straight from the frontmatter.
@@ -62,6 +64,48 @@ function readArticleDates() {
 
 const ARTICLE_DATES = readArticleDates();
 
+/**
+ * <lastmod> for non-article URLs: the date of the last git commit touching the
+ * page's source (static page, or content file behind a [...slug] route).
+ * Falls back to the owning route file, then to omitting lastmod entirely - an
+ * honest gap beats a fake "today".
+ */
+const gitDateCache = new Map();
+function gitDate(file) {
+  if (gitDateCache.has(file)) return gitDateCache.get(file);
+  let out = null;
+  try {
+    const raw = execFileSync('git', ['log', '-1', '--format=%cI', '--', file], { encoding: 'utf8', stdio: ['ignore', 'pipe', 'ignore'] }).trim();
+    if (raw) out = raw.slice(0, 10);
+  } catch {}
+  gitDateCache.set(file, out);
+  return out;
+}
+
+function pageSourceDate(pathname) {
+  const p = pathname.replace(/^\/|\/$/g, '');
+  const section = p.split('/')[0];
+  const rest = p.split('/').slice(1).join('/');
+  const candidates = p === '' ? ['src/pages/index.astro'] : [
+    `src/pages/${p}.astro`,
+    `src/pages/${p}/index.astro`,
+    `src/pages/${p}.md`,
+    `src/content/${p}.md`,
+    `src/content/${section}/${rest}.md`,
+    `src/content/${section}/${rest}/index.md`,
+    `src/pages/${section}/[...slug].astro`,
+    `src/pages/${section}/[page].astro`,
+    `src/pages/${section}/index.astro`,
+  ];
+  for (const c of candidates) {
+    if (existsSync(c)) {
+      const d = gitDate(c);
+      if (d) return d;
+    }
+  }
+  return null;
+}
+
 // https://astro.build/config
 export default defineConfig({
   site: 'https://solar-nusantara.id', // Ganti dengan domain produksi Anda
@@ -93,10 +137,16 @@ export default defineConfig({
       serialize(item) {
         const m = /\/berita\/([^/]+)\/$/.exec(item.url);
         const date = m && ARTICLE_DATES.get(m[1]);
-        if (date) item.lastmod = `${date.toISOString().slice(0, 10)}T00:00:00+07:00`;
+        if (date) {
+          item.lastmod = `${date.toISOString().slice(0, 10)}T00:00:00+07:00`;
+        } else if (!m) {
+          const d = pageSourceDate(new URL(item.url).pathname);
+          if (d) item.lastmod = `${d}T00:00:00+07:00`;
+        }
         return item;
       },
     }),
+    markdownPages(),
     {
       // Crawlers and AI fetchers guess /sitemap.xml; @astrojs/sitemap only writes
       // /sitemap-index.xml. Static hosting here cannot send a 301, and a meta-refresh
