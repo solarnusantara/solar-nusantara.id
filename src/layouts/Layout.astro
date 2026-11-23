@@ -265,11 +265,6 @@ const structuredData = {
 <html lang="id" class="scroll-smooth">
 	<head>
 		<meta charset="UTF-8" />
-		<script is:inline>
-			if (!window.matchMedia('(prefers-reduced-motion: reduce)').matches) {
-				document.documentElement.classList.add('js-reveal');
-			}
-		</script>
 		<title>{pageTitle}</title>
 
 		<!-- Primary Meta Tags -->
@@ -495,90 +490,6 @@ const structuredData = {
         });
       </script>
     )}
-
-    <script>
-      (() => {
-        const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
-        const revealEls = Array.from(document.querySelectorAll<HTMLElement>('[data-reveal], [data-reveal-stagger]'));
-        const countEls = Array.from(document.querySelectorAll<HTMLElement>('[data-count]'));
-
-        // Assign stagger indices to children (capped at 6 so long grids stay snappy)
-        revealEls.forEach((el) => {
-          if (el.hasAttribute('data-reveal-stagger')) {
-            Array.from(el.children).forEach((child, idx) => {
-              (child as HTMLElement).style.setProperty('--reveal-index', String(Math.min(idx, 6)));
-            });
-          }
-        });
-
-        const revealAllImmediately = () => {
-          revealEls.forEach((el) => el.classList.add('is-visible'));
-        };
-
-        if (reducedMotion || !('IntersectionObserver' in window)) {
-          revealAllImmediately();
-          return;
-        }
-
-        if (revealEls.length > 0) {
-          const revealObserver = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  entry.target.classList.add('is-visible');
-                  revealObserver.unobserve(entry.target);
-                }
-              });
-            },
-            { rootMargin: '0px 0px -6% 0px', threshold: 0.05 },
-          );
-          revealEls.forEach((el) => revealObserver.observe(el));
-        }
-
-        if (countEls.length > 0) {
-          const animateCount = (el: HTMLElement) => {
-            const target = Number(el.dataset.count);
-            if (!Number.isFinite(target)) return;
-            const startVal = Number(el.dataset.countStart ?? 0);
-            const prefix = el.dataset.countPrefix ?? '';
-            const suffix = el.dataset.countSuffix ?? '';
-            const duration = 1050;
-            const startTime = performance.now();
-
-            const step = (now: number) => {
-              const progress = Math.min((now - startTime) / duration, 1);
-              const eased = 1 - Math.pow(1 - progress, 3);
-              const current = Math.round(startVal + (target - startVal) * eased);
-              el.textContent = `${prefix}${current}${suffix}`;
-              if (progress < 1) {
-                requestAnimationFrame(step);
-              }
-            };
-
-            requestAnimationFrame(step);
-          };
-
-          const countObserver = new IntersectionObserver(
-            (entries) => {
-              entries.forEach((entry) => {
-                if (entry.isIntersecting) {
-                  animateCount(entry.target as HTMLElement);
-                  countObserver.unobserve(entry.target);
-                }
-              });
-            },
-            { rootMargin: '0px 0px -6% 0px', threshold: 0.15 },
-          );
-          countEls.forEach((el) => {
-            const startVal = Number(el.dataset.countStart ?? 0);
-            const prefix = el.dataset.countPrefix ?? '';
-            const suffix = el.dataset.countSuffix ?? '';
-            el.textContent = `${prefix}${startVal}${suffix}`;
-            countObserver.observe(el);
-          });
-        }
-      })();
-    </script>
 
     <style is:global>
       .toc-link.is-active {

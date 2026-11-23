@@ -30,10 +30,10 @@ const anchorNav = [
 ];
 
 const metrics = [
-  { value: '30 MWp', count: 30, countStart: 0, countSuffix: ' MWp', label: 'Total installed PLTS' },
-  { value: '27 MWp', count: 27, countStart: 0, countSuffix: ' MWp', label: 'Installed in the last 3 years' },
-  { value: '12+', count: 12, countStart: 0, countSuffix: '+', label: 'EPC partners vetted and standardized' },
-  { value: '2021', count: 2021, countStart: 0, countSuffix: '', label: 'Tahun berdiri' },
+  { value: '30 MWp', label: 'Total installed PLTS' },
+  { value: '27 MWp', label: 'Installed in the last 3 years' },
+  { value: '12+', label: 'EPC partners vetted and standardized' },
+  { value: '2021', label: 'Tahun berdiri' },
 ];
 
 const milestones = [
@@ -160,7 +160,7 @@ const exploreLinks = [
   <section id="tentang-kami" data-sonus-section class="bg-white scroll-mt-[120px]">
     <div class="max-w-[1440px] mx-auto px-[20px] py-[28px] lg:px-[80px] lg:py-[70px]">
       <div class="flex flex-col lg:flex-row lg:items-center lg:justify-between gap-[24px] lg:gap-[48px]">
-        <div data-hero-enter class="flex flex-col gap-[12px] lg:gap-[14px] max-w-[650px]">
+        <div class="flex flex-col gap-[12px] lg:gap-[14px] max-w-[650px]">
           <p class="text-[11px] lg:text-[12px] font-semibold tracking-[0.04em] text-[#1483c8] uppercase">
             TENTANG SONUS ID
           </p>
@@ -218,15 +218,10 @@ const exploreLinks = [
         </h2>
       </div>
 
-      <div data-reveal-stagger class="grid grid-cols-2 lg:grid-cols-4 gap-[14px] lg:gap-[22px] mt-[24px] lg:mt-[32px]">
+      <div class="grid grid-cols-2 lg:grid-cols-4 gap-[14px] lg:gap-[22px] mt-[24px] lg:mt-[32px]">
         {metrics.map((m) => (
           <div class="bg-white lg:bg-transparent border border-[#e2eaf2] lg:border-0 rounded-[10px] lg:rounded-none p-[14px] lg:p-0 flex flex-col gap-[6px]">
-            <p
-              data-count={m.count}
-              data-count-start={m.countStart}
-              data-count-suffix={m.countSuffix}
-              class="text-[24px] lg:text-[28px] font-bold leading-[1.15] text-[#10283d] tabular-nums"
-            >
+            <p class="text-[24px] lg:text-[28px] font-bold leading-[1.15] text-[#10283d]">
               {m.value}
             </p>
             <p class="text-[12px] lg:text-[13px] font-normal leading-[1.45] text-[#60717e]">
@@ -272,7 +267,7 @@ const exploreLinks = [
       </div>
 
       <!-- Milestone Cards -->
-      <div data-reveal-stagger class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-[14px] lg:gap-[20px] mt-[20px] lg:mt-0">
+      <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-5 gap-[14px] lg:gap-[20px] mt-[20px] lg:mt-0">
         {milestones.map((item) => (
           <article class="bg-white border border-[#dee5ed] rounded-[12px] p-[18px] flex flex-col gap-[9px] lg:min-h-[250px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
             <p class="text-[13px] font-semibold text-[#1483c8]">{item.year}</p>
@@ -302,7 +297,7 @@ const exploreLinks = [
         </p>
       </div>
 
-      <div data-reveal-stagger class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[22px] lg:mt-[28px]">
+      <div class="grid grid-cols-1 lg:grid-cols-3 gap-[14px] mt-[22px] lg:mt-[28px]">
         {businessBases.map((item) => (
           <article class="bg-white border border-[#e2eaf2] rounded-[12px] p-[20px] lg:p-[22px] flex flex-col gap-[10px] lg:gap-[11px] lg:min-h-[170px] transition-shadow duration-200 hover:shadow-[0_8px_24px_rgba(16,40,61,0.06)]">
             <p class="text-[11px] font-bold tracking-[0.03em] text-[#1483c8]">{item.tag}</p>
@@ -328,7 +323,7 @@ const exploreLinks = [
         </p>
       </div>
 
-      <div data-reveal="fade" class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-[15px] gap-y-[16px] items-center mt-[24px]">
+      <div class="grid grid-cols-2 sm:grid-cols-4 lg:grid-cols-8 gap-x-[15px] gap-y-[16px] items-center mt-[24px]">
         {partners.map((partner) => (
           <div class="h-[64px] flex items-center justify-center bg-white/60 lg:bg-transparent rounded-[8px] p-2 lg:p-1">
             <Image
@@ -381,7 +376,7 @@ const exploreLinks = [
         </h2>
       </div>
 
-      <div data-reveal-stagger class="max-w-[888px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-[16px] lg:gap-[24px] mt-[24px] lg:mt-[32px]">
+      <div class="max-w-[888px] mx-auto grid grid-cols-1 md:grid-cols-3 gap-[16px] lg:gap-[24px] mt-[24px] lg:mt-[32px]">
         {exploreLinks.map((card) => (
           <a
             href={card.href}
