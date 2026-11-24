@@ -5,9 +5,9 @@ description: "Panduan standar galvanis cable tray developer energi terbarukan: u
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi cable tray logam dan walkway atap dengan stempel sertifikasi dan kaca pembesar"
 focusKeyphrase: "galvanis cable tray developer energi terbarukan"
-pubDate: "2026-11-15"
+pubDate: "2026-11-24"
 tags: ["developer", "walkway-cable-tray", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Bagi galvanis cable tray developer energi terbarukan, persyaratan yang berlaku bukan sekadar klaim "tahan karat", melainkan kesesuaian dengan standar pelapisan, lingkungan korosif, dan dokumen uji yang dapat diaudit. Permen ESDM No. 2 Tahun 2024 ([jdih.esdm.go.id](https://jdih.esdm.go.id/)) menegaskan bahwa pemasangan PLTS atap tidak lagi dibatasi 100% dari daya terpasang pelanggan PLN, tetapi tunduk pada kuota PLN yang tersedia. Artinya, proyek tetap berjalan dalam kerangka regulasi yang menuntut komponen BOS berumur panjang. Cable tray galvanis menjadi bagian dari sistem pengkabelan yang harus dipilih dengan bukti teknis, bukan hanya spesifikasi di penawaran.

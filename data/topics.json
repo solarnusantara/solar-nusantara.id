@@ -1218,7 +1218,7 @@
     {
       "id": "developer--walkway-tray--mutu",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 27,
       "buyer": "developer",
       "buyerLabel": "Developer Energi Terbarukan",
@@ -1236,7 +1236,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/cable-trays-trunking-fittings-cr",
       "priority": 60,
-      "generatedAt": "2026-11-15T18:10:47.144Z"
+      "generatedAt": "2026-11-15T18:10:47.144Z",
+      "publishedAt": "2026-11-24T01:23:11.809Z"
     },
     {
       "id": "developer--inverter--panduan",
