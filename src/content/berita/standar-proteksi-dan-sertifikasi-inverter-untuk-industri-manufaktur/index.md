@@ -5,9 +5,9 @@ description: "Panduan teknis sertifikasi inverter industri manufaktur: standar p
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi inverter surya dengan stempel sertifikasi dan kaca pembesar"
 focusKeyphrase: "sertifikasi inverter industri manufaktur"
-pubDate: "2026-11-15"
+pubDate: "2026-11-25"
 tags: ["manufaktur", "inverter", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Dalam pengadaan inverter untuk pabrik, sertifikasi inverter industri manufaktur harus dibaca sebagai paket bukti keselamatan, kualitas daya, dan kesiapan interkoneksi, bukan sekadar lembar datasheet. Sejak Permen ESDM No. 2 Tahun 2024, pemasangan PLTS atap tidak lagi dibatasi 100% dari daya terpasang pelanggan PLN, melainkan tunduk pada kuota PLN yang tersedia. Karena itu, dokumen proteksi inverter perlu konsisten dengan persyaratan koneksi PLN dan profil beban manufaktur yang biasanya padat motor, konverter, dan beban nonlinier. Pembeli B2B sebaiknya menilai inverter dari bukti uji yang dapat diaudit, bukan dari klaim brosur.

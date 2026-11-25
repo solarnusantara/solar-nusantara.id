@@ -2218,7 +2218,7 @@
     {
       "id": "manufaktur--inverter--mutu",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 28,
       "buyer": "manufaktur",
       "buyerLabel": "Industri Manufaktur",
@@ -2236,7 +2236,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/inx-string-hybrid-inverters-sh",
       "priority": 45,
-      "generatedAt": "2026-11-15T18:09:02.787Z"
+      "generatedAt": "2026-11-15T18:09:02.787Z",
+      "publishedAt": "2026-11-25T01:23:06.248Z"
     },
     {
       "id": "manufaktur--kabel-dc--panduan",
