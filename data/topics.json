@@ -6650,7 +6650,7 @@
     {
       "id": "umum--merek--kabelindo",
       "kind": "longtail",
-      "status": "generated",
+      "status": "published",
       "rank": 30,
       "buyer": "umum",
       "buyerLabel": "Pembeli Material PLTS (pengadaan, project manager, kontraktor)",
@@ -6669,7 +6669,8 @@
       ],
       "sonushubLink": "https://sonushub.id/category/crx-ac-power-cable-sh",
       "priority": 95,
-      "generatedAt": "2026-11-15T18:14:32.630Z"
+      "generatedAt": "2026-11-15T18:14:32.630Z",
+      "publishedAt": "2026-11-26T01:23:05.707Z"
     },
     {
       "id": "umum--merek--sutrado",

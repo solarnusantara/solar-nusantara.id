@@ -5,9 +5,9 @@ description: "Kabel Kabelindo: lini NYY, NYA, dan NYAF di SonusHUB serta cara me
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi gulungan kabel daya AC berinti banyak dengan sepatu kabel dengan buku panduan tertutup di sampingnya"
 focusKeyphrase: "kabel kabelindo"
-pubDate: "2026-11-15"
+pubDate: "2026-11-26"
 tags: ["pengetahuan-material", "kabel-ac", "merek", "teknis"]
-draft: true
+draft: false
 ---
 
 Dalam kategori kabel daya dan pengkabelan AC untuk PLTS, kabel Kabelindo adalah salah satu lini yang tersedia di katalog SonusHUB. Bagi tim pengadaan, project manager, dan kontraktor EPC, relevansi merek ini terletak pada rentang jumlah inti dan penampang yang tercantum, bukan pada klaim pemasaran. Artikel ini merangkum lini yang tersedia, posisi tiap jenis di sistem, dan cara membaca spesifikasinya sebelum inquiry dikirim.
