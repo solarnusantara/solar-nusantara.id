@@ -5,9 +5,9 @@ description: "Spesifikasi cable tray industri manufaktur: cara membaca datasheet
 heroImage: "./hero.webp"
 heroImageAlt: "Ilustrasi cable tray logam dan walkway atap dengan penggaris, jangka sorong, dan lembar gambar teknis"
 focusKeyphrase: "spesifikasi cable tray industri manufaktur"
-pubDate: "2026-11-22"
+pubDate: "2026-11-27"
 tags: ["manufaktur", "walkway-cable-tray", "pengadaan-material", "teknis"]
-draft: true
+draft: false
 ---
 
 Pada spesifikasi cable tray industri manufaktur untuk atap PLTS, angka yang paling sering salah dibaca justru angka beban di datasheet. Produsen mencantumkan beban kerja pada jarak tumpuan tertentu, bukan beban yang berlaku di semua kondisi pemasangan. Karena itu, dua penawaran dengan angka beban yang tampak sama bisa memiliki arti teknis yang berbeda. Kesalahan berikutnya adalah membaca lebar walkway sebagai lebar bersih, padahal yang menentukan ruang kerja adalah lebar bersih di dalam rel.
